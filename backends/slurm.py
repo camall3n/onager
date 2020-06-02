@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import timedelta
 
 from ._backend import Backend
 
@@ -22,6 +22,13 @@ class SlurmBackend(Backend):
 
         self.task_id_var = r'$SLURM_ARRAY_TASK_ID'
 
+    def generate_tasklist(self, commands, tasklist):
+        if tasklist is None:
+            ids = sorted(commands.keys())
+            return ','.join(map(str,ids))
+        else:
+            return tasklist
+
     def get_job_list(self, args):
         # Call the appropriate sbatch command. The default behavior is to use
         # Slurm's job array feature, which starts a batch job with multiple tasks
@@ -32,16 +39,15 @@ class SlurmBackend(Backend):
 
         # Duration
         base_cmd += '-t {} '.format(args.duration)
-        duration = datetime.strptime(args.duration, "%d-%H:%M:%S")
+        duration = self.get_time_delta(args.duration)
 
         # Number of CPU/GPU resources
         base_cmd += '-n {} '.format(args.cpus)
         if args.gpus > 0:
-            short_duration = datetime.strptime("01:00:00", "%H:%M:%S")
-            partition = 'gpu-debug' if duration < short_duration else 'gpu'
+            partition = 'gpu-debug' if duration <= timedelta(hours=1) else 'gpu'
             base_cmd += '-p {} --gres=gpu:{} '.format(partition, args.gpus)
         else:
-            partition = 'debug' if args.duration in ['test','short'] else 'batch'
+            partition = 'debug' if duration <= timedelta(hours=1) else 'batch'
             base_cmd += '-p {} '.format(partition)
 
         # Memory requirements
@@ -50,30 +56,24 @@ class SlurmBackend(Backend):
         # Logging
         log_dir = ".thoth/logs/slurm/"
         os.makedirs(log_dir, exist_ok=True)
-        base_cmd += '-o {}/{}.o '.format(log_dir, args.jobname) # save stdout to file
-        base_cmd += '-e {}/{}.e '.format(log_dir, args.jobname) # save stderr to file
+        base_cmd += '-o {}.o '.format(os.path.join(log_dir, args.jobname)) # save stdout to file
+        base_cmd += '-e {}.e '.format(os.path.join(log_dir, args.jobname)) # save stderr to file
 
         # The --parsable flag causes sbatch to print the jobid to stdout. We read the
         # jobid with subprocess.check_output(), and use it to delay the email job
         # until the entire batch job has completed.
         base_cmd += '--parsable '
 
-        if args.tasklist is not None:
-            base_cmd += "--array={taskblock}"
-            if args.maxtasks > 0:
-                # set maximum number of running tasks per block
-                base_cmd += '%{} '.format(args.maxtasks)
-            else:
-                base_cmd += ' '
+        base_cmd += "--array={}".format(args.tasklist)
+        if args.maxtasks > 0:
+            # set maximum number of running tasks per block
+            base_cmd += '%{} '.format(args.maxtasks)
+        else:
+            base_cmd += ' '
 
         # Prevent Slurm from running this new job until the specified job ID is finished.
         if args.hold_jid is not None:
             base_cmd += "--depend=afterany:{} ".format(args.hold_jid)
-        base_cmd += "{}".format(jobfile)
+        base_cmd += "{}".format(args.jobfile)
 
-        if args.tasklist is None:
-            return [base_cmd]
-        else:
-            # TODO: if there are multiple task groups, can they still respect args.maxtasks?
-            taskblocks = args.tasklist.split(',')
-            return [base_cmd.format(taskblock=taskblock) for taskblock in taskblocks]
+        return [base_cmd]

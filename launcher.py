@@ -1,4 +1,6 @@
 import argparse
+from datetime import datetime, timedelta
+import json
 import os
 import re
 import subprocess
@@ -37,6 +39,8 @@ def parse_args(args=None):
     parser.add_argument('-y','--dry_run', action='store_true',
                         help="Don't actually submit jobs to backend")
     parser.set_defaults(dry_run=False)
+    parser.add_argument('--hold_jid', type=str, default=None,
+                        help='Hold job until the specified jobid or jobid_taskid has finished')
 
     if args is not None:
         args = parser.parse_args(args)
@@ -62,8 +66,9 @@ def parse_args(args=None):
 
     return args, backend
 
-def launch():
+def launch(commands):
     args, backend = parse_args()
+    args.tasklist = backend.generate_tasklist(commands, args.tasklist)
     jobs = backend.get_job_list(args)
     for job in jobs:
         print(job)
@@ -76,4 +81,8 @@ def launch():
                 sys.exit()
 
 if __name__ == '__main__':
-    launch()
+    with open('commands.json', 'r') as file:
+        commands = json.load(file)
+    # json stores all keys as strings, so we convert to ints
+    commands = {int(id): cmd for id,cmd in commands.items()}
+    launch(commands)

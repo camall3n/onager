@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 
 class Backend:
     def __init__(self):
@@ -28,3 +29,9 @@ class Backend:
 
     def get_job_list(self, args):
         raise NotImplementedError
+
+    def get_time_delta(self, time_str):
+        days, hours_minutes_seconds = time_str.split('-')
+        t = datetime.strptime(hours_minutes_seconds, "%H:%M:%S")
+        partial_days = timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
+        return timedelta(days=int(days)) + partial_days
