@@ -1,7 +1,6 @@
 import argparse
 import os
 import re
-import socket
 import subprocess
 import sys
 
@@ -12,11 +11,12 @@ def parse_args(args=None):
 
     Use --help to see a pretty description of the arguments
     """
-    defaultjobfile = '.thoth/scripts/{jobname}/jobs.json'
+    defaultjobfile = '.thoth/scripts/{backend}/{jobname}/jobs.json'
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--backend', choices=backends.__all__, default='local',
-                        help='The backend to use for running jobs')
-    parser.add_argument('--jobname', type=str, required=True, help='A name for the job')
+                        help='The backend to use for launching jobs')
+    parser.add_argument('--jobname', type=str, required=True,
+                        help='A name for the job')
     parser.add_argument('--jobfile', type=str, default=defaultjobfile,
                         help='Path to json file containing dictionary mapping run_ids to commands')
     parser.add_argument('--cpus', type=int, default=1,
@@ -24,7 +24,7 @@ def parse_args(args=None):
     parser.add_argument('--gpus', type=int, default=0,
                         help='Number of GPUs to request')
     parser.add_argument('--mem', type=int, default=2,
-                        help='Amount of RAM to request *per node* (in GB)')
+                        help='Amount of RAM (in GB) to request per node')
     parser.add_argument('--venv', type=str, default='./venv',
                         help='Path to python virtualenv')
     parser.add_argument('--duration', type=str, default='0-01:00:00',
@@ -43,28 +43,37 @@ def parse_args(args=None):
     else:
         args = parser.parse_args()
 
+    if args.backend == 'local':
+        backend = backends.local.LocalBackend()
+    elif args.backend == 'gridengine':
+        backend = backends.gridengine.GridEngineBackend()
+    elif args.backend == 'slurm':
+        backend = backends.slurm.SlurmBackend()
+    else:
+        raise NotImplementedError('Invalid backend')
+
     if not re.match(r'^(\w|\.|-)+$', args.jobname):
         # We want to create a script file, so make sure the filename is legit
         print("Invalid job name: {}".format(args.jobname))
         sys.exit()
 
     if args.jobfile == defaultjobfile:
-        args.jobfile = args.jobfile.format(jobname=args.jobname)
+        args.jobfile = args.jobfile.format(backend=backend.name, jobname=args.jobname)
 
-    return args
+    return args, backend
 
 def launch():
-    args = parse_args()
-    if args.backend == 'local':
-        hostname = socket.gethostname().replace('.local','')
-        print('Using local machine ({}) as the backend.'.format(hostname))
-        pass
-    elif args.backend == 'gridengine':
-        pass
-    elif args.backend == 'slurm':
-        pass
-    else:
-        raise NotImplementedError('Invalid backend')
+    args, backend = parse_args()
+    jobs = backend.get_job_list(args)
+    for job in jobs:
+        print(job)
+        if not args.dry_run:
+            try:
+                byte_str = subprocess.check_output(cmd, shell=True)
+                jobid = int(byte_str.decode('utf-8').split('.')[0])
+            except (subprocess.CalledProcessError, ValueError) as err:
+                print(err)
+                sys.exit()
 
 if __name__ == '__main__':
     launch()
