@@ -14,7 +14,8 @@ def parse_args(args=None):
     """
     defaultjobfile = '.thoth/scripts/{jobname}/jobs.json'
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--backend', choices=backends.__all__, default='local')
+    parser.add_argument('--backend', choices=backends.__all__, default='local',
+                        help='The backend to use for running jobs')
     parser.add_argument('--jobname', type=str, required=True, help='A name for the job')
     parser.add_argument('--jobfile', type=str, default=defaultjobfile,
                         help='Path to json file containing dictionary mapping run_ids to commands')
