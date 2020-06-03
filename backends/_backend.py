@@ -20,9 +20,9 @@ class Backend:
         return wrapper_script
 
     def save_wrapper_script(self, wrapper_script, jobname):
-        scripts_dir = ".thoth/scripts/{}/".format(self.name)
+        scripts_dir = ".thoth/scripts/{}/{}/".format(self.name, jobname)
         os.makedirs(scripts_dir, exist_ok=True)
-        jobfile = os.path.join(scripts_dir, jobname)
+        jobfile = os.path.join(scripts_dir, 'wrapper.sh')
         with open(jobfile, 'w') as file:
             file.write(wrapper_script)
         return jobfile
@@ -35,3 +35,8 @@ class Backend:
         t = datetime.strptime(hours_minutes_seconds, "%H:%M:%S")
         partial_days = timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
         return timedelta(days=int(days)) + partial_days
+
+    def get_log_dir(self):
+        log_dir = ".thoth/logs/{}/".format(self.name)
+        os.makedirs(log_dir, exist_ok=True)
+        return log_dir

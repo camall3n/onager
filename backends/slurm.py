@@ -54,8 +54,7 @@ source ./venv/bin/activate
         base_cmd += '--mem={}G '.format(args.mem)
 
         # Logging
-        log_dir = ".thoth/logs/slurm/"
-        os.makedirs(log_dir, exist_ok=True)
+        log_dir = self.get_log_dir()
         base_cmd += '-o {} '.format(os.path.join(log_dir, '%x_%A_%a.o')) # save stdout to file
         base_cmd += '-e {} '.format(os.path.join(log_dir, '%x_%A_%a.e')) # save stderr to file
 
@@ -78,5 +77,4 @@ source ./venv/bin/activate
         wrapper_script = self.wrap_tasks(args.jobfile)
         wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname)
         base_cmd += "{}".format(wrapper_file)
-
         return [base_cmd]
