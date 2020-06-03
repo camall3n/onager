@@ -9,14 +9,14 @@ class SlurmBackend(Backend):
         self.name = 'slurm'
         self.header = """#!/bin/bash
 
-        module load python/3.7.4
-        module load cuda/10.2
-        module load cudnn/7.6.5
-        source ./venv/bin/activate
+module load python/3.7.4
+module load cuda/10.2
+module load cudnn/7.6.5
+source ./venv/bin/activate
 
-        """
-        self.body = """python -m worker {}
-        """
+"""
+        self.body = """python -m worker {} {}
+"""
 
         self.footer = """"""
 
@@ -74,6 +74,9 @@ class SlurmBackend(Backend):
         # Prevent Slurm from running this new job until the specified job ID is finished.
         if args.hold_jid is not None:
             base_cmd += "--depend=afterany:{} ".format(args.hold_jid)
-        base_cmd += "{}".format(args.jobfile)
+
+        wrapper_script = self.wrap_tasks(args.jobfile)
+        wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname)
+        base_cmd += "{}".format(wrapper_file)
 
         return [base_cmd]
