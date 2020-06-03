@@ -56,8 +56,8 @@ source ./venv/bin/activate
         # Logging
         log_dir = ".thoth/logs/slurm/"
         os.makedirs(log_dir, exist_ok=True)
-        base_cmd += '-o {} '.format(os.path.join(log_dir, '%x_%A_%t.o')) # save stdout to file
-        base_cmd += '-e {} '.format(os.path.join(log_dir, '%x_%A_%t.e')) # save stderr to file
+        base_cmd += '-o {} '.format(os.path.join(log_dir, '%x_%A_%a.o')) # save stdout to file
+        base_cmd += '-e {} '.format(os.path.join(log_dir, '%x_%A_%a.e')) # save stderr to file
 
         # The --parsable flag causes sbatch to print the jobid to stdout. We read the
         # jobid with subprocess.check_output(), and use it to delay the email job
