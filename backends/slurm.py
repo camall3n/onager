@@ -1,5 +1,5 @@
-import os
 from datetime import timedelta
+import os
 
 from ._backend import Backend
 
@@ -55,6 +55,7 @@ source ./venv/bin/activate
 
         # Logging
         log_dir = self.get_log_dir()
+        # Format is jobname_jobid_taskid.*
         base_cmd += '-o {} '.format(os.path.join(log_dir, '%x_%A_%a.o')) # save stdout to file
         base_cmd += '-e {} '.format(os.path.join(log_dir, '%x_%A_%a.e')) # save stderr to file
 
@@ -65,7 +66,7 @@ source ./venv/bin/activate
 
         base_cmd += "--array={}".format(args.tasklist)
         if args.maxtasks > 0:
-            # set maximum number of running tasks per block
+            # set maximum number of running tasks
             base_cmd += '%{} '.format(args.maxtasks)
         else:
             base_cmd += ' '

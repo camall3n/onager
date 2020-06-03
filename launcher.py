@@ -68,7 +68,7 @@ def parse_args(args=None):
 
 def launch(commands):
     args, backend = parse_args()
-    args.tasklist = backend.generate_tasklist(commands, args.tasklist)
+    args.tasklist = backend.condense_ids(sorted(commands.keys()))
     jobs = backend.get_job_list(args)
     for job in jobs:
         print(job)

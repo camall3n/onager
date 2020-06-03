@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from itertools import count, groupby
 import os
 
 class Backend:
@@ -40,3 +41,25 @@ class Backend:
         log_dir = ".thoth/logs/{}/".format(self.name)
         os.makedirs(log_dir, exist_ok=True)
         return log_dir
+
+    def condense_ids(self, id_list):
+        G = (list(x) for _,x in groupby(id_list, lambda x,c=count(): next(c)-x))
+        return ",".join("-".join(map(str,(g[0],g[-1])[:len(g)])) for g in G)
+
+    def expand_ids(self, tasklist):
+        return [i for r in self._generate_id_ranges(tasklist) for i in r]
+
+    def _generate_id_ranges(self, tasklist):
+        task_blocks = tasklist.split(',')
+        for task_block in task_blocks:
+            if ':' in task_block:
+                task_block, step = task_block.split(':')
+                step = int(step)
+            else:
+                step = 1
+            if '-' in task_block:
+                first, last = map(int, task_block.split('-'))
+            else:
+                first = int(task_block)
+                last = first
+            yield range(first, last+1, step)
