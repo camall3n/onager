@@ -74,7 +74,7 @@ def launch(commands):
         print(job)
         if not args.dry_run:
             try:
-                byte_str = subprocess.check_output(cmd, shell=True)
+                byte_str = subprocess.check_output(job, shell=True)
                 jobid = int(byte_str.decode('utf-8').split('.')[0])
             except (subprocess.CalledProcessError, ValueError) as err:
                 print(err)
