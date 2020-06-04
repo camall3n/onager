@@ -28,6 +28,7 @@ source ./venv/bin/activate
         # and passes a different taskid to each one. If ntasks is zero, only a
         # single job is submitted with no subtasks.
         base_cmd = 'sbatch '
+        base_cmd += '-J {} '.format(args.jobname) # set name of job
         # Slurm runs scripts in current working directory by default
 
         # Duration
