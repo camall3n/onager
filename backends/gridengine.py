@@ -81,12 +81,14 @@ source ./venv/bin/activate
         # Prevent GridEngine from running this new job until the specified job ID is finished.
         if args.hold_jid is not None:
             base_cmd += "-hold_jid {} ".format(args.hold_jid)
-        base_cmd += "{}".format(jobfile)
 
         if args.maxtasks > 0:
             # set maximum number of running tasks per block
             base_cmd += "-tc {} ".format(args.maxtasks)
 
+        wrapper_script = self.wrap_tasks(args.jobfile)
+        wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname)
+
         # Split tasklist into blocks that GridEngine can understand
         task_blocks = args.tasklist.split(',')
-        return [base_cmd + "-t {}".format(task_block) for task_block in task_blocks]
+        return [base_cmd + "-t {} {}".format(task_block, wrapper_file) for task_block in task_blocks]
