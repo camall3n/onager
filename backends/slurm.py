@@ -22,13 +22,6 @@ source ./venv/bin/activate
 
         self.task_id_var = r'$SLURM_ARRAY_TASK_ID'
 
-    def generate_tasklist(self, commands, tasklist):
-        if tasklist is None:
-            ids = sorted(commands.keys())
-            return ','.join(map(str,ids))
-        else:
-            return tasklist
-
     def get_job_list(self, args):
         # Call the appropriate sbatch command. The default behavior is to use
         # Slurm's job array feature, which starts a batch job with multiple tasks

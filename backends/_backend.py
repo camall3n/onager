@@ -42,6 +42,12 @@ class Backend:
         os.makedirs(log_dir, exist_ok=True)
         return log_dir
 
+    def generate_tasklist(self, commands, tasklist):
+        if tasklist is None:
+            ids = sorted(commands.keys())
+            tasklist = ','.join(map(str,ids))
+        return tasklist
+
     def condense_ids(self, id_list):
         G = (list(x) for _,x in groupby(id_list, lambda x,c=count(): next(c)-x))
         return ",".join("-".join(map(str,(g[0],g[-1])[:len(g)])) for g in G)

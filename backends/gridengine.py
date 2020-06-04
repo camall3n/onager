@@ -19,13 +19,6 @@ source ./venv/bin/activate
 
         self.task_id_var = r'$SGE_TASK_ID'
 
-    def generate_tasklist(self, commands, tasklist):
-        if tasklist is None:
-            ids = sorted(commands.keys())
-            tasklist = ','.join(map(str,ids))
-            # TODO: split into comma-separated blocks
-        return tasklist
-
     def get_job_list(self, args):
         # Call the appropriate qsub command. The default behavior is to use
         # GridEngine's range feature, which starts a batch job with multiple tasks
