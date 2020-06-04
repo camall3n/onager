@@ -70,8 +70,8 @@ source ./venv/bin/activate
         # Logging
         log_dir = self.get_log_dir()
         # Format is jobname_jobid_taskid.*
-        base_cmd += '-o {} '.format(os.path.join(log_dir, '$JOB_NAME_$JOB_ID_$TASK_ID.o')) # save stdout to file
-        base_cmd += '-e {} '.format(os.path.join(log_dir, '$JOB_NAME_$JOB_ID_$TASK_ID.e')) # save stderr to file
+        base_cmd += '-o {} '.format(os.path.join(log_dir, '${JOB_NAME}_${JOB_ID}_${TASK_ID}.o')) # save stdout to file
+        base_cmd += '-e {} '.format(os.path.join(log_dir, '${JOB_NAME}_${JOB_ID}_${TASK_ID}.e')) # save stderr to file
 
         # The -terse flag causes qsub to print the jobid to stdout. We read the
         # jobid with subprocess.check_output(), and use it to delay the email job
