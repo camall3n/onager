@@ -1,9 +1,9 @@
 import json
 import re
+import os
 
 from . import backends
-
-defaultjobfile = '.thoth/scripts/{backend}/{jobname}/jobs.json'
+from .constants import defaultjobfile
 
 def prepare_backend(args):
     if args.backend == 'local':
@@ -22,19 +22,22 @@ def launch(args):
         # We want to create a script file, so make sure the filename is legit
         raise ValueError("Invalid job name: {}".format(args.jobname))
 
+    if args.jobfile == defaultjobfile:
+        args.jobfile = args.jobfile.format(jobname=args.jobname)
+    
+    os.makedirs(os.path.dirname(args.jobfile), exist_ok=True)
+
     backend = prepare_backend(args)
 
-    args.jobfile = 'commands.json' # hardcoded jobfile -- FIXME
-    with open(args.jobfile, 'r') as file:
-        commands = json.load(file)
+    with open(args.jobfile, 'r') as jobfile:
+        commands = json.load(jobfile)
+
     # json stores all keys as strings, so we convert to ints
     commands = {int(id_): cmd for id_,cmd in commands.items()}
 
     # Update additional arguments
     if args.tasklist is None:
         args.tasklist = backend.generate_tasklist(commands)
-    if args.jobfile == defaultjobfile:
-        args.jobfile = args.jobfile.format(backend=backend.name, jobname=args.jobname)
 
     jobs = backend.get_job_list(args)
     backend.launch(jobs, args)
