@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import os
 
 from thoth import backends
 from thoth import meta_launcher
@@ -9,17 +10,18 @@ from thoth import constants
 
 def parse_args(args=None):
 
+    # yapf: disable
     parser = argparse.ArgumentParser(description='',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     subparsers = parser.add_subparsers(required=True, dest='subcommand')
 
 
     prelaunch_parser = subparsers.add_parser('prelaunch', prefix_chars='+',
-        help='Generate commands based on lists of arguments')
+            help='Generate commands based on lists of arguments')
+    prelaunch_parser.add_argument('+command', type=str, required=True)
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
         metavar=('--argname', '[value, ...]'),
-        help='Add an argument with zero or more mutually exclusive values')
-    prelaunch_parser.add_argument('+command', type=str, required=True)
+            help='Add an argument with zero or more mutually exclusive values')
     prelaunch_parser.add_argument('+tag-name', type=str)
     prelaunch_parser.add_argument('+tag-args', type=str, nargs='*')
     prelaunch_parser.add_argument('+tag-id', type=str)
@@ -48,8 +50,7 @@ def parse_args(args=None):
     launch_parser.add_argument('--duration', type=str, default='0-01:00:00',
         help='Duration of job (d-hh:mm:ss)')
     launch_parser.add_argument('--tasklist', type=str, default=None,
-        help='Comma separated list of task ID ranges to submit '
-                '(e.g. "18-22:1,26,29,34-49:3,51")')
+        help='Comma separated list of task ID ranges to submit (e.g. "18-22:1,26,29,34-49:3,51")')
     launch_parser.add_argument('-max','--maxtasks', type=int, default=-1,
         help='Maximum number of simultaneous tasks')
     launch_parser.add_argument('-y','--dry_run', action='store_true',
@@ -64,6 +65,7 @@ def parse_args(args=None):
     help_parser.add_argument('help_command', type=str, nargs='?',
         choices=['prelaunch', 'launch', 'help'],
         help='Get help about a subcommand')
+    # yapf: enable
 
     if args is None:
         args = parser.parse_args()
