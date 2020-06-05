@@ -1,17 +1,20 @@
 from datetime import datetime, timedelta
 from itertools import count, groupby
 import os
+import subprocess
+import sys
 
 class Backend:
     def __init__(self):
         self.name = 'generic_backend'
         self.header = """#!/bin/bash
-        """
 
-        self.body = """python -m worker {}
-        """
+"""
 
-        self.footer = """"""
+        self.body = """python -m backends.worker {}
+"""
+
+        self.footer = ''
 
         self.task_id_var = r'$TASK_ID'
 
@@ -69,3 +72,14 @@ class Backend:
                 first = int(task_block)
                 last = first
             yield range(first, last+1, step)
+    
+    def launch(self, jobs, args):
+        for job in jobs:
+            print(job)
+            if not args.dry_run:
+                try:
+                    byte_str = subprocess.check_output(job, shell=True)
+                    jobid = int(byte_str.decode('utf-8').split('.')[0])
+                except (subprocess.CalledProcessError, ValueError) as err:
+                    print(err)
+                    sys.exit()

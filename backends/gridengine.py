@@ -12,10 +12,10 @@ class GridEngineBackend(Backend):
 source ./venv/bin/activate
 
 """
-        self.body = """python -m worker {} {}
+        self.body = """python -m backends.worker {} {}
 """
 
-        self.footer = """"""
+        self.footer = ''
 
         self.task_id_var = r'$SGE_TASK_ID'
 
@@ -57,9 +57,6 @@ source ./venv/bin/activate
 
         # if args.host is not None:
         #     base_cmd += '-q {}.q@{}.cs.brown.edu '.format(args.duration, args.host)
-
-        base_cmd += '-o ./gridengine/logs/ ' # save stdout file to this directory
-        base_cmd += '-e ./gridengine/logs/ ' # save stderr file to this directory
 
         # Logging
         log_dir = self.get_log_dir()
