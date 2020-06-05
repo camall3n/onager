@@ -1,4 +1,6 @@
 from collections import OrderedDict
+import json
+import os
 
 def meta_launch(args):
     base_cmd = args.command
@@ -27,10 +29,17 @@ def meta_launch(args):
             sep = '_'
 
     if args.tag_id is not None:
-        cmd_suffix_list = [args.tag_id + '-{}_'.format(i) + suffix for (i, suffix) in enumerate(cmd_suffix_list)]
+        cmd_suffix_list = [args.tag_id + '-{}_'.format(i) + suffix for (i, suffix) in enumerate(cmd_suffix_list, args.tag_id_start)]
 
     if args.tag_name is not None:
         cmd_prefix_list = [' '.join([prefix, '--'+args.tag_name, suffix]) for (prefix, suffix) in zip(cmd_prefix_list, cmd_suffix_list)]
 
-    for cmd in cmd_prefix_list:
-        print(cmd)
+    jobfile_path = args.jobfile.format(jobname=args.tag_name)
+    os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
+    with open(jobfile_path, "w+") as jobfile:
+        jobs = dict()
+        for i, cmd in enumerate(cmd_prefix_list, args.tag_id_start):
+            if args.verbose:
+                print(cmd)
+            jobs[i] = cmd
+        json.dump(jobs, jobfile)
