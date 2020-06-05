@@ -1,9 +1,7 @@
-from contextlib import ExitStack#contextmanager,
+from contextlib import ExitStack
 import json
 import subprocess
 import sys
-
-# none_context = contextmanager(lambda: iter([None]))()
 
 def run_command_by_id(commands, task_id, stdout=None, stderr=None):
     cmd = commands[task_id]
