@@ -1,4 +1,5 @@
 import json
+import math
 from multiprocessing import Pool, cpu_count
 import os
 import socket
@@ -27,11 +28,11 @@ class LocalBackend(Backend):
 
         log_name = '{}_{}'.format(args.jobname, self.get_next_jobid())
         self.log_path = os.path.join(self.get_log_dir(), log_name)
-        
+
         task_ids = self.expand_ids(args.tasklist)
 
-        n_workers = cpu_count() if args.maxtasks <= 0 else args.maxtasks
-        print('Starting multiprocess pool with {} workers'.format(n_workers))
+        n_workers = max(1, math.floor(cpu_count() / args.cpus)) if args.maxtasks <= 0 else args.maxtasks
+        print('Starting multiprocessing pool with {} workers'.format(n_workers))
         pool = Pool(n_workers, maxtasksperchild=1)
         pool.map(self.process_one_job, task_ids)
         pool.close()
