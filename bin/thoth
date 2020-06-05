@@ -1,12 +1,13 @@
+#!/usr/bin/env python
 import argparse
 from collections import OrderedDict
 import json
 import re
 import sys
 
-import backends
-import meta_launcher
-import launcher
+from thoth import backends
+from thoth import meta_launcher
+from thoth import launcher
 
 
 def parse_args(args=None):
@@ -69,20 +70,21 @@ def parse_args(args=None):
 
     return args
 
-args = parse_args()
+def frontend():
+    args = parse_args()
 
-if args.subcommand == 'prelaunch':
-    meta_launcher.meta_launch(args)
-elif args.subcommand == 'launch':
-    launcher.launch(args)
-elif args.subcommand == 'help':
-    if args.help_command == 'prelaunch':
-        parse_args(['prelaunch', '+h'])
-    elif args.help_command == 'launch':
-        parse_args(['launch', '-h'])
-    elif args.help_command == 'help':
-        parse_args(['help', '--help'])
-    elif args.help_command in [None]:
-        parse_args(['--help'])
-else:
-    raise ValueError("'{}' is not a valid command. See 'thoth --help'.")
+    if args.subcommand == 'prelaunch':
+        meta_launcher.meta_launch(args)
+    elif args.subcommand == 'launch':
+        launcher.launch(args)
+    elif args.subcommand == 'help':
+        if args.help_command == 'prelaunch':
+            parse_args(['prelaunch', '+h'])
+        elif args.help_command == 'launch':
+            parse_args(['launch', '-h'])
+        elif args.help_command == 'help':
+            parse_args(['help', '--help'])
+        elif args.help_command in [None]:
+            parse_args(['--help'])
+    else:
+        raise ValueError("'{}' is not a valid command. See 'thoth --help'.")

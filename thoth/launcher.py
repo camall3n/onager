@@ -3,7 +3,7 @@ import json
 import re
 import sys
 
-import backends
+from . import backends
 
 defaultjobfile = '.thoth/scripts/{backend}/{jobname}/jobs.json'
 
