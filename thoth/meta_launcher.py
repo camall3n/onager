@@ -1,6 +1,4 @@
-import argparse
 from collections import OrderedDict
-import sys
 
 def meta_launch(args):
     base_cmd = args.command

@@ -1,7 +1,5 @@
-import argparse
 import json
 import re
-import sys
 
 from . import backends
 

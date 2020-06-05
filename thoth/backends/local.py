@@ -3,7 +3,6 @@ import math
 from multiprocessing import Pool, cpu_count
 import os
 import socket
-import subprocess
 
 from ._backend import Backend
 from .worker import run_command_by_id
@@ -22,7 +21,7 @@ class LocalBackend(Backend):
 
     def launch(self, jobs, args):
         with open(args.jobfile, 'r') as file:
-                commands = json.load(file)
+            commands = json.load(file)
         # json stores all keys as strings, so we convert to ints
         self.commands = {int(id): cmd for id,cmd in commands.items()}
 
