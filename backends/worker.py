@@ -1,21 +1,22 @@
+from contextlib import ExitStack#contextmanager,
 import json
 import subprocess
 import sys
 
+# none_context = contextmanager(lambda: iter([None]))()
+
 def run_command_by_id(commands, task_id, stdout=None, stderr=None):
     cmd = commands[task_id]
     print('Launching worker:', cmd)
-    if stdout is not None:
-        stdout = open(stdout, 'wb')
-    if stderr is not None:
-        stderr = open(stderr, 'wb')
-    try:
-        subprocess.call(cmd, shell=True, stdout=stdout, stderr=stderr)
-    finally:
-        if stdout is not None:
-            stdout.close()
-        if stderr is not None:
-            stderr.close()
+    with ExitStack() as stack:
+        stdout = stack.enter_context(open(stdout, 'wb')) if stdout is not None else None
+        stderr = stack.enter_context(open(stderr, 'wb')) if stderr is not None else None
+        try:
+            subprocess.call(cmd, shell=True, stdout=stdout, stderr=stderr)
+        except:
+            raise
+        else:
+            print('Worker finished:', cmd)
 
 if __name__ == '__main__':
     assert len(sys.argv) == 2, 'Usage: python -m worker path/to/commands.json task_id'
