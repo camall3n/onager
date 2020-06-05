@@ -4,6 +4,8 @@ import os
 import subprocess
 import sys
 
+from ..constants import default_logs_folder
+
 class Backend:
     def __init__(self):
         self.name = 'generic_backend'
@@ -41,7 +43,7 @@ class Backend:
         return timedelta(days=int(days)) + partial_days
 
     def get_log_dir(self):
-        log_dir = ".thoth/logs/{}/".format(self.name)
+        log_dir = os.path.join(default_logs_folder, self.name)
         os.makedirs(log_dir, exist_ok=True)
         return log_dir
 
