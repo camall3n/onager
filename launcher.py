@@ -3,17 +3,17 @@ from datetime import datetime, timedelta
 import json
 import os
 import re
-import subprocess
 import sys
 
 import backends
+
+defaultjobfile = '.thoth/scripts/{backend}/{jobname}/jobs.json'
 
 def parse_args(args=None):
     """Parse input arguments
 
     Use --help to see a pretty description of the arguments
     """
-    defaultjobfile = '.thoth/scripts/{backend}/{jobname}/jobs.json'
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--backend', choices=backends.__all__, default='local',
                         help='The backend to use for launching jobs')
@@ -47,6 +47,14 @@ def parse_args(args=None):
     else:
         args = parser.parse_args()
 
+    if not re.match(r'^(\w|\.|-)+$', args.jobname):
+        # We want to create a script file, so make sure the filename is legit
+        print("Invalid job name: {}".format(args.jobname))
+        sys.exit()
+
+    return args
+
+def prepare_backend(args):
     if args.backend == 'local':
         backend = backends.local.LocalBackend()
     elif args.backend == 'gridengine':
@@ -55,34 +63,23 @@ def parse_args(args=None):
         backend = backends.slurm.SlurmBackend()
     else:
         raise NotImplementedError('Invalid backend')
+    
+    return backend
 
-    if not re.match(r'^(\w|\.|-)+$', args.jobname):
-        # We want to create a script file, so make sure the filename is legit
-        print("Invalid job name: {}".format(args.jobname))
-        sys.exit()
+if __name__ == '__main__':
+    args = parse_args()
+    backend = prepare_backend(args)
 
+    args.jobfile = 'commands.json' # hardcoded jobfile -- FIXME
+    with open(args.jobfile, 'r') as file:
+        commands = json.load(file)
+    # json stores all keys as strings, so we convert to ints
+    commands = {int(id_): cmd for id_,cmd in commands.items()}
+
+    # Update additional arguments
+    args.tasklist = backend.generate_tasklist(commands.keys(), args.tasklist)
     if args.jobfile == defaultjobfile:
         args.jobfile = args.jobfile.format(backend=backend.name, jobname=args.jobname)
 
-    return args, backend
-
-def launch(commands):
-    args, backend = parse_args()
-    args.tasklist = backend.generate_tasklist(commands.keys(), args.tasklist)
     jobs = backend.get_job_list(args)
-    for job in jobs:
-        print(job)
-        if not args.dry_run:
-            try:
-                byte_str = subprocess.check_output(job, shell=True)
-                jobid = int(byte_str.decode('utf-8').split('.')[0])
-            except (subprocess.CalledProcessError, ValueError) as err:
-                print(err)
-                sys.exit()
-
-if __name__ == '__main__':
-    with open('commands.json', 'r') as file:
-        commands = json.load(file)
-    # json stores all keys as strings, so we convert to ints
-    commands = {int(id): cmd for id,cmd in commands.items()}
-    launch(commands)
+    backend.launch(jobs, args)
