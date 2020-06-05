@@ -1,1 +1,1 @@
-{"1": "sleep 1; echo 1", "2": "sleep 2; echo 2", "3": "sleep 3; echo 3", "4": "sleep 4; echo 4", "5": "sleep 5; echo 5", "6": "sleep 6; echo 6", "7": "sleep 7; echo 7", "8": "sleep 8; echo 8", "9": "sleep 9; echo 9"}
+{"1": "sleep 1; echo 1", "2": "sleep 2; echo 2", "3": "sleep 3; echo 3", "4": "sleep 4; echo 4", "5": "sleep 5; echo 5", "6": "sleep 6; echo 6", "7": "sleep 7; echo 7", "8": "sleep 8; echo 8", "9": "sleep 9; echo 9", "10": "slorp 10; echo 10"}
