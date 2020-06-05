@@ -16,9 +16,8 @@ def parse_args(args=None):
     subparsers = parser.add_subparsers(required=True, dest='subcommand')
 
 
-    prelaunch_parser = subparsers.add_parser('prelaunch',
-        help='Generate commands based on lists of arguments',
-        prefix_chars='+')
+    prelaunch_parser = subparsers.add_parser('prelaunch', prefix_chars='+',
+        help='Generate commands based on lists of arguments')
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
         metavar=('--argname', '[value, ...]'),
         help='Add an argument with zero or more mutually exclusive values')
@@ -28,7 +27,7 @@ def parse_args(args=None):
     prelaunch_parser.add_argument('+tag-id', type=str)
 
 
-    launch_parser = subparsers.add_parser('launch', help='')
+    launch_parser = subparsers.add_parser('launch', help='Launch jobs using the specified backend')
     launch_parser.add_argument('--backend', choices=backends.__all__,
         help='The backend to use for launching jobs', required=True)
     launch_parser.add_argument('--jobname', type=str, required=True,
@@ -59,18 +58,31 @@ def parse_args(args=None):
 
     help_parser = subparsers.add_parser('help',
         help='Show usage information for a subcommand')
+    help_parser.add_argument('help_command', type=str, nargs='?',
+        choices=['prelaunch', 'launch', 'help'],
+        help='Get help about a subcommand')
 
-    args = parser.parse_args()
+    if args is None:
+        args = parser.parse_args()
+    else:
+        args = parser.parse_args(args)
+
     return args
 
 args = parse_args()
-print(args)
 
 if args.subcommand == 'prelaunch':
     meta_launcher.meta_launch(args)
 elif args.subcommand == 'launch':
     launcher.launch(args)
 elif args.subcommand == 'help':
-    pass
+    if args.help_command == 'prelaunch':
+        parse_args(['prelaunch', '+h'])
+    elif args.help_command == 'launch':
+        parse_args(['launch', '-h'])
+    elif args.help_command == 'help':
+        parse_args(['help', '--help'])
+    elif args.help_command in [None]:
+        parse_args(['--help'])
 else:
     raise ValueError("'{}' is not a valid command. See 'thoth --help'.")
