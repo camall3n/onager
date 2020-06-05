@@ -4,6 +4,7 @@ import argparse
 from thoth import backends
 from thoth import meta_launcher
 from thoth import launcher
+from thoth import constants
 
 
 def parse_args(args=None):
@@ -22,6 +23,11 @@ def parse_args(args=None):
     prelaunch_parser.add_argument('+tag-name', type=str)
     prelaunch_parser.add_argument('+tag-args', type=str, nargs='*')
     prelaunch_parser.add_argument('+tag-id', type=str)
+    prelaunch_parser.add_argument('+tag-id-start', type=int, 
+            help='Number to start counting from for jobs', default=0)
+    prelaunch_parser.add_argument('+jobfile', type=str, default=constants.defaultjobfile,
+            help='json file to write jobs to. Use when running launch')
+    prelaunch_parser.add_argument('+v', '++verbose', action='store_true', help='Verbose output')
 
 
     launch_parser = subparsers.add_parser('launch', help='Launch jobs using the specified backend')
@@ -29,7 +35,7 @@ def parse_args(args=None):
         help='The backend to use for launching jobs', required=True)
     launch_parser.add_argument('--jobname', type=str, required=True,
         help='A name for the job')
-    launch_parser.add_argument('--jobfile', type=str, default=launcher.defaultjobfile,
+    launch_parser.add_argument('--jobfile', type=str, default=constants.defaultjobfile,
         help='Path to json file containing dictionary mapping run_ids to commands')
     launch_parser.add_argument('--cpus', type=int, default=1,
         help='Number of CPUs to request')
@@ -68,6 +74,8 @@ def parse_args(args=None):
 
 if __name__ == '__main__':
     args = parse_args()
+    os.makedirs(constants.default_logs_folder, exist_ok=True)
+    os.makedirs(constants.default_scripts_folder, exist_ok=True)
 
     if args.subcommand == 'prelaunch':
         meta_launcher.meta_launch(args)
