@@ -5,6 +5,7 @@ import os
 from . import backends
 from .constants import defaultjobfile
 
+
 def prepare_backend(args):
     if args.backend == 'local':
         backend = backends.local.LocalBackend()
@@ -14,8 +15,9 @@ def prepare_backend(args):
         backend = backends.slurm.SlurmBackend()
     else:
         raise NotImplementedError('Invalid backend')
-    
+
     return backend
+
 
 def launch(args):
     if not re.match(r'^(\w|\.|-)+$', args.jobname):
@@ -24,7 +26,7 @@ def launch(args):
 
     if args.jobfile == defaultjobfile:
         args.jobfile = args.jobfile.format(jobname=args.jobname)
-    
+
     os.makedirs(os.path.dirname(args.jobfile), exist_ok=True)
 
     backend = prepare_backend(args)
@@ -33,7 +35,7 @@ def launch(args):
         commands = json.load(jobfile)
 
     # json stores all keys as strings, so we convert to ints
-    commands = {int(id_): cmd for id_,cmd in commands.items()}
+    commands = {int(id_): cmd for id_, cmd in commands.items()}
 
     # Update additional arguments
     if args.tasklist is None:
