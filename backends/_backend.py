@@ -45,10 +45,9 @@ class Backend:
         os.makedirs(log_dir, exist_ok=True)
         return log_dir
 
-    def generate_tasklist(self, commands, tasklist):
-        if tasklist is None:
-            ids = sorted(commands.keys())
-            tasklist = ','.join(map(str,ids))
+    def generate_tasklist(self, commands):
+        ids = sorted(commands.keys())
+        tasklist = ','.join(map(str,ids))
         return tasklist
 
     def condense_ids(self, id_list):
