@@ -3,6 +3,7 @@ import os
 
 from ._backend import Backend
 
+
 class GridEngineBackend(Backend):
     def __init__(self):
         super().__init__()
@@ -20,8 +21,8 @@ source ./venv/bin/activate
         # and passes a different taskid to each one. If ntasks is zero, only a
         # single job is submitted with no subtasks.
         base_cmd = 'qsub '
-        base_cmd += '-N {} '.format(args.jobname) # set name of job
-        base_cmd += '-cwd ' # run script in current working directory
+        base_cmd += '-N {} '.format(args.jobname)  # set name of job
+        base_cmd += '-cwd '  # run script in current working directory
 
         # Duration and number of CPU/GPU resources
         #
@@ -34,7 +35,7 @@ source ./venv/bin/activate
         duration = self.get_time_delta(args.duration)
         if args.gpus > 0:
             queue = 'gpu'
-            base_cmd += '-l gpus={} '.format(args.gpus)# Request GPUs
+            base_cmd += '-l gpus={} '.format(args.gpus)  # Request GPUs
         else:
             if duration > timedelta(days=1):
                 queue = 'vlong'
@@ -44,11 +45,11 @@ source ./venv/bin/activate
                 queue = 'short'
             base_cmd += '-l {} '.format(queue)
         if args.cpus > 1:
-            base_cmd += '-pe smp {} '.format(args.nresources) # Request multiple CPUs
+            base_cmd += '-pe smp {} '.format(args.nresources)  # Request multiple CPUs
 
         # Memory requirements
         if args.mem > 1:
-            base_cmd += '-l vf={}G '.format(args.mem)# Reserve extra memory  
+            base_cmd += '-l vf={}G '.format(args.mem)  # Reserve extra memory
 
         # if args.host is not None:
         #     base_cmd += '-q {}.q@{}.cs.brown.edu '.format(args.duration, args.host)
@@ -56,8 +57,10 @@ source ./venv/bin/activate
         # Logging
         log_dir = self.get_log_dir()
         # Format is jobname_jobid_taskid.*
-        base_cmd += '-o {} '.format(os.path.join(log_dir, r'\$JOB_NAME_\$JOB_ID_\$TASK_ID.o')) # save stdout to file
-        base_cmd += '-e {} '.format(os.path.join(log_dir, r'\$JOB_NAME_\$JOB_ID_\$TASK_ID.e')) # save stderr to file
+        base_cmd += '-o {} '.format(os.path.join(
+            log_dir, r'\$JOB_NAME_\$JOB_ID_\$TASK_ID.o'))  # save stdout to file
+        base_cmd += '-e {} '.format(os.path.join(
+            log_dir, r'\$JOB_NAME_\$JOB_ID_\$TASK_ID.e'))  # save stderr to file
 
         # The -terse flag causes qsub to print the jobid to stdout. We read the
         # jobid with subprocess.check_output(), and use it to delay the email job
@@ -77,4 +80,6 @@ source ./venv/bin/activate
 
         # Split tasklist into blocks that GridEngine can understand
         task_blocks = args.tasklist.split(',')
-        return [base_cmd + "-t {} {}".format(task_block, wrapper_file) for task_block in task_blocks]
+        return [
+            base_cmd + "-t {} {}".format(task_block, wrapper_file) for task_block in task_blocks
+        ]

@@ -3,6 +3,7 @@ import os
 
 from ._backend import Backend
 
+
 class SlurmBackend(Backend):
     def __init__(self):
         super().__init__()
@@ -23,7 +24,7 @@ source ./venv/bin/activate
         # and passes a different taskid to each one. If ntasks is zero, only a
         # single job is submitted with no subtasks.
         base_cmd = 'sbatch '
-        base_cmd += '-J {} '.format(args.jobname) # set name of job
+        base_cmd += '-J {} '.format(args.jobname)  # set name of job
         # Slurm runs scripts in current working directory by default
 
         # Duration
@@ -45,8 +46,8 @@ source ./venv/bin/activate
         # Logging
         log_dir = self.get_log_dir()
         # Format is jobname_jobid_taskid.*
-        base_cmd += '-o {} '.format(os.path.join(log_dir, '%x_%A_%a.o')) # save stdout to file
-        base_cmd += '-e {} '.format(os.path.join(log_dir, '%x_%A_%a.e')) # save stderr to file
+        base_cmd += '-o {} '.format(os.path.join(log_dir, '%x_%A_%a.o'))  # save stdout to file
+        base_cmd += '-e {} '.format(os.path.join(log_dir, '%x_%A_%a.e'))  # save stderr to file
 
         # The --parsable flag causes sbatch to print the jobid to stdout. We read the
         # jobid with subprocess.check_output(), and use it to delay the email job

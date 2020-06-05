@@ -6,6 +6,7 @@ import sys
 
 from ..constants import default_logs_folder
 
+
 class Backend:
     def __init__(self):
         self.name = 'generic_backend'
@@ -49,12 +50,12 @@ class Backend:
 
     def generate_tasklist(self, commands):
         ids = sorted(commands.keys())
-        tasklist = ','.join(map(str,ids))
+        tasklist = ','.join(map(str, ids))
         return tasklist
 
     def condense_ids(self, id_list):
-        G = (list(x) for _,x in groupby(id_list, lambda x,c=count(): next(c)-x))
-        return ",".join("-".join(map(str,(g[0],g[-1])[:len(g)])) for g in G)
+        G = (list(x) for _, x in groupby(id_list, lambda x, c=count(): next(c) - x))
+        return ",".join("-".join(map(str, (g[0], g[-1])[:len(g)])) for g in G)
 
     def expand_ids(self, tasklist):
         return [i for r in self._generate_id_ranges(tasklist) for i in r]
@@ -72,8 +73,8 @@ class Backend:
             else:
                 first = int(task_block)
                 last = first
-            yield range(first, last+1, step)
-    
+            yield range(first, last + 1, step)
+
     def launch(self, jobs, args):
         for job in jobs:
             print(job)
