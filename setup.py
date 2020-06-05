@@ -7,6 +7,7 @@ setup(
     license=open('LICENSE').read(),
     author='Cameron Allen <csal@cs.brown.edu> , Neev Parikh <neev_parikh@brown.edu>',
     packages=find_packages(include=['thoth', 'thoth.*']),
+    scripts=['bin/thoth'],
     install_requires=[
         "seaborn",
         "pandas",
