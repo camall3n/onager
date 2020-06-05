@@ -12,11 +12,6 @@ class GridEngineBackend(Backend):
 source ./venv/bin/activate
 
 """
-        self.body = """python -m backends.worker {} {}
-"""
-
-        self.footer = ''
-
         self.task_id_var = r'$SGE_TASK_ID'
 
     def get_job_list(self, args):

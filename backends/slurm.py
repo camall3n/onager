@@ -15,11 +15,6 @@ module load cudnn/7.6.5
 source ./venv/bin/activate
 
 """
-        self.body = """python -m backends.worker {} {}
-"""
-
-        self.footer = ''
-
         self.task_id_var = r'$SLURM_ARRAY_TASK_ID'
 
     def get_job_list(self, args):
