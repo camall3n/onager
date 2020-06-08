@@ -27,7 +27,7 @@ class Backend:
         return wrapper_script
 
     def save_wrapper_script(self, wrapper_script, jobname):
-        scripts_dir = ".thoth/scripts/{}/{}/".format(self.name, jobname)
+        scripts_dir = ".thoth/scripts/{}/".format(jobname)
         os.makedirs(scripts_dir, exist_ok=True)
         jobfile = os.path.join(scripts_dir, 'wrapper.sh')
         with open(jobfile, 'w') as file:
@@ -83,7 +83,7 @@ class Backend:
             if not args.dry_run:
                 try:
                     byte_str = subprocess.check_output(job, shell=True)
-                    jobid = int(byte_str.decode('utf-8').split('.')[0])
+                    jobid = byte_str.decode('utf-8').split('.')[0]
                     jobids.append(jobid)
                 except (subprocess.CalledProcessError, ValueError) as err:
                     print(err)

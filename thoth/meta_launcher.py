@@ -53,7 +53,7 @@ def meta_launch(args):
         jobname_start = max(jobs.keys()) + 1
     else:
         jobs = dict()
-        jobname_start = 0
+        jobname_start = 1
 
     if args.tag is not None:
         cmd_suffix_list = [
