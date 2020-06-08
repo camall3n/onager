@@ -2,10 +2,7 @@
 import argparse
 import os
 
-from thoth import backends
-from thoth import meta_launcher
-from thoth import launcher
-from thoth import constants
+from thoth import backends, meta_launcher, launcher, constants, cancel
 
 
 def parse_args(args=None):
@@ -58,7 +55,6 @@ def parse_args(args=None):
     launch_parser.set_defaults(dry_run=False)
     launch_parser.add_argument('--hold_jid', type=str, default=None,
         help='Hold job until the specified jobid or jobid_taskid has finished')
-
 
     help_parser = subparsers.add_parser('help',
         help='Show usage information for a subcommand')
