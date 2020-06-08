@@ -1,5 +1,7 @@
 import json
 
+from .constants import default_index
+
 def load_jobfile(jobfile_path):
     with open(jobfile_path, 'r') as file:
         job_record = json.load(file)
@@ -15,3 +17,14 @@ def save_jobfile(jobs, jobfile_path, tag=None):
     with open(jobfile_path, "w+") as jobfile:
         json.dump(job_record, jobfile)
 
+def load_jobindex():
+    with open(default_index, 'r') as job_index:
+        pass
+    pass
+
+def save_jobindex(job_entries, append=True):
+    mode = 'w+' if not append else 'a+'
+    with open(default_index, mode) as job_index:
+        for job_entry in job_entries:
+            entry_str = ','.join(job_entry) + '\n'
+            job_index.write(entry_str)

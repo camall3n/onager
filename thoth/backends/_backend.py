@@ -5,7 +5,7 @@ import subprocess
 import sys
 
 from ..constants import default_logs_folder
-
+from ..utils import save_jobindex
 
 class Backend:
     def __init__(self):
@@ -76,6 +76,7 @@ class Backend:
             yield range(first, last + 1, step)
 
     def launch(self, jobs, args):
+        jobids = []
         for job in jobs:
             if args.verbose:
                 print(job)
@@ -83,6 +84,9 @@ class Backend:
                 try:
                     byte_str = subprocess.check_output(job, shell=True)
                     jobid = int(byte_str.decode('utf-8').split('.')[0])
+                    jobids.append(jobid)
                 except (subprocess.CalledProcessError, ValueError) as err:
                     print(err)
                     sys.exit()
+        job_entries = [(jobid, args.jobname, args.jobfile) for jobid in jobids]
+        save_jobindex(job_entries, append=True)
