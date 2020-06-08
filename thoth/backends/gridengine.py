@@ -17,8 +17,7 @@ source ./venv/bin/activate
 
     def generate_tasklist(self, commands):
         ids = sorted(commands.keys())
-        ids = self.condense_ids(ids)
-        tasklist = ','.join(map(str, ids))
+        tasklist = self.condense_ids(ids)
         return tasklist
 
     def get_job_list(self, args):
