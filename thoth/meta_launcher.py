@@ -13,6 +13,9 @@ def meta_launch(args):
 
     cmd_prefix_list = [base_cmd]
 
+    if args.tag == '':
+        raise ValueError("+tag cannot be an empty string")
+
     if args.tag is not None:
         cmd_suffix_list = ['']
         if args.tag_args is None:
