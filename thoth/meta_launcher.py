@@ -2,6 +2,7 @@ from collections import OrderedDict
 import json
 import os
 
+from .utils import load_jobfile
 
 def meta_launch(args):
     base_cmd = args.command
@@ -47,7 +48,9 @@ def meta_launch(args):
 
     jobfile_path = args.jobfile.format(jobname=args.tag_name)
     os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
-    with open(jobfile_path, "w+") as jobfile:
+    if args.append:
+        jobs = load_jobfile(jobfile_path)
+    else:
         jobs = dict()
         for i, cmd in enumerate(cmd_prefix_list, args.tag_id_start):
             if args.verbose:

@@ -1,4 +1,3 @@
-import json
 import math
 from multiprocessing import Pool, cpu_count
 import os
@@ -6,6 +5,7 @@ import socket
 
 from ._backend import Backend
 from .worker import run_command_by_id
+from ..utils import load_jobfile
 
 
 class LocalBackend(Backend):
@@ -21,11 +21,7 @@ class LocalBackend(Backend):
         return 0
 
     def launch(self, jobs, args):
-        with open(args.jobfile, 'r') as file:
-            commands = json.load(file)
-        # json stores all keys as strings, so we convert to ints
-        self.commands = {int(id): cmd for id, cmd in commands.items()}
-
+        self.commands = load_jobfile(args.jobfile)
         log_name = '{}_{}'.format(args.jobname, self.get_next_jobid())
         self.log_path = os.path.join(self.get_log_dir(), log_name)
         os.makedirs(os.path.dirname(self.log_path), exist_ok=True)

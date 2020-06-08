@@ -4,6 +4,7 @@ import os
 
 from . import backends
 from .constants import defaultjobfile
+from .utils import load_jobfile
 
 
 def prepare_backend(args):
@@ -26,16 +27,10 @@ def launch(args):
 
     if args.jobfile == defaultjobfile:
         args.jobfile = args.jobfile.format(jobname=args.jobname)
-
     os.makedirs(os.path.dirname(args.jobfile), exist_ok=True)
+    commands = load_jobfile(args.jobfile)
 
     backend = prepare_backend(args)
-
-    with open(args.jobfile, 'r') as jobfile:
-        commands = json.load(jobfile)
-
-    # json stores all keys as strings, so we convert to ints
-    commands = {int(id_): cmd for id_, cmd in commands.items()}
 
     # Update additional arguments
     if args.tasklist is None:
