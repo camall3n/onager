@@ -26,9 +26,6 @@ if __name__ == '__main__':
     commands_file = sys.argv[1]
     task_id = int(sys.argv[2])
 
-    with open(commands_file, 'r') as file:
-        commands = json.load(file)
-    # json stores all keys as strings, so we convert to ints
-    commands = {int(id): cmd for id,cmd in commands.items()}
+    commands = load_jobfile(commands_file)[0]
 
     run_command_by_id(commands, task_id)
