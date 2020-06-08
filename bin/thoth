@@ -57,6 +57,7 @@ def parse_args(args=None):
         help='Hold job until the specified jobid or jobid_taskid has finished')
     launch_parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
     # TODO use nargs=argparse.REMAINDER to have additional args to qsub/sbatch
+    # TODO change verbose to quiet and have it print something by default
 
     help_parser = subparsers.add_parser('help',
         help='Show usage information for a subcommand')
