@@ -21,7 +21,7 @@ class LocalBackend(Backend):
         return 0
 
     def launch(self, jobs, args):
-        self.commands = load_jobfile(args.jobfile)
+        self.commands = load_jobfile(args.jobfile)[0]
         log_name = '{}_{}'.format(args.jobname, self.get_next_jobid())
         self.log_path = os.path.join(self.get_log_dir(), log_name)
         os.makedirs(os.path.dirname(self.log_path), exist_ok=True)

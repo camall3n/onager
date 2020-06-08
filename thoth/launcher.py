@@ -28,7 +28,7 @@ def launch(args):
     if args.jobfile == defaultjobfile:
         args.jobfile = args.jobfile.format(jobname=args.jobname)
     os.makedirs(os.path.dirname(args.jobfile), exist_ok=True)
-    commands = load_jobfile(args.jobfile)
+    commands = load_jobfile(args.jobfile)[0]
 
     backend = prepare_backend(args)
 

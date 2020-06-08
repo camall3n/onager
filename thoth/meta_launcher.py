@@ -1,9 +1,8 @@
 from collections import OrderedDict
-import json
 import os
 from warnings import warn
 
-from .utils import load_jobfile
+from .utils import load_jobfile, save_jobfile
 
 def meta_launch(args):
     base_cmd = args.command
@@ -47,7 +46,10 @@ def meta_launch(args):
     os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
 
     if args.append:
-        jobs = load_jobfile(jobfile_path)
+        jobs, existing_tag = load_jobfile(jobfile_path)
+        if existing_tag != args.tag:
+            raise ValueError("append specified, but tag {} conflicts with existing tag {}".format(
+                repr(args.tag), repr(existing_tag)))
         jobname_start = max(jobs.keys()) + 1
     else:
         jobs = dict()
@@ -63,9 +65,9 @@ def meta_launch(args):
             for (prefix, suffix) in zip(cmd_prefix_list, cmd_suffix_list)
         ]
 
-    with open(jobfile_path, "w+") as jobfile:
-        for i, cmd in enumerate(cmd_prefix_list, jobname_start):
-            if args.verbose:
-                print(cmd)
-            jobs[i] = cmd
-        json.dump(jobs, jobfile)
+    for i, cmd in enumerate(cmd_prefix_list, jobname_start):
+        if args.verbose:
+            print(cmd)
+        jobs[i] = cmd
+
+    save_jobfile(jobs, jobfile_path, args.tag)
