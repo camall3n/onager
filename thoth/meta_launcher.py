@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import json
 import os
+from warnings import warn
 
 from .utils import load_jobfile
 
@@ -8,14 +9,19 @@ def meta_launch(args):
     base_cmd = args.command
 
     variables = OrderedDict({arglist[0]: arglist[1:] for arglist in args.arg})
+    base_cmd_args = list(variables.keys())
 
     cmd_prefix_list = [base_cmd]
 
     if args.tag is not None:
         cmd_suffix_list = ['']
         if args.tag_args is None:
-            args.tag_args = list(variables.keys())
-
+            args.tag_args = base_cmd_args
+        else:
+            for tag_arg in args.tag_args:
+                if tag_arg not in base_cmd_args:
+                    warn(RuntimeWarning("{} is not a command arg: {}".format(tag_arg,
+                        base_cmd_args)))
     sep = ''
     for key, value_list in variables.items():
         cmd_prefix_list = [prefix + ' ' + key + ' {}' for prefix in cmd_prefix_list]
@@ -34,25 +40,28 @@ def meta_launch(args):
                 cmd_suffix_list = [suffix for v in value_list for suffix in cmd_suffix_list]
             sep = '_'
 
-    cmd_suffix_list = [
-        args.jobname + '-{}_'.format(i) + suffix
-        for (i, suffix) in enumerate(cmd_suffix_list, args.jobname_start)
-    ]
+    jobfile_path = args.jobfile.format(jobname=args.jobname)
+    os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
+
+    if args.append:
+        jobs = load_jobfile(jobfile_path)
+        jobname_start = max(jobs.keys()) + 1
+    else:
+        jobs = dict()
+        jobname_start = 0
 
     if args.tag is not None:
+        cmd_suffix_list = [
+            args.jobname + '-{}_'.format(i) + suffix
+            for (i, suffix) in enumerate(cmd_suffix_list, jobname_start)
+        ]
         cmd_prefix_list = [
             ' '.join([prefix, '--' + args.tag, suffix])
             for (prefix, suffix) in zip(cmd_prefix_list, cmd_suffix_list)
         ]
 
-    jobfile_path = args.jobfile.format(jobname=args.jobname)
-    os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
-    if args.append:
-        jobs = load_jobfile(jobfile_path)
-    else:
-        jobs = dict()
     with open(jobfile_path, "w+") as jobfile:
-        for i, cmd in enumerate(cmd_prefix_list, args.jobname_start):
+        for i, cmd in enumerate(cmd_prefix_list, jobname_start):
             if args.verbose:
                 print(cmd)
             jobs[i] = cmd

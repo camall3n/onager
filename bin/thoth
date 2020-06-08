@@ -22,8 +22,8 @@ def parse_args(args=None):
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
         metavar=('--argname', '[value, ...]'),
         help='Add an argument with zero or more mutually exclusive values')
-    prelaunch_parser.add_argument('+tag', type=str, nargs='?', default='tag')
-    prelaunch_parser.add_argument('+tag-args', type=str, nargs='*')
+    prelaunch_parser.add_argument('+tag', type=str, nargs='?', const='tag')
+    prelaunch_parser.add_argument('+tag-args', type=str, nargs='+')
     prelaunch_parser.add_argument('+a', '++append', action='store_true', 
         help='Add more jobs to existing jobfile')
     prelaunch_parser.add_argument('+v', '++verbose', action='store_true', help='Verbose output')
@@ -55,6 +55,7 @@ def parse_args(args=None):
     launch_parser.set_defaults(dry_run=False)
     launch_parser.add_argument('--hold_jid', type=str, default=None,
         help='Hold job until the specified jobid or jobid_taskid has finished')
+    # TODO use nargs=argparse.REMAINDER to have additional args to qsub/sbatch
 
     help_parser = subparsers.add_parser('help',
         help='Show usage information for a subcommand')
