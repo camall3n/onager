@@ -3,9 +3,12 @@ import json
 import subprocess
 import sys
 
-def run_command_by_id(commands, task_id, stdout=None, stderr=None):
+from ..utils import load_jobfile
+
+def run_command_by_id(commands, task_id, stdout=None, stderr=None, verbose=False):
     cmd = commands[task_id]
-    print('Launching worker:', cmd)
+    if verbose:
+        print('Launching worker:', cmd)
     with ExitStack() as stack:
         stdout = stack.enter_context(open(stdout, 'wb')) if stdout is not None else None
         stderr = stack.enter_context(open(stderr, 'wb')) if stderr is not None else None
@@ -14,7 +17,8 @@ def run_command_by_id(commands, task_id, stdout=None, stderr=None):
         except:
             raise
         else:
-            print('Worker finished:', cmd)
+            if verbose:
+                print('Worker finished:', cmd)
 
 if __name__ == '__main__':
     assert len(sys.argv) == 2, 'Usage: python -m worker path/to/commands.json task_id'

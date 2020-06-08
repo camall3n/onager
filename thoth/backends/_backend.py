@@ -77,7 +77,8 @@ class Backend:
 
     def launch(self, jobs, args):
         for job in jobs:
-            print(job)
+            if args.verbose:
+                print(job)
             if not args.dry_run:
                 try:
                     byte_str = subprocess.check_output(job, shell=True)
