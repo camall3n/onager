@@ -5,7 +5,7 @@ import socket
 
 from ._backend import Backend
 from .worker import run_command_by_id
-from ..utils import load_jobfile
+from ..utils import expand_ids, load_jobfile, update_jobindex
 
 
 class LocalBackend(Backend):
@@ -26,7 +26,10 @@ class LocalBackend(Backend):
         log_name = '{}_{}'.format(args.jobname, self.get_next_jobid())
         self.log_path = os.path.join(self.get_log_dir(), log_name)
         os.makedirs(os.path.dirname(self.log_path), exist_ok=True)
-        task_ids = self.expand_ids(args.tasklist)
+        task_ids = expand_ids(args.tasklist)
+
+        job_entries = [(0, args.jobname, args.jobfile)]
+        update_jobindex(job_entries, append=True)
 
         n_workers = max(1, math.floor(cpu_count() /
                                       args.cpus)) if args.maxtasks <= 0 else args.maxtasks

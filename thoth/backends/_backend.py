@@ -1,11 +1,10 @@
 from datetime import datetime, timedelta
-from itertools import count, groupby
 import os
 import subprocess
 import sys
 
 from ..constants import default_logs_folder
-from ..utils import save_jobindex
+from ..utils import update_jobindex
 
 class Backend:
     def __init__(self):
@@ -53,28 +52,6 @@ class Backend:
         tasklist = ','.join(map(str, ids))
         return tasklist
 
-    def condense_ids(self, id_list):
-        G = (list(x) for _, x in groupby(id_list, lambda x, c=count(): next(c) - x))
-        return ",".join("-".join(map(str, (g[0], g[-1])[:len(g)])) for g in G)
-
-    def expand_ids(self, tasklist):
-        return [i for r in self._generate_id_ranges(tasklist) for i in r]
-
-    def _generate_id_ranges(self, tasklist):
-        task_blocks = tasklist.split(',')
-        for task_block in task_blocks:
-            if ':' in task_block:
-                task_block, step = task_block.split(':')
-                step = int(step)
-            else:
-                step = 1
-            if '-' in task_block:
-                first, last = map(int, task_block.split('-'))
-            else:
-                first = int(task_block)
-                last = first
-            yield range(first, last + 1, step)
-
     def launch(self, jobs, args):
         jobids = []
         for job in jobs:
@@ -89,4 +66,4 @@ class Backend:
                     print(err)
                     sys.exit()
         job_entries = [(jobid, args.jobname, args.jobfile) for jobid in jobids]
-        save_jobindex(job_entries, append=True)
+        update_jobindex(job_entries, append=True)

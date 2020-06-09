@@ -46,28 +46,27 @@ def meta_launch(args):
     os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
 
     if args.append:
-        jobs, existing_tag = load_jobfile(jobfile_path)
-        if existing_tag != args.tag:
-            raise ValueError("append specified, but tag {} conflicts with existing tag {}".format(
-                repr(args.tag), repr(existing_tag)))
-        jobname_start = max(jobs.keys()) + 1
+        jobs, tags = load_jobfile(jobfile_path)
+        start_jobid = max(jobs.keys()) + 1
     else:
         jobs = dict()
-        jobname_start = 1
+        start_jobid = 1
 
     if args.tag is not None:
-        cmd_suffix_list = [
+        tag_list = [
             args.jobname + '-{}_'.format(i) + suffix
-            for (i, suffix) in enumerate(cmd_suffix_list, jobname_start)
+            for (i, suffix) in enumerate(cmd_suffix_list, start_jobid)
         ]
         cmd_prefix_list = [
             ' '.join([prefix, '--' + args.tag, suffix])
-            for (prefix, suffix) in zip(cmd_prefix_list, cmd_suffix_list)
+            for (prefix, suffix) in zip(cmd_prefix_list, tag_list)
         ]
+    else:
+        tag_list = [""]*len(cmd_prefix_list)
 
-    for i, cmd in enumerate(cmd_prefix_list, jobname_start):
+    for i, (cmd,tag) in enumerate(zip(cmd_prefix_list,tag_list), start_jobid):
         if args.verbose:
             print(cmd)
-        jobs[i] = cmd
+        jobs[i] = (cmd,tag)
 
     save_jobfile(jobs, jobfile_path, args.tag)

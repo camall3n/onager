@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 
 from ._backend import Backend
-
+from ..utils import condense_ids
 
 class GridEngineBackend(Backend):
     def __init__(self):
@@ -17,7 +17,7 @@ source ./venv/bin/activate
 
     def generate_tasklist(self, commands):
         ids = sorted(commands.keys())
-        tasklist = self.condense_ids(ids)
+        tasklist = condense_ids(ids)
         return tasklist
 
     def get_job_list(self, args):
