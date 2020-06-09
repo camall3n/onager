@@ -9,7 +9,6 @@ setup(
     packages=find_packages(include=['thoth', 'thoth.*']),
     scripts=['bin/thoth'],
     install_requires=[
-        "seaborn",
-        "pandas",
+        "tabulate",
     ],
 )
