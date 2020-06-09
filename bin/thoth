@@ -3,6 +3,7 @@ import argparse
 import os
 
 from thoth import backends, meta_launcher, launcher, constants, cancel
+from thoth import list as _list
 
 
 def parse_args(args=None):
@@ -16,6 +17,7 @@ def parse_args(args=None):
     prelaunch_parser = subparsers.add_parser('prelaunch', prefix_chars='+',
         help='Generate commands based on lists of arguments')
     prelaunch_parser.add_argument('+command', type=str, required=True)
+    # TODO: Add help to these args
     prelaunch_parser.add_argument('+jobname', type=str, required=True)
     prelaunch_parser.add_argument('+jobfile', type=str, default=constants.defaultjobfile,
         help='json file to write jobs to. Use when running launch')
@@ -30,8 +32,8 @@ def parse_args(args=None):
 
 
     launch_parser = subparsers.add_parser('launch', help='Launch jobs using the specified backend')
-    launch_parser.add_argument('--backend', choices=backends.__all__,
-        help='The backend to use for launching jobs', required=True)
+    launch_parser.add_argument('--backend', choices=backends.__all__, required=True,
+        help='The backend to use for launching jobs')
     launch_parser.add_argument('--jobname', type=str, required=True,
         help='A name for the job')
     launch_parser.add_argument('--jobfile', type=str, default=constants.defaultjobfile,
@@ -59,6 +61,24 @@ def parse_args(args=None):
     # TODO use nargs=argparse.REMAINDER to have additional args to qsub/sbatch
     # TODO change verbose to quiet and have it print something by default
 
+
+    list_parser = subparsers.add_parser('list', help='List commands by job_id and task_id')
+    list_parser.add_argument('-j','--jobid', type=str, required=True,
+        help='The job ID to list commands for')
+    list_parser.add_argument('-t','--tasklist', type=str, default=None,
+        help='Comma separated list of task IDs (e.g. "18-22:1,26,29,34-49:1")')
+
+
+    cancel_parser = subparsers.add_parser('cancel',
+        help='Cancel previously submitted jobs/tasks on the specified backend')
+    cancel_parser.add_argument('--backend', choices=backends.__all__, required=True,
+        help='The backend to use for canceling jobs/tasks')
+    cancel_parser.add_argument('-j','--jobid', type=str, required=True,
+        help='The job ID to delete tasks from')
+    cancel_parser.add_argument('-t','--tasklist', type=str, default=None,
+        help='Comma separated list of task IDs (e.g. "18-22:1,26,29,34-49:1")')
+
+
     help_parser = subparsers.add_parser('help',
         help='Show usage information for a subcommand')
     help_parser.add_argument('help_command', type=str, nargs='?',
@@ -82,6 +102,8 @@ if __name__ == '__main__':
         meta_launcher.meta_launch(args)
     elif args.subcommand == 'launch':
         launcher.launch(args)
+    elif args.subcommand == 'list':
+        _list.list_commands(args)
     elif args.subcommand == 'help':
         if args.help_command == 'prelaunch':
             parse_args(['prelaunch', '+h'])
