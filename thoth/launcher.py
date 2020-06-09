@@ -1,23 +1,8 @@
 import re
 import os
 
-from . import backends
 from .constants import defaultjobfile
-from .utils import load_jobfile
-
-
-def prepare_backend(args):
-    if args.backend == 'local':
-        backend = backends.local.LocalBackend()
-    elif args.backend == 'gridengine':
-        backend = backends.gridengine.GridEngineBackend()
-    elif args.backend == 'slurm':
-        backend = backends.slurm.SlurmBackend()
-    else:
-        raise NotImplementedError('Invalid backend')
-
-    return backend
-
+from .utils import load_jobfile, prepare_backend
 
 def launch(args):
     if not re.match(r'^(\w|\.|-)+$', args.jobname):

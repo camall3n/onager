@@ -1,10 +1,13 @@
 import argparse
+from collections import namedtuple
 import subprocess
 import sys
 
 from tabulate import tabulate
 
 from .utils import load_jobindex, expand_ids, load_jobfile
+
+JobListing = namedtuple('JobListing', ['job_id', 'task_id', 'jobname', 'command', 'tag'])
 
 def launch_cancel_proc(cmd, args):
     """Print the qdel command and launch a subprocess to execute it"""
@@ -16,15 +19,7 @@ def launch_cancel_proc(cmd, args):
             print(err)
             sys.exit()
 
-def print_table(table, header):
-    row_format ="{:>15}" * (len(header) + 1)
-    print(row_format.format("", *header))
-    for col, row in zip(header, table):
-        print(row_format.format(col, *row))
-
-
-def list_commands(args):
-    """Parse the jobs/tasks to cancel and send the appropriate commands to the cluster"""
+def get_job_list(args):
     job_id = args.jobid
     tasklist = args.tasklist
     def in_tasklist(task_id):
@@ -33,27 +28,22 @@ def list_commands(args):
     index = load_jobindex()
     jobname, jobfile = index[args.jobid]
     commands, tags = load_jobfile(jobfile)
-    table = []
+    job_list = []
     for task_id in sorted(commands.keys()):
         if in_tasklist(task_id):
-            table.append((job_id, task_id, jobname, repr(commands[task_id]), tags[task_id]))
-    print(tabulate(table, headers=['job_id', 'task_id', 'jobname', 'command', 'tag']))
-    sys.exit()
+            listing = JobListing(
+                job_id,
+                task_id,
+                jobname,
+                repr(commands[task_id]),
+                tags[task_id]
+            )
+            job_list.append(listing)
+    return job_list
 
-
-    cmd = "qdel {} ".format(args.jobid)
-    if args.tasklist is not None:
-        cmd += "-t {taskblock}"
-
-    if args.tasklist is None:
-        yes_or_no = input('Are you sure you want to cancel all tasks for this job? (y/[n])\n> ')
-        if yes_or_no in ['y','yes','Y',"YES"]:
-            launch_cancel_proc(cmd, args)
-        else:
-            if yes_or_no not in ['n','no','N',"NO",'']:
-                print('Unable to process response "{}"'.format(yes_or_no))
-            print('Job cancellation aborted.')
-    else:
-        taskblocks = args.tasklist.split(',')
-        for taskblock in taskblocks:
-            launch_cancel_proc(cmd.format(taskblock=taskblock), args)
+def list_commands(args, quiet=False):
+    """Parse the jobs/tasks to cancel and send the appropriate commands to the cluster"""
+    job_list = get_job_list(args)
+    if not quiet:
+        print(tabulate(job_list, headers=JobListing._fields))
+    

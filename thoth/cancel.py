@@ -2,6 +2,9 @@ import argparse
 import subprocess
 import sys
 
+from .list import get_job_list
+from .utils import condense_ids, expand_ids, prepare_backend
+
 def launch_cancel_proc(cmd, args):
     """Print the qdel command and launch a subprocess to execute it"""
     print(cmd)
@@ -16,19 +19,27 @@ def launch_cancel_proc(cmd, args):
 def cancel(args):
     """Parse the jobs/tasks to cancel and send the appropriate commands to the cluster"""
 
-    cmd = "qdel {} ".format(args.jobid)
-    if args.tasklist is not None:
-        cmd += "-t {taskblock}"
-
     if args.tasklist is None:
         yes_or_no = input('Are you sure you want to cancel all tasks for this job? (y/[n])\n> ')
         if yes_or_no in ['y','yes','Y',"YES"]:
-            launch_cancel_proc(cmd, args)
+            pass
         else:
             if yes_or_no not in ['n','no','N',"NO",'']:
                 print('Unable to process response "{}"'.format(yes_or_no))
             print('Job cancellation aborted.')
-    else:
-        taskblocks = args.tasklist.split(',')
-        for taskblock in taskblocks:
-            launch_cancel_proc(cmd.format(taskblock=taskblock), args)
+            sys.exit()
+
+    job_list = get_job_list(args)
+    unique_job_ids = sorted(list(set([listing.job_id for listing in job_list])))
+
+    tasklists = {job_id: [] for job_id in unique_job_ids}
+    for listing in job_list:
+        tasklists[listing.job_id].append(listing.task_id)
+    print(tasklists['0'])
+    cancellations = [(job_id, tasklists[job_id]) for job_id in unique_job_ids]
+
+    backend = prepare_backend(args)
+    cmds = [backend.get_cancel_cmd(*c) for c in cancellations]
+    
+    for cmd in cmds:
+        launch_cancel_proc(cmd, args)

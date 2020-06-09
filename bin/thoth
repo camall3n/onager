@@ -5,7 +5,6 @@ import os
 from thoth import backends, meta_launcher, launcher, constants, cancel
 from thoth import list as _list
 
-
 def parse_args(args=None):
 
     # yapf: disable
@@ -77,6 +76,9 @@ def parse_args(args=None):
         help='The job ID to delete tasks from')
     cancel_parser.add_argument('-t','--tasklist', type=str, default=None,
         help='Comma separated list of task IDs (e.g. "18-22:1,26,29,34-49:1")')
+    cancel_parser.add_argument('-y','--dry_run', action='store_true',
+        help="Don't actually cancel jobs on backend")
+    cancel_parser.set_defaults(dry_run=False)
 
 
     help_parser = subparsers.add_parser('help',
@@ -104,6 +106,8 @@ if __name__ == '__main__':
         launcher.launch(args)
     elif args.subcommand == 'list':
         _list.list_commands(args)
+    elif args.subcommand == 'cancel':
+        cancel.cancel(args)
     elif args.subcommand == 'help':
         if args.help_command == 'prelaunch':
             parse_args(['prelaunch', '+h'])

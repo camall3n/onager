@@ -36,6 +36,9 @@ class Backend:
     def get_job_list(self, args):
         raise NotImplementedError
 
+    def get_cancel_cmd(self, jobid, tasklist):
+        raise NotImplementedError
+
     def get_time_delta(self, time_str):
         days, hours_minutes_seconds = time_str.split('-')
         t = datetime.strptime(hours_minutes_seconds, "%H:%M:%S")

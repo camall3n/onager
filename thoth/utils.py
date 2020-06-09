@@ -2,7 +2,20 @@ import csv
 from itertools import count, groupby
 import json
 
+from . import backends
 from .constants import default_index
+
+def prepare_backend(args):
+    if args.backend == 'local':
+        backend = backends.local.LocalBackend()
+    elif args.backend == 'gridengine':
+        backend = backends.gridengine.GridEngineBackend()
+    elif args.backend == 'slurm':
+        backend = backends.slurm.SlurmBackend()
+    else:
+        raise NotImplementedError('Invalid backend')
+
+    return backend
 
 def load_jobfile(jobfile_path):
     with open(jobfile_path, 'r') as file:
