@@ -7,7 +7,16 @@ from .utils import load_jobfile, save_jobfile
 def meta_launch(args):
     base_cmd = args.command
 
-    variables = OrderedDict({arglist[0]: arglist[1:] for arglist in args.arg})
+    if args.arg is not None:
+        variables = OrderedDict({arglist[0]: arglist[1:] for arglist in args.arg})
+    else:
+        variables = OrderedDict()
+    
+    if args.pos_arg is not None:
+        pos_variables = args.pos_arg
+    else:
+        pos_variables = []
+
     base_cmd_args = list(variables.keys())
 
     cmd_prefix_list = [base_cmd]
@@ -24,7 +33,23 @@ def meta_launch(args):
                 if tag_arg not in base_cmd_args:
                     warn(RuntimeWarning("{} is not a command arg: {}".format(tag_arg,
                         base_cmd_args)))
-    sep = ''
+    sep = '_'
+
+    # Positional arguments
+    for value_list in pos_variables:
+        cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list]
+        cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
+        if args.tag is not None:
+            value_slot = '-{}' if len(value_list) > 1 or value_list[0] != '' else '{}'
+            cmd_suffix_list = [
+                suffix + value_slot for suffix in cmd_suffix_list
+            ]
+            cmd_suffix_list = [
+                suffix.format(v) for v in value_list for suffix in cmd_suffix_list
+            ]
+            sep = '_'
+
+    # Optional arguments
     for key, value_list in variables.items():
         cmd_prefix_list = [prefix + ' ' + key + ' {}' for prefix in cmd_prefix_list]
         cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
@@ -42,6 +67,8 @@ def meta_launch(args):
                 cmd_suffix_list = [suffix for v in value_list for suffix in cmd_suffix_list]
             sep = '_'
 
+    # Flag/Boolean arguments
+
     jobfile_path = args.jobfile.format(jobname=args.jobname)
     os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
 
@@ -54,7 +81,7 @@ def meta_launch(args):
 
     if args.tag is not None:
         tag_list = [
-            args.jobname + '-{}_'.format(i) + suffix
+            args.jobname + '-{}'.format(i) + suffix
             for (i, suffix) in enumerate(cmd_suffix_list, start_jobid)
         ]
         cmd_prefix_list = [
