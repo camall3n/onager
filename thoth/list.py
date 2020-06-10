@@ -8,16 +8,6 @@ from .utils import load_jobindex, expand_ids, load_jobfile
 
 JobListing = namedtuple('JobListing', ['job_id', 'task_id', 'jobname', 'command', 'tag'])
 
-def launch_cancel_proc(cmd, args):
-    """Print the qdel command and launch a subprocess to execute it"""
-    print(cmd)
-    if not args.dry_run:
-        try:
-            subprocess.call(cmd, shell=True)
-        except (subprocess.CalledProcessError, ValueError) as err:
-            print(err)
-            sys.exit()
-
 def get_job_list(args):
 
     def in_joblist(job_id):
