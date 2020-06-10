@@ -15,16 +15,19 @@ def parse_args(args=None):
 
     prelaunch_parser = subparsers.add_parser('prelaunch', prefix_chars='+',
         help='Generate commands based on lists of arguments')
-    prelaunch_parser.add_argument('+command', type=str, required=True)
-    # TODO: Add help to these args
-    prelaunch_parser.add_argument('+jobname', type=str, required=True)
+    prelaunch_parser.add_argument('+command', type=str, required=True,
+        help='Base command to add args to')
+    prelaunch_parser.add_argument('+jobname', type=str, required=True,
+        help='Name to label this run with, to be used with thoth launch when submitting jobs')
     prelaunch_parser.add_argument('+jobfile', type=str, default=constants.defaultjobfile,
         help='json file to write jobs to. Use when running launch')
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
         metavar=('--argname', '[value, ...]'),
         help='Add an argument with zero or more mutually exclusive values')
-    prelaunch_parser.add_argument('+tag', type=str, nargs='?', const='tag')
-    prelaunch_parser.add_argument('+tag-args', type=str, nargs='+')
+    prelaunch_parser.add_argument('+tag', type=str, nargs='?', const='tag',
+        help='Passes unique str for each run to this arg in command, i.e. +tag --run-tag <str>')
+    prelaunch_parser.add_argument('+tag-args', type=str, nargs='+',
+        help='Specifies which args go into the unique <str>. Default is all provided +arg')
     prelaunch_parser.add_argument('+a', '++append', action='store_true', 
         help='Add more jobs to existing jobfile')
     prelaunch_parser.add_argument('+v', '++verbose', action='store_true', help='Verbose output')
