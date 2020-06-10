@@ -63,8 +63,7 @@ source ./venv/bin/activate
         base_cmd += '-e {} '.format(os.path.join(log_dir, '%x_%A_%a.e'))  # save stderr to file
 
         # The --parsable flag causes sbatch to print the jobid to stdout. We read the
-        # jobid with subprocess.check_output(), and use it to delay the email job
-        # until the entire batch job has completed.
+        # jobid with subprocess.check_output()
         base_cmd += '--parsable '
 
         base_cmd += "--array={}".format(args.tasklist)
