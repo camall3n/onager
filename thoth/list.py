@@ -22,24 +22,27 @@ def launch_cancel_proc(cmd, args):
 def get_job_list(args):
 
     def in_joblist(job_id):
-        return True if args.job_id is None else job_id == args.job_id
+        return True if args.jobid is None else job_id == args.jobid
     def in_tasklist(task_id):
         return True if args.tasklist is None else task_id in expand_ids(args.tasklist)
 
     job_list = []
     try:
         index = load_jobindex()
-        jobname, jobfile = index[args.jobid]
-        commands, tags = load_jobfile(jobfile)
-    except (KeyError, IOError):
+    except (IOError):
         return job_list
-
-    for task_id in sorted(commands.keys()):
-        if in_joblist(job_id) and in_tasklist(task_id):
+    for jobid in index.keys():
+        if not in_joblist(jobid):
+            continue
+        jobname, jobfile = index[jobid]
+        commands, tags = load_jobfile(jobfile)
+        for task_id in sorted(commands.keys()):
+            if not in_tasklist(task_id):
+                continue
             listing = JobListing(
-                args.job_id,
+                jobid,
                 task_id,
-                args.jobname,
+                jobname,
                 repr(commands[task_id]),
                 tags[task_id]
             )

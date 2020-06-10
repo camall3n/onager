@@ -35,6 +35,13 @@ def load_jobindex():
         index = {job_entry[0]: job_entry[1:] for job_entry in csv_reader}
     return index
 
+def get_next_index_jobid():
+    try:
+        next_jobid = max(map(int,load_jobindex().keys())) + 1
+    except IOError:
+        next_jobid = 0
+    return next_jobid
+
 def update_jobindex(job_entries, append=True):
     mode = 'w+' if not append else 'a+'
     with open(default_index, mode, newline='') as job_index:

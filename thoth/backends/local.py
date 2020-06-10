@@ -5,7 +5,7 @@ import socket
 
 from ._backend import Backend
 from .worker import run_command_by_id
-from ..utils import expand_ids, load_jobfile, update_jobindex
+from ..utils import expand_ids, load_jobfile, update_jobindex, get_next_index_jobid
 
 
 class LocalBackend(Backend):
@@ -28,7 +28,7 @@ class LocalBackend(Backend):
         os.makedirs(os.path.dirname(self.log_path), exist_ok=True)
         task_ids = expand_ids(args.tasklist)
 
-        job_entries = [(0, args.jobname, args.jobfile)]
+        job_entries = [(get_next_index_jobid(), args.jobname, args.jobfile)]
         update_jobindex(job_entries, append=True)
 
         n_workers = max(1, math.floor(cpu_count() /
