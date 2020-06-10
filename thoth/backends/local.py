@@ -14,13 +14,13 @@ class LocalBackend(Backend):
         self.name = hostname
 
     def get_job_list(self, args):
-        return []
+        return load_jobfile(args.jobfile)[0]
 
     def get_next_jobid(self):
         return 0
 
     def launch(self, jobs, args):
-        self.commands = load_jobfile(args.jobfile)[0]
+        self.commands = jobs
         self.quiet = args.quiet
         log_name = '{}_{}'.format(args.jobname, self.get_next_jobid())
         self.log_path = os.path.join(self.get_log_dir(), log_name)

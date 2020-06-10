@@ -3,7 +3,7 @@ import os
 
 from .backends import prepare_backend
 from .constants import defaultjobfile
-from .utils import load_jobfile
+from .utils import load_jobfile, save_jobfile
 
 def launch(args):
     if not re.match(r'^(\w|\.|-)+$', args.jobname):
@@ -13,6 +13,8 @@ def launch(args):
     if args.jobfile == defaultjobfile:
         args.jobfile = args.jobfile.format(jobname=args.jobname)
     os.makedirs(os.path.dirname(args.jobfile), exist_ok=True)
+    if args.command is not None:
+        save_jobfile({1: (args.command, '')}, args.jobfile)
     commands = load_jobfile(args.jobfile)[0]
 
     backend = prepare_backend(args)
