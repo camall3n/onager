@@ -35,7 +35,7 @@ def cancel(args):
     tasklists = {job_id: [] for job_id in unique_job_ids}
     for listing in job_list:
         tasklists[listing.job_id].append(listing.task_id)
-    print(tasklists['0'])
+
     cancellations = [(job_id, tasklists[job_id]) for job_id in unique_job_ids]
 
     backend = prepare_backend(args)
