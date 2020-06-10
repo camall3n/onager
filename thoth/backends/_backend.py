@@ -13,7 +13,7 @@ class Backend:
 
 """
 
-        self.body = """python -m thoth.backends.worker {} {}
+        self.body = """python -m thoth.worker {} {}
 """
 
         self.footer = ''

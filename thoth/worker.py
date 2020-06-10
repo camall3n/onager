@@ -3,7 +3,7 @@ import json
 import subprocess
 import sys
 
-from ..utils import load_jobfile
+from .utils import load_jobfile
 
 def run_command_by_id(commands, task_id, stdout=None, stderr=None, verbose=False):
     cmd = commands[task_id]

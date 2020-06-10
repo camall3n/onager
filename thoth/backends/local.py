@@ -4,9 +4,8 @@ import os
 import socket
 
 from ._backend import Backend
-from .worker import run_command_by_id
+from ..worker import run_command_by_id
 from ..utils import expand_ids, load_jobfile, update_jobindex, get_next_index_jobid
-
 
 class LocalBackend(Backend):
     def __init__(self):
