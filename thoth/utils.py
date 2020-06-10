@@ -30,12 +30,9 @@ def save_jobfile(jobs, jobfile_path, tag=None):
         json.dump(jobs, jobfile)
 
 def load_jobindex():
-    try:
-        with open(default_index, 'r', newline='') as job_index:
-            csv_reader = csv.reader(job_index, delimiter=',', quotechar='|')
-            index = {job_entry[0]: job_entry[1:] for job_entry in csv_reader}
-    except IOError:
-        index = {}
+    with open(default_index, 'r', newline='') as job_index:
+        csv_reader = csv.reader(job_index, delimiter=',', quotechar='|')
+        index = {job_entry[0]: job_entry[1:] for job_entry in csv_reader}
     return index
 
 def update_jobindex(job_entries, append=True):

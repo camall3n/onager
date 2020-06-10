@@ -61,8 +61,8 @@ def parse_args(args=None):
     # TODO change verbose to quiet and have it print something by default
 
 
-    list_parser = subparsers.add_parser('list', help='List commands by job_id and task_id')
-    list_parser.add_argument('-j','--jobid', type=str, required=True,
+    list_parser = subparsers.add_parser('list', help='List previously launched commands by job_id and task_id')
+    list_parser.add_argument('-j','--jobid', type=str,
         help='The job ID to list commands for')
     list_parser.add_argument('-t','--tasklist', type=str, default=None,
         help='Comma separated list of task IDs (e.g. "18-22:1,26,29,34-49:1")')
