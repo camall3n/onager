@@ -65,7 +65,7 @@ def meta_launch(args):
         tag_list = [""]*len(cmd_prefix_list)
 
     for i, (cmd,tag) in enumerate(zip(cmd_prefix_list,tag_list), start_jobid):
-        if args.verbose:
+        if not args.quiet:
             print(cmd)
         jobs[i] = (cmd,tag)
 

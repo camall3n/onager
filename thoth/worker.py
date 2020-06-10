@@ -1,13 +1,12 @@
 from contextlib import ExitStack
-import json
 import subprocess
 import sys
 
 from .utils import load_jobfile
 
-def run_command_by_id(commands, task_id, stdout=None, stderr=None, verbose=False):
+def run_command_by_id(commands, task_id, stdout=None, stderr=None, quiet=False):
     cmd = commands[task_id]
-    if verbose:
+    if not quiet:
         print('Launching worker:', cmd)
     with ExitStack() as stack:
         stdout = stack.enter_context(open(stdout, 'wb')) if stdout is not None else None
@@ -17,7 +16,7 @@ def run_command_by_id(commands, task_id, stdout=None, stderr=None, verbose=False
         except:
             raise
         else:
-            if verbose:
+            if not quiet:
                 print('Worker finished:', cmd)
 
 if __name__ == '__main__':

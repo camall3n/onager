@@ -1,14 +1,13 @@
-import argparse
 import subprocess
 import sys
 
 from .backends import prepare_backend
 from .list import get_job_list
-from .utils import condense_ids, expand_ids
 
 def launch_cancel_proc(cmd, args):
     """Print the qdel command and launch a subprocess to execute it"""
-    print(cmd)
+    if not args.quiet:
+        print(cmd)
     if not args.dry_run:
         try:
             subprocess.call(cmd, shell=True)

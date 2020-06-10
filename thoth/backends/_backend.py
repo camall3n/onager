@@ -58,7 +58,7 @@ class Backend:
     def launch(self, jobs, args):
         jobids = []
         for job in jobs:
-            if args.verbose:
+            if not args.quiet:
                 print(job)
             if not args.dry_run:
                 try:

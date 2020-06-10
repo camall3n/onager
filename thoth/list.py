@@ -1,4 +1,3 @@
-import argparse
 from collections import namedtuple
 import subprocess
 import sys
