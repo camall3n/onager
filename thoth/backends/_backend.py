@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 from ..constants import default_logs_folder
-from ..utils import update_jobindex
+from ..utils import update_jobindex, insert_second_to_last
 
 class Backend:
     def __init__(self):
@@ -55,8 +55,13 @@ class Backend:
         tasklist = ','.join(map(str, ids))
         return tasklist
 
-    def launch(self, jobs, args):
+    def launch(self, jobs, args, other_args):
         jobids = []
+
+        if len(other_args) != 0:
+            additional_args = ' '.join(other_args)
+            jobs = [insert_second_to_last(job, additional_args) for job in jobs]
+
         for job in jobs:
             if not args.quiet:
                 print(job)

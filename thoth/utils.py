@@ -56,3 +56,7 @@ def _generate_id_ranges(tasklist):
             first = int(task_block)
             last = first
         yield range(first, last + 1, step)
+
+def insert_second_to_last(cmd, insert_str, sep=' '):
+    cmd = cmd.split(sep)
+    return sep.join(cmd[:-1]) + sep + insert_str + sep + cmd[-1]
