@@ -40,7 +40,10 @@ class Backend:
         raise NotImplementedError
 
     def get_time_delta(self, time_str):
-        days, hours_minutes_seconds = time_str.split('-')
+        if '-' in time_str:
+            days, hours_minutes_seconds = time_str.split('-')
+        else:
+            days, hours_minutes_seconds = 0, time_str
         t = datetime.strptime(hours_minutes_seconds, "%H:%M:%S")
         partial_days = timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
         return timedelta(days=int(days)) + partial_days
