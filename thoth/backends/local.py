@@ -30,11 +30,16 @@ class LocalBackend(Backend):
         job_entries = [(get_next_index_jobid(), args.jobname, args.jobfile)]
         update_jobindex(job_entries, append=True)
 
-        n_workers = max(1, math.floor(cpu_count() /
-                                      args.cpus)) if args.maxtasks <= 0 else args.maxtasks
+        if args.maxtasks > 0:
+            n_workers = args.maxtasks
+        else:
+            max_parallel = math.floor(cpu_count() / args.cpus)
+            workers_available = max(1, max_parallel)
+            workers_needed = len(task_ids)
+            n_workers = min(workers_needed, workers_available)
         if not self.quiet:
             print('Starting multiprocessing pool with {} workers'.format(n_workers))
-        pool = Pool(n_workers, maxtasksperchild=1)
+        pool = Pool(n_workers, maxtasksperchild=1)# Each new tasks gets a fresh worker
         pool.map(self.process_one_job, task_ids)
         pool.close()
         pool.join()
