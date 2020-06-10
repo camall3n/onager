@@ -18,14 +18,18 @@ source ./venv/bin/activate
 """
         self.task_id_var = r'$SLURM_ARRAY_TASK_ID'
 
-    def get_cancel_cmd(self, jobid, tasklist):
-        cmd = "scancel"
-        if tasklist is None:
-            cmd += " {}".format(jobid)
-        else:
-            for task_id in tasklist:
-                cmd += " {}_{}".format(jobid, task_id)
-        return cmd
+    def get_cancel_cmds(self, cancellations):
+        cmds = []
+        for cancellation in cancellations:
+            jobid, tasklist = cancellation
+            cmd = "scancel"
+            if tasklist is None:
+                cmd += " {}".format(jobid)
+            else:
+                for task_id in tasklist:
+                    cmd += " {}_{}".format(jobid, task_id)
+            cmds.append(cmd)
+        return cmds
 
     def get_job_list(self, args):
         # Call the appropriate sbatch command. The default behavior is to use

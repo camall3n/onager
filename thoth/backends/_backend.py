@@ -36,7 +36,7 @@ class Backend:
     def get_job_list(self, args):
         raise NotImplementedError
 
-    def get_cancel_cmd(self, jobid, tasklist):
+    def get_cancel_cmds(self, cancellations):
         raise NotImplementedError
 
     def get_time_delta(self, time_str):

@@ -20,12 +20,16 @@ source ./venv/bin/activate
         tasklist = condense_ids(ids)
         return tasklist
     
-    def get_cancel_cmd(self, jobid, tasklist):
-        tasklist = condense_ids(tasklist)
-        cmd = "qdel {} ".format(jobid)
-        if tasklist is not None:
-            cmd += "-t {}".format(tasklist)
-        return cmd
+    def get_cancel_cmds(self, cancellations):
+        cmds = []
+        for cancellation in cancellations:
+            jobid, tasklist = cancellation
+            tasklist = condense_ids(tasklist)
+            cmd = "qdel {} ".format(jobid)
+            if tasklist is not None:
+                for taskblock in tasklist.split(','):
+                    cmds.append(cmd + "-t {}".format(taskblock))
+        return cmds
 
     def get_job_list(self, args):
         # Call the appropriate qsub command. The default behavior is to use

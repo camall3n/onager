@@ -39,7 +39,7 @@ def cancel(args):
     cancellations = [(job_id, tasklists[job_id]) for job_id in unique_job_ids]
 
     backend = prepare_backend(args)
-    cmds = [backend.get_cancel_cmd(*c) for c in cancellations]
+    cmds = backend.get_cancel_cmds(cancellations)
     
     for cmd in cmds:
         launch_cancel_proc(cmd, args)
