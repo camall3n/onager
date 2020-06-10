@@ -14,7 +14,7 @@ class LocalBackend(Backend):
         self.name = hostname
 
     def get_job_list(self, args):
-        return None
+        return []
 
     def get_next_jobid(self):
         return 0

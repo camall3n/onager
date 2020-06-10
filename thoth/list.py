@@ -8,8 +8,7 @@ from .utils import load_jobindex, expand_ids, load_jobfile
 
 JobListing = namedtuple('JobListing', ['job_id', 'task_id', 'jobname', 'command', 'tag'])
 
-def get_job_list(args):
-
+def get_job_listings(args):
     def in_joblist(job_id):
         return True if args.jobid is None else job_id == args.jobid
     def in_tasklist(task_id):
@@ -40,7 +39,7 @@ def get_job_list(args):
 
 def list_commands(args, quiet=False):
     """Parse the jobs/tasks to cancel and send the appropriate commands to the cluster"""
-    job_list = get_job_list(args)
+    job_list = get_job_listings(args)
     if not quiet:
         print(tabulate(job_list, headers=JobListing._fields))
     
