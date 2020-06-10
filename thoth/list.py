@@ -20,8 +20,9 @@ def launch_cancel_proc(cmd, args):
             sys.exit()
 
 def get_job_list(args):
+
     def in_joblist(job_id):
-        return True if args.tasklist is None else task_id == args.job_id
+        return True if args.job_id is None else job_id == args.job_id
     def in_tasklist(task_id):
         return True if args.tasklist is None else task_id in expand_ids(args.tasklist)
 
