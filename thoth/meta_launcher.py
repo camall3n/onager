@@ -11,11 +11,16 @@ def meta_launch(args):
         variables = OrderedDict({arglist[0]: arglist[1:] for arglist in args.arg})
     else:
         variables = OrderedDict()
-    
+
     if args.pos_arg is not None:
         pos_variables = args.pos_arg
     else:
         pos_variables = []
+
+    if args.flag is not None:
+        flag_variables = [[flag, ''] for flag in args.flag]
+    else:
+        flag_variables = []
 
     base_cmd_args = list(variables.keys())
 
@@ -49,6 +54,26 @@ def meta_launch(args):
             ]
             sep = '_'
 
+    # Flag/Boolean arguments
+    for value_list in flag_variables:
+        cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list] + cmd_prefix_list
+        cmd_prefix_list = [
+            prefix.format(v) if '{}' in prefix else prefix
+            for v in value_list
+            for prefix in cmd_prefix_list
+        ]
+        if args.tag is not None:
+            cmd_suffix_list = [
+                suffix + '{}' for suffix in cmd_suffix_list
+            ]
+            cmd_suffix_list = [
+                suffix.format(s + value_list[0].replace('-', '').replace('+', ''))
+                for s in ['+', '-']
+                for suffix in cmd_suffix_list
+            ]
+
+            sep = '_'
+
     # Optional arguments
     for key, value_list in variables.items():
         cmd_prefix_list = [prefix + ' ' + key + ' {}' for prefix in cmd_prefix_list]
@@ -66,8 +91,6 @@ def meta_launch(args):
             else:
                 cmd_suffix_list = [suffix for v in value_list for suffix in cmd_suffix_list]
             sep = '_'
-
-    # Flag/Boolean arguments
 
     jobfile_path = args.jobfile.format(jobname=args.jobname)
     os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
