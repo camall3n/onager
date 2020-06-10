@@ -25,10 +25,14 @@ def get_job_list(args):
     def in_tasklist(task_id):
         return True if tasklist is None else task_id in expand_ids(tasklist)
 
-    index = load_jobindex()
-    jobname, jobfile = index[args.jobid]
-    commands, tags = load_jobfile(jobfile)
     job_list = []
+
+    index = load_jobindex()
+    try:
+        jobname, jobfile = index[args.jobid]
+        commands, tags = load_jobfile(jobfile)
+    except (KeyError, IOError):
+        return job_list
     for task_id in sorted(commands.keys()):
         if in_tasklist(task_id):
             listing = JobListing(
