@@ -19,8 +19,11 @@ class LocalBackend(Backend):
     def get_next_jobid(self):
         return 0
 
-    def launch(self, jobs, args):
+    def launch(self, jobs, args, other_args):
         self.commands = jobs
+        if len(other_args) != 0:
+            raise RuntimeError("{}: Cannot pass in additional args {}".format(
+                self.name, ' '.join(other_args)))
         self.quiet = args.quiet
         log_name = '{}_{}'.format(args.jobname, self.get_next_jobid())
         self.log_path = os.path.join(self.get_log_dir(), log_name)
