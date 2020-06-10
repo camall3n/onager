@@ -14,16 +14,16 @@ class LocalBackend(Backend):
         self.name = hostname
 
     def get_job_list(self, args):
-        return None
+        return load_jobfile(args.jobfile)[0]
 
     def get_next_jobid(self):
         return 0
 
     def launch(self, jobs, args, other_args):
-        self.commands = load_jobfile(args.jobfile)[0]
+        self.commands = jobs
         if len(other_args) != 0:
-            raise RuntimeError("local: Cannot pass in additional args {}".format(' '.join(
-                other_args)))
+            raise RuntimeError("{}: Cannot pass in additional args {}".format(
+                self.name, ' '.join(other_args)))
         self.quiet = args.quiet
         log_name = '{}_{}'.format(args.jobname, self.get_next_jobid())
         self.log_path = os.path.join(self.get_log_dir(), log_name)
@@ -33,11 +33,16 @@ class LocalBackend(Backend):
         job_entries = [(get_next_index_jobid(), args.jobname, args.jobfile)]
         update_jobindex(job_entries, append=True)
 
-        n_workers = max(1, math.floor(cpu_count() /
-                                      args.cpus)) if args.maxtasks <= 0 else args.maxtasks
+        if args.maxtasks > 0:
+            n_workers = args.maxtasks
+        else:
+            max_parallel = math.floor(cpu_count() / args.cpus)
+            workers_available = max(1, max_parallel)
+            workers_needed = len(task_ids)
+            n_workers = min(workers_needed, workers_available)
         if not self.quiet:
             print('Starting multiprocessing pool with {} workers'.format(n_workers))
-        pool = Pool(n_workers, maxtasksperchild=1)
+        pool = Pool(n_workers, maxtasksperchild=1)# Each new tasks gets a fresh worker
         pool.map(self.process_one_job, task_ids)
         pool.close()
         pool.join()

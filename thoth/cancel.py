@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 from .backends import prepare_backend
-from .list import get_job_list
+from .list import get_job_listings
 
 def launch_cancel_proc(cmd, args):
     """Print the cancel command and launch a subprocess to execute it"""
@@ -28,7 +28,7 @@ def cancel(args):
             print('Job cancellation aborted.')
             sys.exit()
 
-    job_list = get_job_list(args)
+    job_list = get_job_listings(args)
     unique_job_ids = sorted(list(set([listing.job_id for listing in job_list])))
 
     tasklists = {job_id: [] for job_id in unique_job_ids}
