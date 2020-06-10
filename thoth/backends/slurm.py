@@ -46,8 +46,10 @@ source ./venv/bin/activate
 
         # Number of CPU/GPU resources
         base_cmd += '-n {} '.format(args.cpus)
+        if args.debug and duration > timedelta(hours=2):
+            raise RuntimeError('{}: Duration cannot exceed 2 hours while in debug/test mode.'.format(self.name))
         if args.gpus > 0:
-            partition = 'gpu-debug' if duration <= timedelta(hours=1) else 'gpu'
+            partition = 'gpu-debug' if args.debug else 'gpu'
             base_cmd += '-p {} --gres=gpu:{} '.format(partition, args.gpus)
         else:
             partition = 'debug' if duration <= timedelta(hours=1) else 'batch'

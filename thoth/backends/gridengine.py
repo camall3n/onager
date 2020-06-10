@@ -49,11 +49,15 @@ source ./venv/bin/activate
         #  -l vlong  (infinite duration)
         #  -l gpus=# (infinite duration, on a GPU machine)
         duration = self.get_time_delta(args.duration)
+        if args.debug and duration > timedelta(minutes=10):
+            raise RuntimeError('{}: Duration cannot exceed 10 minutes while in debug/test mode.'.format(self.name))
         if args.gpus > 0:
             queue = 'gpu'
             base_cmd += '-l gpus={} '.format(args.gpus)  # Request GPUs
         else:
-            if duration > timedelta(days=1):
+            if args.debug:
+                queue = 'test'
+            elif duration > timedelta(days=1):
                 queue = 'vlong'
             elif duration > timedelta(hours=1):
                 queue = 'long'
@@ -61,6 +65,8 @@ source ./venv/bin/activate
                 queue = 'short'
             base_cmd += '-l {} '.format(queue)
         if args.cpus > 1:
+            if args.debug:
+                raise RuntimeError('{}: Cannot use more than one cpu in debug/test mode. Try submitting a short-duration job instead.'.format(self.name))
             base_cmd += '-pe smp {} '.format(args.nresources)  # Request multiple CPUs
 
         # Memory requirements
