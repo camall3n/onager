@@ -1,8 +1,9 @@
 import re
 import os
 
+from .backends import prepare_backend
 from .constants import defaultjobfile
-from .utils import load_jobfile, prepare_backend
+from .utils import load_jobfile
 
 def launch(args):
     if not re.match(r'^(\w|\.|-)+$', args.jobname):

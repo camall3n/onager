@@ -2,8 +2,9 @@ import argparse
 import subprocess
 import sys
 
+from .backends import prepare_backend
 from .list import get_job_list
-from .utils import condense_ids, expand_ids, prepare_backend
+from .utils import condense_ids, expand_ids
 
 def launch_cancel_proc(cmd, args):
     """Print the qdel command and launch a subprocess to execute it"""
@@ -14,7 +15,6 @@ def launch_cancel_proc(cmd, args):
         except (subprocess.CalledProcessError, ValueError) as err:
             print(err)
             sys.exit()
-
 
 def cancel(args):
     """Parse the jobs/tasks to cancel and send the appropriate commands to the cluster"""

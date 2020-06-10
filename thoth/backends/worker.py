@@ -21,7 +21,7 @@ def run_command_by_id(commands, task_id, stdout=None, stderr=None, verbose=False
                 print('Worker finished:', cmd)
 
 if __name__ == '__main__':
-    assert len(sys.argv) == 2, 'Usage: python -m worker path/to/commands.json task_id'
+    assert len(sys.argv) == 3, 'Usage: python -m worker path/to/commands.json task_id'
     
     commands_file = sys.argv[1]
     task_id = int(sys.argv[2])
