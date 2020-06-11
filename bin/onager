@@ -23,12 +23,12 @@ if __name__ == '__main__':
         config.config(args)
     elif args.subcommand == 'help':
         if args.help_command == 'prelaunch':
-            parse_args(['prelaunch', '+h'])
+            frontend.parse_args(['prelaunch', '+h'])
         elif args.help_command == 'help':
-            parse_args(['help', '--help'])
+            frontend.parse_args(['help', '--help'])
         elif args.help_command in [None]:
-            parse_args(['--help'])
+            frontend.parse_args(['--help'])
         else:
-            parse_args([args.help_command, '-h'])
+            frontend.parse_args([args.help_command, '-h'])
     else:
         raise ValueError("'{}' is not a valid command. See 'onager --help'.")
