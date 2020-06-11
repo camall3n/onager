@@ -17,7 +17,6 @@ def launch_cancel_proc(cmd, args):
 
 def cancel(args):
     """Parse the jobs/tasks to cancel and send the appropriate commands to the cluster"""
-
     if args.tasklist is None:
         yes_or_no = input('Are you sure you want to cancel all tasks for this job? (y/[n])\n> ')
         if yes_or_no in ['y','yes','Y',"YES"]:

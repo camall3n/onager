@@ -70,7 +70,7 @@ class Backend:
             if not args.dry_run:
                 try:
                     byte_str = subprocess.check_output(job, shell=True)
-                    jobid = byte_str.decode('utf-8').split('.')[0]
+                    jobid = byte_str.decode('utf-8').replace('\n','').split('.')[0]
                     jobids.append(jobid)
                 except (subprocess.CalledProcessError, ValueError) as err:
                     print(err)
