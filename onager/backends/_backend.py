@@ -11,7 +11,7 @@ class Backend:
     def __init__(self):
         self.name = 'generic_backend'
         self.header = '#!/bin/bash\n'
-        self.body = '\npython -m thoth.worker {} {} \n'
+        self.body = '\npython -m onager.worker {} {} \n'
         self.footer = ''
 
         self.task_id_var = r'$TASK_ID'
@@ -25,7 +25,7 @@ class Backend:
         return wrapper_script
 
     def save_wrapper_script(self, wrapper_script, jobname):
-        scripts_dir = ".thoth/scripts/{}/".format(jobname)
+        scripts_dir = ".onager/scripts/{}/".format(jobname)
         os.makedirs(scripts_dir, exist_ok=True)
         jobfile = os.path.join(scripts_dir, 'wrapper.sh')
         with open(jobfile, 'w') as file:

@@ -2,8 +2,8 @@
 import argparse
 import os
 
-from thoth import backends, meta_launcher, launcher, constants, cancel, config
-from thoth import list as list_
+from onager import backends, meta_launcher, launcher, constants, cancel, config
+from onager import list as list_
 
 def parse_args(args=None):
 
@@ -18,7 +18,7 @@ def parse_args(args=None):
     prelaunch_parser.add_argument('+command', type=str, required=True,
         help='Base command to add args to')
     prelaunch_parser.add_argument('+jobname', type=str, required=True,
-        help='Name to label this run with, to be used with thoth launch when submitting jobs')
+        help='Name to label this run with, to be used with onager launch when submitting jobs')
     prelaunch_parser.add_argument('+jobfile', type=str, default=constants.defaultjobfile,
         help='json file to write jobs to. Use when running launch')
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
@@ -96,12 +96,12 @@ def parse_args(args=None):
 
 
     config_parser = subparsers.add_parser('config',
-        help='Configure thoth settings')
+        help='Configure onager settings')
     config_parser.add_argument('--global', action='store_true', dest='global_',
-        help='Write to (or read from *only*) the global config: ~/.thothconfig')
+        help='Write to (or read from *only*) the global config: ~/.onagerconfig')
     config_parser.set_defaults(global_=False)
     config_parser.add_argument('--local', action='store_true',
-        help='Write to (or read from *only*) the local config: .thoth/config')
+        help='Write to (or read from *only*) the local config: .onager/config')
     config_parser.set_defaults(local=False)
     config_parser.add_argument('--read', action='store_true',
         help='Display all variables in config file, and their values')
@@ -148,4 +148,4 @@ if __name__ == '__main__':
         else:
             parse_args([args.help_command, '-h'])
     else:
-        raise ValueError("'{}' is not a valid command. See 'thoth --help'.")
+        raise ValueError("'{}' is not a valid command. See 'onager --help'.")
