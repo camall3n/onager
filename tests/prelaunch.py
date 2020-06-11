@@ -8,10 +8,59 @@ from onager.constants import defaultjobfile
 class TestPrelaunchMisc(unittest.TestCase):
 
     def test_custom_jobfile(self):
-        pass
+        args = Namespace(**{
+            "command": "echo",
+            "jobname": "testecho" ,
+            "jobfile": ".onager/scripts/custom/customjobs.json",
+            "arg": [["--test", "hi"], ["--test2", "hi2"]],
+            "pos_arg": None,
+            "flag": None,
+            "tag": "--tag",
+            "tag_args": None,
+            "append": None,
+            "quiet": True,
+        })
+        meta_launcher.meta_launch(args)
+        jobs = load_jobfile(args.jobfile.format(jobname=args.jobname)) # pylint: disable=no-member
+        self.assertEqual(len(jobs[0]), 1)
+        self.assertEqual("echo --test hi --test2 hi2 --tag testecho_1__test_hi__test2_hi2",
+                jobs[0][1])
 
     def test_append_jobfile(self):
-        pass
+        args = Namespace(**{
+            "command": "echo",
+            "jobname": "testecho" ,
+            "jobfile": defaultjobfile,
+            "arg": [["--test", "hi"], ["--test2", "hi2"]],
+            "pos_arg": None,
+            "flag": None,
+            "tag": "--tag",
+            "tag_args": None,
+            "append": None,
+            "quiet": True,
+        })
+        meta_launcher.meta_launch(args)
+        jobs = load_jobfile(args.jobfile.format(jobname=args.jobname)) # pylint: disable=no-member
+        self.assertEqual(len(jobs[0]), 1)
+        self.assertEqual("echo --test hi --test2 hi2 --tag testecho_1__test_hi__test2_hi2",
+                jobs[0][1])
+        args = Namespace(**{
+            "command": "echo",
+            "jobname": "testecho" ,
+            "jobfile": defaultjobfile,
+            "arg": [["--test", "hi"], ["--test2", "hi2"]],
+            "pos_arg": None,
+            "flag": None,
+            "tag": "--tag",
+            "tag_args": None,
+            "append": True,
+            "quiet": True,
+        })
+        meta_launcher.meta_launch(args)
+        jobs = load_jobfile(args.jobfile.format(jobname=args.jobname)) # pylint: disable=no-member
+        self.assertEqual(len(jobs[0]), 2)
+        self.assertEqual("echo --test hi --test2 hi2 --tag testecho_2__test_hi__test2_hi2",
+                jobs[0][2])
 
 class TestPrelaunchTagging(unittest.TestCase):
 
@@ -76,7 +125,8 @@ class TestPrelaunchOptionalArgs(unittest.TestCase):
         meta_launcher.meta_launch(args)
         jobs = load_jobfile(args.jobfile.format(jobname=args.jobname)) # pylint: disable=no-member
         self.assertEqual(len(jobs[0]), 1)
-        self.assertEqual("echo --test hi --test2 hi2 --tag testecho_1__test_hi__test2_hi2", jobs[0][1])
+        self.assertEqual("echo --test hi --test2 hi2 --tag testecho_1__test_hi__test2_hi2",
+                jobs[0][1])
 
     def test_multiple_value_args(self):
         args = Namespace(**{
