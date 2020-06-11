@@ -4,9 +4,7 @@ from tests.test_utils import run_meta_launcher
 
 class TestPrelaunchMisc(unittest.TestCase):
     def test_custom_jobfile(self):
-        cmd = "prelaunch +command echo +jobname testecho \
-                +jobfile .onager/scripts/custom/customjobs.json \
-                +arg --test hi +arg --test2 hi2 +q +tag"  
+        cmd = "prelaunch +command echo +jobname testecho +jobfile .onager/scripts/custom/customjobs.json +arg --test hi +arg --test2 hi2 +q +tag"  
         jobs = run_meta_launcher(cmd)
         self.assertEqual(len(jobs[0]), 1)
         self.assertEqual("echo --test hi --test2 hi2 --tag testecho_1__test_hi__test2_hi2",
@@ -27,25 +25,57 @@ class TestPrelaunchMisc(unittest.TestCase):
 class TestPrelaunchTagging(unittest.TestCase):
 
     def test_no_tagging(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +arg --test hi +arg --test2 hi2 +q"  
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[1]), 1)
+        self.assertEqual("", jobs[1][1])
 
     def test_default_tagging(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +arg --test hi +arg --test2 hi2 +q +tag"  
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[1]), 1)
+        self.assertEqual("echo --test hi --test2 hi2 --tag testecho_1__test_hi__test2_hi2",
+                jobs[0][1])
+        self.assertEqual("testecho_1__test_hi__test2_hi2", jobs[1][1])
 
     def test_custom_tagging(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +arg --test hi +arg --test2 hi2 +q +tag --custom_tag"  
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 1)
+        self.assertEqual("echo --test hi --test2 hi2 --custom_tag testecho_1__test_hi__test2_hi2",
+                jobs[0][1])
+        self.assertEqual("testecho_1__test_hi__test2_hi2", jobs[1][1])
 
     def test_tagging_positional(self):
-        pass
-
-    def test_tagging_optional(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +pos-arg hi +pos-arg hi2 +q +tag"  
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 1)
+        self.assertEqual("echo hi hi2 --tag testecho_1__hi__hi2", jobs[0][1])
+        self.assertEqual("testecho_1__hi__hi2", jobs[1][1])
 
     def test_tagging_flag(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +flag --hi +flag --hi2 +q +tag"  
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 4)
+        self.assertEqual("echo --hi --hi2 --tag testecho_1__+hi__+hi2", jobs[0][1])
+        self.assertEqual("testecho_1__+hi__+hi2", jobs[1][1])
+        self.assertEqual("echo --hi2 --tag testecho_2__-hi__+hi2", jobs[0][2])
+        self.assertEqual("testecho_2__-hi__+hi2", jobs[1][2])
+        self.assertEqual("echo --hi --tag testecho_3__+hi__-hi2", jobs[0][3])
+        self.assertEqual("testecho_3__+hi__-hi2", jobs[1][3])
+        self.assertEqual("echo --tag testecho_4__-hi__-hi2", jobs[0][4])
+        self.assertEqual("testecho_4__-hi__-hi2", jobs[1][4])
 
     def test_tagging_combined(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +arg --test hi +pos-arg hi2 +flag --help +q +tag"  
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 2)
+        self.assertEqual("echo hi2 --test hi --help --tag testecho_1__hi2__test_hi__+help",
+                jobs[0][1])
+        self.assertEqual("testecho_1__hi2__test_hi__+help", jobs[1][1])
+        self.assertEqual("echo hi2 --test hi --tag testecho_2__hi2__test_hi__-help",
+                jobs[0][2])
+        self.assertEqual("testecho_2__hi2__test_hi__-help", jobs[1][2])
 
 class TestPrelaunchFlagArgs(unittest.TestCase):
 
