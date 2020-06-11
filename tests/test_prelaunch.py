@@ -80,24 +80,53 @@ class TestPrelaunchTagging(unittest.TestCase):
 class TestPrelaunchFlagArgs(unittest.TestCase):
 
     def test_multiple_flag_args(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +flag --hi +flag --hi2 +q"  
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 4)
+        self.assertEqual("echo --hi --hi2", jobs[0][1])
+        self.assertEqual("echo --hi2", jobs[0][2])
+        self.assertEqual("echo --hi", jobs[0][3])
+        self.assertEqual("echo", jobs[0][4])
 
     def test_single_flag_arg(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +flag --hi +q"  
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 2)
+        self.assertEqual("echo --hi", jobs[0][1])
+        self.assertEqual("echo", jobs[0][2])
 
 class TestPrelaunchPositionalArgs(unittest.TestCase):
 
     def test_single_positional(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +q +pos-arg 0"
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 1)
+        self.assertEqual("echo 0", jobs[0][1])
 
     def test_single_positional_multi_value(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +q +pos-arg 0 1 2"
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 3)
+        self.assertEqual("echo 0", jobs[0][1])
+        self.assertEqual("echo 1", jobs[0][2])
+        self.assertEqual("echo 2", jobs[0][3])
 
     def test_single_multiple_positional_single_value(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +q +pos-arg 0"
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 1)
+        self.assertEqual("echo 0", jobs[0][1])
 
     def test_single_multiple_positional_multi_value(self):
-        pass
+        cmd = "prelaunch +command echo +jobname testecho +q +pos-arg 0 1 2 +pos-arg 3 4"
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 6)
+        self.assertEqual("echo 0 3", jobs[0][1])
+        self.assertEqual("echo 1 3", jobs[0][2])
+        self.assertEqual("echo 2 3", jobs[0][3])
+        self.assertEqual("echo 0 4", jobs[0][4])
+        self.assertEqual("echo 1 4", jobs[0][5])
+        self.assertEqual("echo 2 4", jobs[0][6])
 
 class TestPrelaunchOptionalArgs(unittest.TestCase):
 
