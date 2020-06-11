@@ -1,6 +1,7 @@
 import unittest
 from argparse import Namespace
 
+from onager import frontend
 from onager import meta_launcher
 from onager.utils import load_jobfile
 from onager.constants import defaultjobfile
@@ -148,18 +149,8 @@ class TestPrelaunchOptionalArgs(unittest.TestCase):
         self.assertEqual("echo --test bye --tag testecho_2__test_bye", jobs[0][2])
 
     def test_single_value_arg(self):
-        args = Namespace(**{
-            "command": "echo",
-            "jobname": "testecho" ,
-            "jobfile": defaultjobfile,
-            "arg": [["--test", "hi"]],
-            "pos_arg": None,
-            "flag": None,
-            "tag": "--tag",
-            "tag_args": None,
-            "append": None,
-            "quiet": True,
-        })
+        cmd = "prelaunch +command echo +jobname testecho +arg --test hi +tag"
+        args, other_args = frontend.parse_args(cmd.split(' '))
         meta_launcher.meta_launch(args)
         jobs = load_jobfile(args.jobfile.format(jobname=args.jobname)) # pylint: disable=no-member
         self.assertEqual("echo --test hi --tag testecho_1__test_hi", jobs[0][1])

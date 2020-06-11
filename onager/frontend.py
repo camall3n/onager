@@ -118,4 +118,4 @@ def parse_args(args=None):
     if args is None:
         return parser.parse_known_args()
     else:
-        return parser.parse_args(args), []
+        return parser.parse_known_args(args)
