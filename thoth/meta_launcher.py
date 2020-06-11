@@ -104,7 +104,7 @@ def meta_launch(args):
             for (i, suffix) in enumerate(cmd_suffix_list, start_jobid)
         ]
         cmd_prefix_list = [
-            ' '.join([prefix, '--' + args.tag, suffix])
+            ' '.join([prefix, args.tag, suffix])
             for (prefix, suffix) in zip(cmd_prefix_list, tag_list)
         ]
     else:

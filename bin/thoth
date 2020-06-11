@@ -29,8 +29,8 @@ def parse_args(args=None):
         help='Add a positional argument with one or more mutually exclusive values')
     prelaunch_parser.add_argument('+flag', type=str, action='append', metavar=('--flag'),
         help='Add a boolean argument that will be toggled in the resulting commands')
-    prelaunch_parser.add_argument('+tag', type=str, nargs='?', const='tag',
-        help='Passes unique str for each run to this arg in command, i.e. +tag --run-tag <str>')
+    prelaunch_parser.add_argument('+tag', type=str, nargs='?', const='--tag',
+        help='Passes unique str for each run to this arg in command, i.e. +tag <run-tag> <str>')
     prelaunch_parser.add_argument('+tag-args', type=str, nargs='+',
         help='Specifies which args go into the unique <str>. Default is all provided +arg')
     prelaunch_parser.add_argument('+a', '++append', action='store_true', 
