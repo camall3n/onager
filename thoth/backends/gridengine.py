@@ -67,7 +67,7 @@ source ./venv/bin/activate
         if args.cpus > 1:
             if args.debug:
                 raise RuntimeError('{}: Cannot use more than one cpu in debug/test mode. Try submitting a short-duration job instead.'.format(self.name))
-            base_cmd += '-pe smp {} '.format(args.nresources)  # Request multiple CPUs
+            base_cmd += '-pe smp {} '.format(args.cpus)  # Request multiple CPUs
 
         # Memory requirements
         if args.mem > 1:
