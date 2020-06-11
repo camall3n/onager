@@ -29,6 +29,13 @@ def print_config(config):
             print('{} = {}{}{}'.format(key, quote, value, quote))
         print()
 
+def get_active_config():
+    ensure_initialized()
+    settings = configparser.ConfigParser()
+    settings.read(globalconfigfile)
+    settings.read(localconfigfile)
+    return settings
+
 def config(args):
     if args.read and args.write:
         raise RuntimeError('Cannot read and write at the same time.')

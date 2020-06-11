@@ -8,11 +8,6 @@ class GridEngineBackend(Backend):
     def __init__(self):
         super().__init__()
         self.name = 'gridengine'
-        self.header = """#!/bin/bash
-
-source ./venv/bin/activate
-
-"""
         self.task_id_var = r'$SGE_TASK_ID'
 
     def generate_tasklist(self, commands):

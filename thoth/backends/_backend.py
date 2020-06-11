@@ -3,26 +3,25 @@ import os
 import subprocess
 import sys
 
+from ..config import get_active_config
 from ..constants import default_logs_folder
 from ..utils import update_jobindex, insert_second_to_last
 
 class Backend:
     def __init__(self):
         self.name = 'generic_backend'
-        self.header = """#!/bin/bash
-
-"""
-
-        self.body = """python -m thoth.worker {} {}
-"""
-
+        self.header = '#!/bin/bash\n'
+        self.body = '\npython -m thoth.worker {} {} \n'
         self.footer = ''
 
         self.task_id_var = r'$TASK_ID'
 
     def wrap_tasks(self, tasks_file, stdout=None, stderr=None):
+        config = get_active_config()
+        header = self.header + config[self.name]['header']
         body = self.body.format(tasks_file, self.task_id_var)
-        wrapper_script = self.header + body + self.footer
+        footer = config[self.name]['footer'] + self.footer
+        wrapper_script = header + body + footer
         return wrapper_script
 
     def save_wrapper_script(self, wrapper_script, jobname):

@@ -8,14 +8,6 @@ class SlurmBackend(Backend):
     def __init__(self):
         super().__init__()
         self.name = 'slurm'
-        self.header = """#!/bin/bash
-
-module load python/3.7.4
-module load cuda/10.2
-module load cudnn/7.6.5
-source ./venv/bin/activate
-
-"""
         self.task_id_var = r'$SLURM_ARRAY_TASK_ID'
 
     def get_cancel_cmds(self, cancellations):
