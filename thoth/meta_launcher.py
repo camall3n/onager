@@ -54,24 +54,6 @@ def meta_launch(args):
             ]
             sep = '_'
 
-    # Flag/Boolean arguments
-    for flag in flag_variables:
-        cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list] + cmd_prefix_list
-        cmd_prefix_list = [
-            prefix.format(flag) if '{}' in prefix else prefix
-            for prefix in cmd_prefix_list
-        ]
-        if args.tag is not None:
-            cmd_suffix_list = [
-                suffix + '{}' for suffix in cmd_suffix_list
-            ]
-            cmd_suffix_list = [
-                suffix.format(s + flag.replace('-', '').replace('+', ''))
-                for s in ['+', '-']
-                for suffix in cmd_suffix_list
-            ]
-            sep = '_'
-
     # Optional arguments
     for key, value_list in variables.items():
         cmd_prefix_list = [prefix + ' ' + key + ' {}' for prefix in cmd_prefix_list]
@@ -88,6 +70,24 @@ def meta_launch(args):
                 ]
             else:
                 cmd_suffix_list = [suffix for v in value_list for suffix in cmd_suffix_list]
+            sep = '_'
+
+    # Flag/Boolean arguments
+    for flag in flag_variables:
+        cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list] + cmd_prefix_list
+        cmd_prefix_list = [
+            prefix.format(flag) if '{}' in prefix else prefix
+            for prefix in cmd_prefix_list
+        ]
+        if args.tag is not None:
+            cmd_suffix_list = [
+                suffix + '{}' for suffix in cmd_suffix_list
+            ]
+            cmd_suffix_list = [
+                suffix.format(s + flag.replace('-', '').replace('+', ''))
+                for s in ['+', '-']
+                for suffix in cmd_suffix_list
+            ]
             sep = '_'
 
     jobfile_path = args.jobfile.format(jobname=args.jobname)
