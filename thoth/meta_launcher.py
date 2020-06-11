@@ -3,6 +3,7 @@ import os
 from warnings import warn
 
 from .utils import load_jobfile, save_jobfile
+from .constants import sep, wsep, flag_on, flag_off
 
 def meta_launch(args):
     base_cmd = args.command
@@ -38,21 +39,20 @@ def meta_launch(args):
                 if tag_arg not in base_cmd_args:
                     warn(RuntimeWarning("{} is not a command arg: {}".format(tag_arg,
                         base_cmd_args)))
-    sep = '_'
+
 
     # Positional arguments
     for value_list in pos_variables:
         cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list]
         cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
         if args.tag is not None:
-            value_slot = '-{}' if len(value_list) > 1 or value_list[0] != '' else '{}'
+            value_slot = wsep + '{}' if len(value_list) > 1 or value_list[0] != '' else '{}'
             cmd_suffix_list = [
                 suffix + value_slot for suffix in cmd_suffix_list
             ]
             cmd_suffix_list = [
                 suffix.format(v) for v in value_list for suffix in cmd_suffix_list
             ]
-            sep = '_'
 
     # Optional arguments
     for key, value_list in variables.items():
@@ -60,17 +60,16 @@ def meta_launch(args):
         cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
         if args.tag is not None:
             if key in args.tag_args:
-                value_slot = '-{}' if len(value_list) > 1 or value_list[0] != '' else '{}'
-                keyname = key.replace('-', '').replace('_', '')
+                value_slot = sep + '{}' if len(value_list) > 1 or value_list[0] != '' else '{}'
+                keyname = key.replace('_', '').replace('-', '')
                 cmd_suffix_list = [
-                    suffix + sep + keyname + value_slot for suffix in cmd_suffix_list
+                    suffix + wsep + keyname + value_slot for suffix in cmd_suffix_list
                 ]
                 cmd_suffix_list = [
                     suffix.format(v) for v in value_list for suffix in cmd_suffix_list
                 ]
             else:
                 cmd_suffix_list = [suffix for v in value_list for suffix in cmd_suffix_list]
-            sep = '_'
 
     # Flag/Boolean arguments
     for flag in flag_variables:
@@ -84,11 +83,10 @@ def meta_launch(args):
                 suffix + '{}' for suffix in cmd_suffix_list
             ]
             cmd_suffix_list = [
-                suffix.format(s + flag.replace('-', '').replace('+', ''))
-                for s in ['+', '-']
+                suffix.format(wsep + s + flag.replace(flag_off, '').replace(flag_on, ''))
+                for s in [flag_on, flag_off]
                 for suffix in cmd_suffix_list
             ]
-            sep = '_'
 
     jobfile_path = args.jobfile.format(jobname=args.jobname)
     os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
@@ -102,7 +100,7 @@ def meta_launch(args):
 
     if args.tag is not None:
         tag_list = [
-            args.jobname + '-{}'.format(i) + suffix
+            args.jobname + sep + '{}'.format(i) + suffix
             for (i, suffix) in enumerate(cmd_suffix_list, start_jobid)
         ]
         cmd_prefix_list = [
