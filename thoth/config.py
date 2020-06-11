@@ -6,14 +6,12 @@ from .constants import globalconfigfile, localconfigfile
 from . import backends
 
 defaults = {
-    'slurm': {
+    'DEFAULT': {
         'header': '',
         'footer': '',
     },
-    'gridengine': {
-        'header': '',
-        'footer': '',
-    }
+    'slurm': {},
+    'gridengine': {},
 }
 
 def ensure_initialized():
@@ -58,7 +56,7 @@ def config(args):
             # if key not in settings[backend].keys():
             #     warn('Unable to set {}.{}={} (invalid key: {}).'.format(backend, key, value, key))
             #     continue
-            settings.set(backend, key, value)
+            settings[backend][key] = value
         
         if args.global_:
             with open(globalconfigfile, 'w') as config_file:
