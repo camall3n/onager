@@ -46,7 +46,7 @@ def meta_launch(args):
         cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list]
         cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
         if args.tag is not None:
-            value_slot = wsep + '{}' if len(value_list) > 1 or value_list[0] != '' else '{}'
+            value_slot = wsep + '{}'
             cmd_suffix_list = [
                 suffix + value_slot for suffix in cmd_suffix_list
             ]
@@ -56,18 +56,21 @@ def meta_launch(args):
 
     # Optional arguments
     for key, value_list in variables.items():
-        cmd_prefix_list = [prefix + ' ' + key + ' {}' for prefix in cmd_prefix_list]
-        cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
+        cmd_prefix_list = [prefix + ' ' + key for prefix in cmd_prefix_list]
+        if len(value_list) > 1:
+            cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list]
+            cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
         if args.tag is not None:
             if key in args.tag_args:
-                value_slot = sep + '{}' if len(value_list) > 1 or value_list[0] != '' else '{}'
+                value_slot = sep + '{}' if len(value_list) > 1 else ''
                 keyname = key.replace('_', '').replace('-', '')
                 cmd_suffix_list = [
                     suffix + wsep + keyname + value_slot for suffix in cmd_suffix_list
                 ]
-                cmd_suffix_list = [
-                    suffix.format(v) for v in value_list for suffix in cmd_suffix_list
-                ]
+                if len(value_list) > 1:
+                    cmd_suffix_list = [
+                        suffix.format(v) for v in value_list for suffix in cmd_suffix_list
+                    ]
             else:
                 cmd_suffix_list = [suffix for v in value_list for suffix in cmd_suffix_list]
 
