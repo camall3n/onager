@@ -18,7 +18,7 @@ def meta_launch(args):
         pos_variables = []
 
     if args.flag is not None:
-        flag_variables = [[flag, ''] for flag in args.flag]
+        flag_variables = args.flag
     else:
         flag_variables = []
 
@@ -55,11 +55,10 @@ def meta_launch(args):
             sep = '_'
 
     # Flag/Boolean arguments
-    for value_list in flag_variables:
+    for flag in flag_variables:
         cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list] + cmd_prefix_list
         cmd_prefix_list = [
-            prefix.format(v) if '{}' in prefix else prefix
-            for v in value_list
+            prefix.format(flag) if '{}' in prefix else prefix
             for prefix in cmd_prefix_list
         ]
         if args.tag is not None:
@@ -67,11 +66,10 @@ def meta_launch(args):
                 suffix + '{}' for suffix in cmd_suffix_list
             ]
             cmd_suffix_list = [
-                suffix.format(s + value_list[0].replace('-', '').replace('+', ''))
+                suffix.format(s + flag.replace('-', '').replace('+', ''))
                 for s in ['+', '-']
                 for suffix in cmd_suffix_list
             ]
-
             sep = '_'
 
     # Optional arguments
