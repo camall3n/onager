@@ -84,11 +84,21 @@ Quickly cancel the specified jobs (and subtasks) on the backend
 onager cancel --backend slurm --jobid 13438569 --tasklist 1-3:1,5,8-9
 ```
 
+Output:
+```
+scancel 13438569_1 13438569_2 13438569_3 13438569_5 13438569_8 13438569_9
+```
+
 ## Re-launch
 Launch also supports re-running selected subtasks from a previously launched job
 
 ```
 onager launch --backend slurm --jobname experiment1 --tasklist 1-3:1,5,8-9
+```
+
+Output:
+```
+sbatch -J sleepy -t 0-01:00:00 -n 1 -p batch --mem=2G -o .onager/logs/slurm/%x_%A_%a.o -e .onager/logs/slurm/%x_%A_%a.e --parsable --array=1-3:1,5,8-9 .onager/scripts/sleepy/wrapper.sh
 ```
 
 ## Help
