@@ -44,7 +44,7 @@ class SlurmBackend(Backend):
             partition = 'gpu-debug' if args.debug else 'gpu'
             base_cmd += '-p {} --gres=gpu:{} '.format(partition, args.gpus)
         else:
-            partition = 'debug' if duration <= timedelta(hours=1) else 'batch'
+            partition = 'debug' if args.debug else 'batch'
             base_cmd += '-p {} '.format(partition)
 
         # Memory requirements
