@@ -1,2 +1,2 @@
 # onager
-Lightweight python library for launching, logging, and plotting experiments
+Lightweight python library for launching experiments and tuning hyperparameters
