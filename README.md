@@ -98,7 +98,7 @@ onager launch --backend slurm --jobname experiment1 --tasklist 1-3:1,5,8-9
 
 Output:
 ```
-sbatch -J sleepy -t 0-01:00:00 -n 1 -p batch --mem=2G -o .onager/logs/slurm/%x_%A_%a.o -e .onager/logs/slurm/%x_%A_%a.e --parsable --array=1-3:1,5,8-9 .onager/scripts/sleepy/wrapper.sh
+sbatch -J experiment1 -t 0-01:00:00 -n 1 -p batch --mem=2G -o .onager/logs/slurm/%x_%A_%a.o -e .onager/logs/slurm/%x_%A_%a.e --parsable --array=1-3:1,5,8-9 .onager/scripts/experiment1/wrapper.sh
 ```
 
 ## Help
