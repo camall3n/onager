@@ -2,8 +2,8 @@
 import argparse
 import os
 
-from thoth import backends, meta_launcher, launcher, constants, cancel
-from thoth import list as _list
+from thoth import backends, meta_launcher, launcher, constants, cancel, config
+from thoth import list as list_
 
 def parse_args(args=None):
 
@@ -95,10 +95,26 @@ def parse_args(args=None):
     cancel_parser.add_argument('-q', '--quiet', action='store_true', help='Quiet output')
 
 
+    config_parser = subparsers.add_parser('config',
+        help='Configure thoth settings')
+    config_parser.add_argument('--global', action='store_true', dest='global_',
+        help='Write to (or read from *only*) the global config: ~/.thothconfig')
+    config_parser.set_defaults(global_=False)
+    config_parser.add_argument('--local', action='store_true',
+        help='Write to (or read from *only*) the local config: .thoth/config')
+    config_parser.set_defaults(local=False)
+    config_parser.add_argument('--read', action='store_true',
+        help='Display all variables in config file, and their values')
+    config_parser.set_defaults(list_=False)
+    config_parser.add_argument('--write', type=str, nargs=3, action='append', dest='write',
+        metavar=('backend', 'key', 'value'),
+        help='Set configuration variables to the specified values')
+
+
     help_parser = subparsers.add_parser('help',
         help='Show usage information for a subcommand')
     help_parser.add_argument('help_command', type=str, nargs='?',
-        choices=['prelaunch', 'launch', 'help'],
+        choices=['prelaunch', 'launch', 'list', 'cancel', 'config', 'help'],
         help='Get help about a subcommand')
     # yapf: enable
 
@@ -117,17 +133,19 @@ if __name__ == '__main__':
     elif args.subcommand == 'launch':
         launcher.launch(args, other_args)
     elif args.subcommand == 'list':
-        _list.list_commands(args)
+        list_.list_commands(args)
     elif args.subcommand == 'cancel':
         cancel.cancel(args)
+    elif args.subcommand == 'config':
+        config.config(args)
     elif args.subcommand == 'help':
         if args.help_command == 'prelaunch':
             parse_args(['prelaunch', '+h'])
-        elif args.help_command == 'launch':
-            parse_args(['launch', '-h'])
         elif args.help_command == 'help':
             parse_args(['help', '--help'])
         elif args.help_command in [None]:
             parse_args(['--help'])
+        else:
+            parse_args([args.help_command, '-h'])
     else:
         raise ValueError("'{}' is not a valid command. See 'thoth --help'.")
