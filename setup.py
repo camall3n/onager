@@ -9,7 +9,7 @@ setup(
     author_email=('csal@brown.edu, neev_parikh@brown.edu'),
     packages=find_packages(include=['onager', 'onager.*']),
     scripts=['bin/onager'],
-    url='http://pypi.python.org/pypi/onager/',
+    url='https://github.com/camall3n/onager/',
     install_requires=[
         "tabulate",
     ],
