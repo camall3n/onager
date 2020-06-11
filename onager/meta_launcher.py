@@ -62,12 +62,12 @@ def meta_launch(args):
             cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
         if args.tag is not None:
             if key in args.tag_args:
-                value_slot = sep + '{}' if len(value_list) > 1 else ''
+                value_slot = sep + '{}' if len(value_list) > 0 else ''
                 keyname = key.replace('_', '').replace('-', '')
                 cmd_suffix_list = [
                     suffix + wsep + keyname + value_slot for suffix in cmd_suffix_list
                 ]
-                if len(value_list) > 1:
+                if len(value_list) > 0:
                     cmd_suffix_list = [
                         suffix.format(v) for v in value_list for suffix in cmd_suffix_list
                     ]
