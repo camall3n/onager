@@ -24,8 +24,12 @@ def load_jobindex():
 
 def get_next_index_jobid():
     try:
-        next_jobid = max(map(int,load_jobindex().keys())) + 1
+        ids = load_jobindex().keys()
     except IOError:
+        ids = []
+    try:
+        next_jobid = max(map(int,ids)) + 1
+    except ValueError:
         next_jobid = 0
     return next_jobid
 
