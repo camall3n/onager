@@ -43,6 +43,8 @@ def parse_args(args=None):
         help='The backend to use for launching jobs')
     launch_parser.add_argument('--jobname', type=str, required=True,
         help='A name for the job')
+    launch_parser.add_argument('--command', type=str, default=None,
+        help='Launch a single command instead of using a jobfile')
     launch_parser.add_argument('--jobfile', type=str, default=constants.defaultjobfile,
         help='Path to json file containing dictionary mapping run_ids to commands')
     launch_parser.add_argument('--cpus', type=int, default=1,
