@@ -22,16 +22,17 @@ def parse_args(args=None):
     prelaunch_parser.add_argument('+jobfile', type=str, default=constants.defaultjobfile,
         help='json file to write jobs to. Use when running launch')
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
-        metavar=('--argname', '[value, ...]'),
+        metavar=('--argname', 'value'),
         help='Add an argument with zero or more mutually exclusive values')
     prelaunch_parser.add_argument('+pos-arg', type=str, action='append', nargs='+',
-        metavar=('value', '[value, ...]'),
+        metavar=('value', 'value'),
         help='Add a positional argument with one or more mutually exclusive values')
     prelaunch_parser.add_argument('+flag', type=str, action='append', metavar=('--flag'),
         help='Add a boolean argument that will be toggled in the resulting commands')
     prelaunch_parser.add_argument('+tag', type=str, nargs='?', const='--tag',
         help='Passes unique str for each run to this arg in command, i.e. +tag <run-tag> <str>')
     prelaunch_parser.add_argument('+tag-args', type=str, nargs='+',
+        metavar=('--argname'),
         help='Specifies which args go into the unique <str>. Default is all provided +arg')
     prelaunch_parser.add_argument('+a', '++append', action='store_true', 
         help='Add more jobs to existing jobfile')
