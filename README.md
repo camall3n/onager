@@ -117,6 +117,12 @@ If you have the repository cloned, install the `examples/mnist/requirements.txt`
 You now have a pretty standard setup for an existing project. To use onager, all you have to do is
 `pip install onager`.
 
+```
+cd examples/mnist
+source venv/bin/activate
+pip install onager
+```
+
 ## Prelaunch
 Say we need to tune the hyperparameters on our very important MNIST example. We say we want to tune
 the learning rate between these values `0.3, 1.0, 3.0` and the batch-size between `32, 64`. We need
@@ -124,29 +130,29 @@ to run this for at least 3 seeds each, giving us a total of 18 runs in this expe
 the prelaunch to generate these commands using the following command:
 
 ```
-onager prelaunch +command "python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda" +jobname mnist_lr_bs +arg --lr 0.3 1.0 3.0 +arg --batch-size 32 64 +arg --seed {0..2} +tag --run-tag
+onager prelaunch +command "python mnist.py --epochs 1 --gamma 0.7 --no-cuda" +jobname mnist_lr_bs +arg --lr 0.3 1.0 3.0 +arg --batch-size 32 64 +arg --seed {0..2} +tag --run-tag
 ```
 
 Output:
 ```
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_1__lr_0.3__batchsize_32__seed_0
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_2__lr_1.0__batchsize_32__seed_0
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_3__lr_3.0__batchsize_32__seed_0
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_4__lr_0.3__batchsize_64__seed_0
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_5__lr_1.0__batchsize_64__seed_0
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_6__lr_3.0__batchsize_64__seed_0
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_7__lr_0.3__batchsize_32__seed_1
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_8__lr_1.0__batchsize_32__seed_1
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_9__lr_3.0__batchsize_32__seed_1
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_10__lr_0.3__batchsize_64__seed_1
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_11__lr_1.0__batchsize_64__seed_1
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_12__lr_3.0__batchsize_64__seed_1
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 2 --run-tag mnist_lr_bs_13__lr_0.3__batchsize_32__seed_2
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 2 --run-tag mnist_lr_bs_14__lr_1.0__batchsize_32__seed_2
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 2 --run-tag mnist_lr_bs_15__lr_3.0__batchsize_32__seed_2
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_16__lr_0.3__batchsize_64__seed_2
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_17__lr_1.0__batchsize_64__seed_2
-python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_18__lr_3.0__batchsize_64__seed_2
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_1__lr_0.3__batchsize_32__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_2__lr_1.0__batchsize_32__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_3__lr_3.0__batchsize_32__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_4__lr_0.3__batchsize_64__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_5__lr_1.0__batchsize_64__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_6__lr_3.0__batchsize_64__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_7__lr_0.3__batchsize_32__seed_1
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_8__lr_1.0__batchsize_32__seed_1
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_9__lr_3.0__batchsize_32__seed_1
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_10__lr_0.3__batchsize_64__seed_1
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_11__lr_1.0__batchsize_64__seed_1
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_12__lr_3.0__batchsize_64__seed_1
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 2 --run-tag mnist_lr_bs_13__lr_0.3__batchsize_32__seed_2
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 2 --run-tag mnist_lr_bs_14__lr_1.0__batchsize_32__seed_2
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 2 --run-tag mnist_lr_bs_15__lr_3.0__batchsize_32__seed_2
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_16__lr_0.3__batchsize_64__seed_2
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_17__lr_1.0__batchsize_64__seed_2
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_18__lr_3.0__batchsize_64__seed_2
 ```
 
 Note that the `--run-tag` is a simple identifier the program accepts that uniquely tags each 
@@ -163,7 +169,7 @@ and then you simply specify what kind of hardware you need. More details can be 
 `onager help launch`. For this example, we used:
 
 ```
-onager launch --backend slurm --jobname mnist_lr_bs --cpus 2 --mem 5 --venv examples/mnist/mnist_venv/ --duration 00:30:00 -max 5
+onager launch --backend slurm --jobname mnist_lr_bs --cpus 2 --mem 5 --venv ./venv/ --duration 00:30:00 -max 5
 ```
 
 We specified the same jobname as we did during prelaunch. This lets onager find the right jobfile 
@@ -172,3 +178,35 @@ automatically. If you'd like, you can provide a custom jobfile too.
 And that's it! We now can check `.onager/logs/slurm/` for our logs. To keep track of which jobs are
 scheduled, we can use `onager list`. Say you want to cancel some jobs; an easy way to cancel is via
 `onager cancel`
+
+
+# Example: Managing GridEngine 'Eqw' errors
+Sometimes GridEngine inexplicably fails to launch certain jobs, causing them to permanently remain in 'Eqw' state. The only known fix for this is to re-run the jobs, but that requires manually parsing the `qstat` output and resubmitting only the affected jobs.
+
+We can use onager to automatically handle this problem for us.
+
+```
+cd ..
+onager prelaunch +command ./myscript +pos-arg {0001..1000} +tag +jobname test-eqw
+onager launch --backend gridengine --duration 00:02:00 --jobname test-eqw --venv mnist/venv/
+```
+
+Suppose `qstat` gives the following output:
+```
+job-ID  prior   name       user         state submit/start at     queue                          slots ja-task-ID 
+-----------------------------------------------------------------------------------------------------------------
+[...]
+2323537 0.50500 test-eqw   csal         r     06/12/2020 00:31:27 short.q@mblade1309.cs.brown.ed     1 327
+2323537 0.50500 test-eqw   csal         r     06/12/2020 00:31:27 short.q@mblade1309.cs.brown.ed     1 328
+2323537 0.50500 test-eqw   csal         r     06/12/2020 00:31:27 short.q@mblade1309.cs.brown.ed     1 329
+2323537 0.50500 test-eqw   csal         r     06/12/2020 00:31:34 short.q@dblade41.cs.brown.edu      1 330
+2323537 0.50500 test-eqw   csal         Eqw   06/12/2020 00:31:09                                    1 35-40:1,57,138-201:1
+```
+
+We can cancel the 'Eqw' jobs and re-launch them with:
+```
+onager cancel --backend gridengine --jobid 2323537 --tasklist 35-40:1,57,138-201:1
+onager launch --backend gridengine --duration 00:02:00 --jobname test-eqw --venv mnist/venv/ --tasklist 35-40:1,57,138-201:1
+```
+
+If there are multiple ranges (as in this example), onager will automatically handle splitting those ranges up into separate `qdel` and `qsub` commands.
