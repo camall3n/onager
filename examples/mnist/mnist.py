@@ -98,7 +98,7 @@ def parse_args():
                         help='how many batches to wait before logging training status')
     parser.add_argument('--save-model', action='store_true', default=False,
                         help='For Saving the current Model')
-    parser.add_argument('--run-tag', type=str, help='Identify the current run')
+    parser.add_argument('--run-tag', type=str, help='Identify the current run', default='')
     
     args = parser.parse_args()
     return args
