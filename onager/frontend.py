@@ -76,6 +76,8 @@ def parse_args(args=None):
         help='The job ID to list commands for')
     list_parser.add_argument('-t','--tasklist', type=str, default=None,
         help='Comma separated list of task IDs (e.g. "18-22:1,26,29,34-49:1")')
+    list_parser.add_argument('--hide', type=str, nargs='+', default=None,
+        help='Hide the specified columns')
 
 
     cancel_parser = subparsers.add_parser('cancel',
