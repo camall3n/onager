@@ -210,3 +210,11 @@ onager launch --backend gridengine --duration 00:02:00 --jobname test-eqw --venv
 ```
 
 If there are multiple ranges (as in this example), onager will automatically handle splitting those ranges up into separate `qdel` and `qsub` commands.
+
+# Example: Launching Jobs Locally
+Sometimes a cluster is overkill, and you just want to launch jobs locally. Onager supports this as well.
+
+```
+onager prelaunch +jobname experiment1 +command ./myscript +pos-arg {1..10} +tag
+onager launch --backend local --jobname experiment1 --maxtasks 4
+```
