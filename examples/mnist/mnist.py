@@ -13,6 +13,11 @@ from torch.optim.lr_scheduler import StepLR
 
 DATA_DIR = './examples/mnist/data/'
 
+def run_tag_decorator(func, run_tag):
+    def wrapped_func(*args, **kwargs):
+        return func(run_tag + ': ', *args, **kwargs)
+    return wrapped_func
+
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -72,8 +77,7 @@ def test(model, device, test_loader):
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
-
-def main():
+def parse_args():
     # Training settings
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
     parser.add_argument('--batch-size', type=int, default=64, metavar='N',
@@ -96,10 +100,10 @@ def main():
                         help='For Saving the current Model')
     parser.add_argument('--run-tag', type=str, help='Identify the current run')
     
-    def print(*objs, **kwargs):
-        builtins.print(args.run_tag + ': ', *objs, **kwargs)
-
     args = parser.parse_args()
+    return args
+
+def main(args):
     use_cuda = not args.no_cuda and torch.cuda.is_available()
 
     torch.manual_seed(args.seed)
@@ -137,4 +141,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_args = parse_args()
+    print = run_tag_decorator(print, run_args.run_tag)
+    main(run_args)
