@@ -10,22 +10,25 @@ from ..utils import update_jobindex, insert_second_to_last
 class Backend:
     def __init__(self):
         self.name = 'generic_backend'
-        self.header = '#!/bin/bash\n'
+        self.header = '#!/bin/bash'
         self.body = '\npython -m onager.worker {} {} \n'
         self.footer = ''
 
         self.task_id_var = r'$TASK_ID'
 
-    def wrap_tasks(self, tasks_file, stdout=None, stderr=None):
+    def wrap_tasks(self, tasks_file, args):
         config = get_active_config()
-        header = self.header + config[self.name]['header']
+        header = '\n'.join(self.header,config[self.name]['header'])
+        if args.venv is not None:
+            venv_activate_path = os.path.join(os.path.normpath(args.venv), 'bin', 'activate')
+            header = '\n'.join(header, 'source {}'.format(venv_activate_path))
         body = self.body.format(tasks_file, self.task_id_var)
-        footer = config[self.name]['footer'] + self.footer
+        footer = '\n'.join(config[self.name]['footer'], self.footer)
         wrapper_script = header + body + footer
         return wrapper_script
 
     def save_wrapper_script(self, wrapper_script, jobname):
-        scripts_dir = ".onager/scripts/{}/".format(jobname)
+        scripts_dir = os.path.join('.onager', 'scripts', jobname)
         os.makedirs(scripts_dir, exist_ok=True)
         jobfile = os.path.join(scripts_dir, 'wrapper.sh')
         with open(jobfile, 'w') as file:

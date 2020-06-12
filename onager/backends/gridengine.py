@@ -91,7 +91,7 @@ class GridEngineBackend(Backend):
             # set maximum number of running tasks per block
             base_cmd += "-tc {} ".format(args.maxtasks)
 
-        wrapper_script = self.wrap_tasks(args.jobfile)
+        wrapper_script = self.wrap_tasks(args.jobfile, args)
         wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname)
 
         # Split tasklist into blocks that GridEngine can understand

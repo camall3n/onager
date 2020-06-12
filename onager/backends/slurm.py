@@ -71,7 +71,7 @@ class SlurmBackend(Backend):
         if args.hold_jid is not None:
             base_cmd += "--depend=afterany:{} ".format(args.hold_jid)
 
-        wrapper_script = self.wrap_tasks(args.jobfile)
+        wrapper_script = self.wrap_tasks(args.jobfile, args)
         wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname)
         base_cmd += "{}".format(wrapper_file)
         return [base_cmd]

@@ -51,7 +51,7 @@ def parse_args(args=None):
         help='Number of GPUs to request')
     launch_parser.add_argument('--mem', type=int, default=2,
         help='Amount of RAM (in GB) to request per node')
-    launch_parser.add_argument('--venv', type=str, default='./venv',
+    launch_parser.add_argument('--venv', type=str, default=None,
         help='Path to python virtualenv')
     launch_parser.add_argument('--duration', type=str, default='0-01:00:00',
         help='Duration of job (d-hh:mm:ss)')
