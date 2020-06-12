@@ -10,7 +10,7 @@ JobListing = namedtuple('JobListing', ['job_id', 'task_id', 'jobname', 'command'
 
 def make_listing(jobid, task_id, jobname, command, tags, args):
     listing = JobListing(jobid, task_id, jobname, command, tags)
-    if args.hide is not None:
+    if 'hide' in args and args.hide is not None:
         listing = listing._asdict()
         for field in JobListing._fields:
             if field in args.hide:
