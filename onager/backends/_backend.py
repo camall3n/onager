@@ -18,12 +18,12 @@ class Backend:
 
     def wrap_tasks(self, tasks_file, args):
         config = get_active_config()
-        header = '\n'.join(self.header,config[self.name]['header'])
+        header = '\n'.join((self.header, config[self.name]['header']))
         if args.venv is not None:
             venv_activate_path = os.path.join(os.path.normpath(args.venv), 'bin', 'activate')
-            header = '\n'.join(header, 'source {}'.format(venv_activate_path))
+            header = '\n'.join((header, 'source {}'.format(venv_activate_path)))
         body = self.body.format(tasks_file, self.task_id_var)
-        footer = '\n'.join(config[self.name]['footer'], self.footer)
+        footer = '\n'.join((config[self.name]['footer'], self.footer))
         wrapper_script = header + body + footer
         return wrapper_script
 
