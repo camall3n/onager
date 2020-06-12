@@ -1,9 +1,13 @@
 from setuptools import setup, find_packages
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='onager',
     version='0.1.1',
     description='Lightweight python library for launching experiments and tuning hyperparameters, either locally or on a cluster',
-    long_description=open('README.md').read(),
+    long_description=long_description,
     long_description_content_type='text/markdown',
     author='Cameron Allen, Neev Parikh',
     author_email=('csal@brown.edu,neev_parikh@brown.edu'),
