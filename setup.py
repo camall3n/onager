@@ -5,7 +5,6 @@ setup(
     description='Lightweight python library for launching experiments and tuning hyperparameters, either locally or on a cluster',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    license=open('LICENSE').read(),
     author='Cameron Allen, Neev Parikh',
     author_email=('csal@brown.edu,neev_parikh@brown.edu'),
     packages=find_packages(include=['onager', 'onager.*']),
@@ -14,4 +13,9 @@ setup(
     install_requires=[
         "tabulate",
     ],
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+    ]
 )
