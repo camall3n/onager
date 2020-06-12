@@ -40,12 +40,13 @@ class LocalBackend(Backend):
             workers_available = max(1, max_parallel)
             workers_needed = len(task_ids)
             n_workers = min(workers_needed, workers_available)
-        if not self.quiet:
-            print('Starting multiprocessing pool with {} workers'.format(n_workers))
-        pool = Pool(n_workers, maxtasksperchild=1)# Each new tasks gets a fresh worker
-        pool.map(self.process_one_job, task_ids)
-        pool.close()
-        pool.join()
+        if not args.dry_run:
+            if not self.quiet:
+                print('Starting multiprocessing pool with {} workers'.format(n_workers))
+            pool = Pool(n_workers, maxtasksperchild=1)# Each new tasks gets a fresh worker
+            pool.map(self.process_one_job, task_ids)
+            pool.close()
+            pool.join()
 
     def process_one_job(self, task_id):
         run_command_by_id(
