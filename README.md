@@ -112,6 +112,11 @@ onager help launch
 # Example: MNIST
 Let's consider a toy MNIST example to concretely see how this would be used in a more realistic setting.
 
+## Setup
+If you have the repository cloned, install the `examples/mnist/requirements.txt` in some virtualenv.
+You now have a pretty standard setup for an existing project. To use onager, all you have to do is
+`pip install onager`.
+
 ## Prelaunch
 Say we need to tune the hyperparameters on our very important MNIST example. We say we want to tune
 the learning rate between these values `0.3, 1.0, 3.0` and the batch-size between `32, 64`. We need
@@ -152,3 +157,18 @@ located here: `.onager/scripts/mnist_lr_bs/jobs.json`. You can customize this by
 `+jobfile` argument. See `onager help prelaunch` for more details.
 
 ## Launch
+
+Say we want to run this on a Slurm backend somewhere. We need to run prelaunch as described above 
+and then you simply specify what kind of hardware you need. More details can be found via 
+`onager help launch`. For this example, we used:
+
+```
+onager launch --backend slurm --jobname mnist_lr_bs --cpus 2 --mem 5 --venv examples/mnist/mnist_venv/ --duration 00:30:00 -max 5
+```
+
+We specified the same jobname as we did during prelaunch. This lets onager find the right jobfile 
+automatically. If you'd like, you can provide a custom jobfile too. 
+
+And that's it! We now can check `.onager/logs/slurm/` for our logs. To keep track of which jobs are
+scheduled, we can use `onager list`. Say you want to cancel some jobs; an easy way to cancel is via
+`onager cancel`
