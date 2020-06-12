@@ -11,7 +11,7 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 
-DATA_DIR = './examples/mnist/data/'
+DATA_DIR = './data/'
 
 def run_tag_decorator(func, run_tag):
     def wrapped_func(*args, **kwargs):
