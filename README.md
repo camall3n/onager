@@ -108,3 +108,47 @@ For a list of the available subcommands and their respective arguments, use the 
 onager help
 onager help launch
 ```
+
+# Example: MNIST
+Let's consider a toy MNIST example to concretely see how this would be used in a more realistic setting.
+
+## Prelaunch
+Say we need to tune the hyperparameters on our very important MNIST example. We say we want to tune
+the learning rate between these values `0.3, 1.0, 3.0` and the batch-size between `32, 64`. We need
+to run this for at least 3 seeds each, giving us a total of 18 runs in this experiment. We can use 
+the prelaunch to generate these commands using the following command:
+
+```
+onager prelaunch +command "python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda" +jobname mnist_lr_bs +arg --lr 0.3 1.0 3.0 +arg --batch-size 32 64 +arg --seed {0..2} +tag --run-tag
+```
+
+Output:
+```
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_1__lr_0.3__batchsize_32__seed_0
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_2__lr_1.0__batchsize_32__seed_0
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_3__lr_3.0__batchsize_32__seed_0
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_4__lr_0.3__batchsize_64__seed_0
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_5__lr_1.0__batchsize_64__seed_0
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_6__lr_3.0__batchsize_64__seed_0
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_7__lr_0.3__batchsize_32__seed_1
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_8__lr_1.0__batchsize_32__seed_1
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_9__lr_3.0__batchsize_32__seed_1
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_10__lr_0.3__batchsize_64__seed_1
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_11__lr_1.0__batchsize_64__seed_1
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_12__lr_3.0__batchsize_64__seed_1
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 2 --run-tag mnist_lr_bs_13__lr_0.3__batchsize_32__seed_2
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 2 --run-tag mnist_lr_bs_14__lr_1.0__batchsize_32__seed_2
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 2 --run-tag mnist_lr_bs_15__lr_3.0__batchsize_32__seed_2
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_16__lr_0.3__batchsize_64__seed_2
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_17__lr_1.0__batchsize_64__seed_2
+python examples/mnist/mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_18__lr_3.0__batchsize_64__seed_2
+```
+
+Note that the `--run-tag` is a simple identifier the program accepts that uniquely tags each 
+run of the script. This could to be used to create a unique directory to store loss/reward etc.
+
+Now this command will generate a `jobs.json` in the default location for the *jobfile*. It is 
+located here: `.onager/scripts/mnist_lr_bs/jobs.json`. You can customize this by specifying a custom
+`+jobfile` argument. See `onager help prelaunch` for more details.
+
+## Launch
