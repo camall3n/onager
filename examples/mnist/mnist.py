@@ -2,6 +2,7 @@
 from __future__ import print_function
 import argparse
 import os
+import builtins
 
 import torch
 import torch.nn as nn
@@ -10,6 +11,7 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 
+DATA_DIR = './examples/mnist/data/'
 
 class Net(nn.Module):
     def __init__(self):
@@ -92,6 +94,11 @@ def main():
                         help='how many batches to wait before logging training status')
     parser.add_argument('--save-model', action='store_true', default=False,
                         help='For Saving the current Model')
+    parser.add_argument('--run-tag', type=str, help='Identify the current run')
+    
+    def print(*objs, **kwargs):
+        builtins.print(args.run_tag + ': ', *objs, **kwargs)
+
     args = parser.parse_args()
     use_cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -101,15 +108,15 @@ def main():
 
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
     train_loader = torch.utils.data.DataLoader(
-        datasets.MNIST('../data', train=True, download=True,
+        datasets.MNIST(DATA_DIR, train=True, download=True,
                        transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
         batch_size=args.batch_size, shuffle=True, **kwargs)
-    os.makedirs('./data', exist_ok=True)
+    os.makedirs(DATA_DIR, exist_ok=True)
     test_loader = torch.utils.data.DataLoader(
-        datasets.MNIST('./data', train=False, download=True,
+        datasets.MNIST(DATA_DIR, train=False, download=True,
             transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))

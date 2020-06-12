@@ -1,5 +1,6 @@
 .onager/ 
-mnist_venv/
+examples/mnist/mnist_venv/
+examples/mnist/data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
