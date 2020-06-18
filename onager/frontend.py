@@ -31,9 +31,10 @@ def parse_args(args=None):
     prelaunch_parser.add_argument('+tag-args', type=str, nargs='+',
         metavar=('--argname'),
         help='Specifies which args go into the unique <str>. Default is all provided +arg')
-    prelaunch_parser.add_argument('+a', '+append', action='store_true', 
+    prelaunch_parser.add_argument('+a', '+append', action='store_true', dest='append',
         help='Add more jobs to existing jobfile')
-    prelaunch_parser.add_argument('+q', '+quiet', action='store_true', help='Quiet output')
+    prelaunch_parser.add_argument('+q', '+quiet', action='store_true', dest='quiet',
+        help='Quiet output')
 
 
     launch_parser = subparsers.add_parser('launch', help='Launch jobs using the specified backend')
