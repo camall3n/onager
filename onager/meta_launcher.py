@@ -95,8 +95,9 @@ def meta_launch(args):
     os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
 
     if args.append:
-        jobs, tags = load_jobfile(jobfile_path)
-        start_jobid = max(jobs.keys()) + 1
+        cmds, tags = load_jobfile(jobfile_path)
+        start_jobid = max(cmds.keys()) + 1
+        jobs = {i: (cmds[i], tags[i]) for i in cmds.keys()}
     else:
         jobs = dict()
         start_jobid = 1
