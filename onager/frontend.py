@@ -35,6 +35,8 @@ def parse_args(args=None):
         help='Add more jobs to existing jobfile')
     prelaunch_parser.add_argument('+q', '+quiet', action='store_true', dest='quiet',
         help='Quiet output')
+    prelaunch_parser.add_argument('+exclude-id-from-tag', action='store_true', dest='exclude_id_from_tag',
+        help='Exclude job ID from tag')
 
 
     launch_parser = subparsers.add_parser('launch', help='Launch jobs using the specified backend')

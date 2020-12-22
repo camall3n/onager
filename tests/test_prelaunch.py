@@ -149,5 +149,11 @@ class TestPrelaunchOptionalArgs(unittest.TestCase):
         jobs = run_meta_launcher(cmd)
         self.assertEqual("echo --test hi --tag testecho_1__test_hi", jobs[0][1])
 
+    def test_exclude_id(self):
+        cmd = "prelaunch +command echo +jobname testecho +arg --test hi +q +tag +exclude-id-from-tag"
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 1)
+        self.assertEqual("echo --test hi --tag testecho__test_hi", jobs[0][1])
+
 if __name__ == '__main__':
     unittest.main()
