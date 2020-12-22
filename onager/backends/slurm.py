@@ -1,14 +1,46 @@
 from datetime import timedelta
 import os
+import math
 
 from ._backend import Backend
-
+from ..utils import expand_ids
 
 class SlurmBackend(Backend):
     def __init__(self):
         super().__init__()
         self.name = 'slurm'
         self.task_id_var = r'$SLURM_ARRAY_TASK_ID'
+
+
+    def _get_body(self, tasks_file, args):
+        """
+        A bit complicated. It may have a bunch of concurrent processes.
+        """
+        tasklist_elems = args.tasklist.split(',')
+        tasklist_elems.extend(["__filler__"]*args.tasks_per_job) # Makes sure that it doesn't go over on last job.
+        bash_task_array_defn = "task_array=({})\n".format(' '.join(tasklist_elems))
+        task_id_var = self.task_id_var
+
+        all_tasks = []
+        pids = []
+        for i in range(1, args.tasks_per_job + 1):
+            task_num_str_defn = "task_array_num=$(( {}*{} - {} + {} - 1))".format(str(args.tasks_per_job), task_id_var, str(args.tasks_per_job), i)
+            # task_num_str_defn = "\ntask_array_num=$(( {}*{} + {} - {} - 1))".format(str(args.tasks_per_job), task_id_var, i, str(args.tasks_per_job))
+            real_task_id_str = "task_num=${task_array[$task_array_num]}"
+            task = self.body.strip().format(tasks_file, "$task_num")
+            # task = self.body.strip().format(tasks_file, real_task_id_str)
+            get_pid_str = "pid{}=$!\n".format(str(i))
+            single_task_str = " \n".join([task_num_str_defn, real_task_id_str, task])
+            single_task_str = single_task_str + " & \n" + get_pid_str
+            # single_task_str = "( " + single_task_str + " ) & \n" + get_pid_str
+            pids.append("$pid{}".format(str(i)))
+            # single_task_str = " \n".join([task_num_str_defn, real_task_id_str, task])
+            all_tasks.append(single_task_str)
+
+        wait_str = "wait " + " ".join(pids)
+        full_task_str = " \n".join(all_tasks)
+        full_task_str = "\n{} \n{} \n{} \n".format(bash_task_array_defn, full_task_str, wait_str)
+        return full_task_str
 
     def get_cancel_cmds(self, cancellations):
         cmds = []
@@ -60,7 +92,12 @@ class SlurmBackend(Backend):
         # jobid with subprocess.check_output()
         base_cmd += '--parsable '
 
-        base_cmd += "--array={}".format(args.tasklist)
+        num_jobs = len(args.tasklist.split(",")) / args.tasks_per_job
+        num_jobs = math.ceil(num_jobs)
+        array = ",".join(map(str, range(1, num_jobs+1)))
+
+        # base_cmd += "--array={}".format(args.tasklist)
+        base_cmd += "--array={}".format(array)
         if args.maxtasks > 0:
             # set maximum number of running tasks
             base_cmd += '%{} '.format(args.maxtasks)
@@ -75,3 +112,12 @@ class SlurmBackend(Backend):
         wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname)
         base_cmd += "{}".format(wrapper_file)
         return [base_cmd]
+
+    def launch(self, jobs, args, other_args):
+        task_ids = expand_ids(args.tasklist)
+        task_id_strs = ','.join(map(str, task_ids))
+        args.tasklist = task_id_strs # Hope that's okay.
+        # print('whats this look like')
+        # __import__('pdb').set_trace()
+        super().launch(jobs, args, other_args)
+

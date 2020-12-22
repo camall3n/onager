@@ -23,8 +23,10 @@ if __name__ == '__main__':
     assert len(sys.argv) == 3, 'Usage: python -m worker path/to/commands.json task_id'
     
     commands_file = sys.argv[1]
-    task_id = int(sys.argv[2])
-
-    commands = load_jobfile(commands_file)[0]
-
-    run_command_by_id(commands, task_id)
+    task_id = sys.argv[2]
+    if task_id == "__filler__":
+        pass # From the task list thing.
+    else:
+        task_id = int(task_id)
+        commands = load_jobfile(commands_file)[0]
+        run_command_by_id(commands, task_id)
