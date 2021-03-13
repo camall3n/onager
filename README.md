@@ -5,7 +5,7 @@ By Cameron Allen & Neev Parikh
 
 # Installation
 
-Currently requires Python 3
+Currently requires Python 3.7+
 
 ```
 pip install onager
