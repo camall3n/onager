@@ -126,7 +126,7 @@ pip install onager
 ## Prelaunch
 Say we need to tune the hyperparameters on our very important MNIST example. We say we want to tune
 the learning rate between these values `0.3, 1.0, 3.0` and the batch-size between `32, 64`. We need
-to run this for at least 3 seeds each, giving us a total of 18 runs in this experiment. We can use 
+to run this for at least 3 seeds each, giving us a total of 18 runs in this experiment. We can use
 the prelaunch to generate these commands using the following command:
 
 ```
@@ -135,15 +135,15 @@ onager prelaunch +command "python mnist.py --epochs 1 --gamma 0.7 --no-cuda" +jo
 
 Output:
 ```
-python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_1__lr_0.3__batchsize_32__seed_0
-python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_2__lr_1.0__batchsize_32__seed_0
-python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_3__lr_3.0__batchsize_32__seed_0
-python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_4__lr_0.3__batchsize_64__seed_0
-python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_5__lr_1.0__batchsize_64__seed_0
-python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_6__lr_3.0__batchsize_64__seed_0
-python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_7__lr_0.3__batchsize_32__seed_1
-python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_8__lr_1.0__batchsize_32__seed_1
-python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_9__lr_3.0__batchsize_32__seed_1
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_01__lr_0.3__batchsize_32__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_02__lr_1.0__batchsize_32__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 0 --run-tag mnist_lr_bs_03__lr_3.0__batchsize_32__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_04__lr_0.3__batchsize_64__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_05__lr_1.0__batchsize_64__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 0 --run-tag mnist_lr_bs_06__lr_3.0__batchsize_64__seed_0
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_07__lr_0.3__batchsize_32__seed_1
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_08__lr_1.0__batchsize_32__seed_1
+python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 32 --seed 1 --run-tag mnist_lr_bs_09__lr_3.0__batchsize_32__seed_1
 python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 0.3 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_10__lr_0.3__batchsize_64__seed_1
 python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_11__lr_1.0__batchsize_64__seed_1
 python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 1 --run-tag mnist_lr_bs_12__lr_3.0__batchsize_64__seed_1
@@ -155,25 +155,25 @@ python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 1.0 --batch-size 64 --seed
 python mnist.py --epochs 1 --gamma 0.7 --no-cuda --lr 3.0 --batch-size 64 --seed 2 --run-tag mnist_lr_bs_18__lr_3.0__batchsize_64__seed_2
 ```
 
-Note that the `--run-tag` is a simple identifier the program accepts that uniquely tags each 
+Note that the `--run-tag` is a simple identifier the program accepts that uniquely tags each
 run of the script. This could to be used to create a unique directory to store loss/reward etc.
 
-Now this command will generate a `jobs.json` in the default location for the *jobfile*. It is 
+Now this command will generate a `jobs.json` in the default location for the *jobfile*. It is
 located here: `.onager/scripts/mnist_lr_bs/jobs.json`. You can customize this by specifying a custom
 `+jobfile` argument. See `onager help prelaunch` for more details.
 
 ## Launch
 
-Say we want to run this on a Slurm backend somewhere. We need to run prelaunch as described above 
-and then you simply specify what kind of hardware you need. More details can be found via 
+Say we want to run this on a Slurm backend somewhere. We need to run prelaunch as described above
+and then you simply specify what kind of hardware you need. More details can be found via
 `onager help launch`. For this example, we used:
 
 ```
 onager launch --backend slurm --jobname mnist_lr_bs --cpus 2 --mem 5 --venv ./venv/ --duration 00:30:00 -max 5
 ```
 
-We specified the same jobname as we did during prelaunch. This lets onager find the right jobfile 
-automatically. If you'd like, you can provide a custom jobfile too. 
+We specified the same jobname as we did during prelaunch. This lets onager find the right jobfile
+automatically. If you'd like, you can provide a custom jobfile too.
 
 And that's it! We now can check `.onager/logs/slurm/` for our logs. To keep track of which jobs are
 scheduled, we can use `onager list`. Say you want to cancel some jobs; an easy way to cancel is via
@@ -193,7 +193,7 @@ onager launch --backend gridengine --duration 00:02:00 --jobname test-eqw --venv
 
 Suppose `qstat` gives the following output:
 ```
-job-ID  prior   name       user         state submit/start at     queue                          slots ja-task-ID 
+job-ID  prior   name       user         state submit/start at     queue                          slots ja-task-ID
 -----------------------------------------------------------------------------------------------------------------
 [...]
 2323537 0.50500 test-eqw   csal         r     06/12/2020 00:31:27 short.q@mblade1309.cs.brown.ed     1 327
