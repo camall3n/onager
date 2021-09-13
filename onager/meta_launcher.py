@@ -104,13 +104,12 @@ def meta_launch(args):
 
     if args.tag is not None:
         if args.no_tag_number:
-            tag_list = [
-                args.jobname + suffix
-                for (i, suffix) in enumerate(cmd_suffix_list, start_jobid)
-            ]
+            tag_list = [args.jobname + suffix for suffix in cmd_suffix_list]
         else:
+            n_digits = len(str(len(cmd_suffix_list)))
+            tag_number_format = '{{:0{0}d}}'.format(n_digits)
             tag_list = [
-                args.jobname + sep + '{}'.format(i) + suffix
+                args.jobname + sep + tag_number_format.format(i) + suffix
                 for (i, suffix) in enumerate(cmd_suffix_list, start_jobid)
             ]
 

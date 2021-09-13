@@ -155,5 +155,11 @@ class TestPrelaunchOptionalArgs(unittest.TestCase):
         self.assertEqual(len(jobs[0]), 1)
         self.assertEqual("echo --test hi --tag testecho__test_hi", jobs[0][1])
 
+    def test_zero_pad_tag_number(self):
+        cmd = "prelaunch +command echo +jobname testecho +arg --value 1 2 3 4 5 6 7 8 9 10 +q +tag"
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual("echo --value 1 --tag testecho_01__value_1", jobs[0][1])
+
+
 if __name__ == '__main__':
     unittest.main()
