@@ -35,6 +35,8 @@ def parse_args(args=None):
         help='Add more jobs to existing jobfile')
     prelaunch_parser.add_argument('+q', '+quiet', action='store_true', dest='quiet',
         help='Quiet output')
+    prelaunch_parser.add_argument('+no-tag-number', action='store_true', dest='no_tag_number',
+        help='Disable auto-numbering when generating tags')
 
 
     launch_parser = subparsers.add_parser('launch', help='Launch jobs using the specified backend')
@@ -71,7 +73,7 @@ def parse_args(args=None):
     launch_parser.add_argument('-q', '--quiet', action='store_true', help='Quiet output')
 
 
-    list_parser = subparsers.add_parser('list', 
+    list_parser = subparsers.add_parser('list',
         help='List previously launched commands by job_id and task_id')
     list_parser.add_argument('-j','--jobid', type=str,
         help='The job ID to list commands for')
