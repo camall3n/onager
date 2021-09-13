@@ -103,7 +103,7 @@ def meta_launch(args):
         start_jobid = 1
 
     if args.tag is not None:
-        if args.exclude_id_from_tag:
+        if args.no_tag_number:
             tag_list = [
                 args.jobname + suffix
                 for (i, suffix) in enumerate(cmd_suffix_list, start_jobid)
