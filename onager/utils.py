@@ -5,6 +5,19 @@ import os
 
 from .constants import default_index
 
+def cpu_count():
+    # os.cpu_count()
+    #     returns number of cores on machine
+    # os.sched_getaffinity(pid)
+    #     returns set of cores on which process is allowed to run
+    #     if pid=0, results are for current process
+    #
+    # if os.sched_getaffinity doesn't exist, just return cpu_count and hope for the best
+    try:
+        return len(os.sched_getaffinity(0))
+    except AttributeError:
+        return os.cpu_count()
+
 def load_jobfile(jobfile_path):
     with open(jobfile_path, 'r') as file:
         job_records = json.load(file)

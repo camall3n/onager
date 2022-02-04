@@ -1,11 +1,11 @@
 import math
-from multiprocessing import Pool, cpu_count
+from multiprocessing import Pool
 import os
 import socket
 
 from ._backend import Backend
 from ..worker import run_command_by_id
-from ..utils import expand_ids, load_jobfile, update_jobindex, get_next_index_jobid
+from ..utils import expand_ids, load_jobfile, update_jobindex, get_next_index_jobid, cpu_count
 
 class LocalBackend(Backend):
     def __init__(self, logging_name=None):
@@ -69,7 +69,7 @@ class LocalBackend(Backend):
         task_ids = expand_ids(args.tasklist)
 
         n_workers = self.get_n_workers(task_ids, args.max_subjobs, cpus=1)
-        self.send_jobs_to_pool(n_workers, task_ids, quiet=False)
+        self.send_jobs_to_pool(n_workers, task_ids, quiet=self.quiet)
 
 
     def process_one_job(self, task_id):
