@@ -60,7 +60,7 @@ class LocalBackend(Backend):
 
     def multilaunch(self, jobs, args):
         self.commands = jobs
-        self.quiet = True
+        self.quiet = False
         subjob_log_dirname = '{}_{}_subjobs'.format(args.logging_jobname, args.logging_multijobid)
         subjob_log_dir = os.path.join(self.get_log_dir(), subjob_log_dirname)
         log_name = '{}'.format(args.subjob_group_id)

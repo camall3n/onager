@@ -20,8 +20,7 @@ def run_command_by_id(commands, task_id, stdout=None, stderr=None, quiet=False):
         else:
             if not quiet:
                 elapsed = datetime.now() - start_time
-                print('Worker finished:', cmd)
-                print('Elapsed time:  {}'.format(elapsed))
+                print('Worker finished: {}\nElapsed time:  {}'.format(cmd, elapsed))
 
 if __name__ == '__main__':
     assert len(sys.argv) == 3, 'Usage: python -m worker path/to/commands.json task_id'
