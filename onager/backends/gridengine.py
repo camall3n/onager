@@ -9,12 +9,13 @@ class GridEngineBackend(Backend):
         super().__init__()
         self.name = 'gridengine'
         self.task_id_var = r'$SGE_TASK_ID'
+        self.job_id_var = r'$JOB_ID'
 
     def generate_tasklist(self, commands):
         ids = sorted(commands.keys())
         tasklist = condense_ids(ids)
         return tasklist
-    
+
     def get_cancel_cmds(self, cancellations):
         cmds = []
         for cancellation in cancellations:
@@ -87,9 +88,9 @@ class GridEngineBackend(Backend):
         if args.hold_jid is not None:
             base_cmd += "-hold_jid {} ".format(args.hold_jid)
 
-        if args.maxtasks > 0:
+        if args.max_tasks > 0:
             # set maximum number of running tasks per block
-            base_cmd += "-tc {} ".format(args.maxtasks)
+            base_cmd += "-tc {} ".format(args.max_tasks)
 
         wrapper_script = self.wrap_tasks(args.jobfile, args)
         wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname)

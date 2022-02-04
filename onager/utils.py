@@ -1,6 +1,7 @@
 import csv
 from itertools import count, groupby
 import json
+import os
 
 from .constants import default_index
 
@@ -15,6 +16,10 @@ def load_jobfile(jobfile_path):
 def save_jobfile(jobs, jobfile_path, tag=None):
     with open(jobfile_path, "w+") as jobfile:
         json.dump(jobs, jobfile)
+
+def compute_subjobs_filename(jobfile_path):
+    jobdir = os.path.dirname(jobfile_path)
+    return os.path.join(jobdir, 'subjobs.csv')
 
 def load_jobindex():
     with open(default_index, 'r', newline='') as job_index:
@@ -64,3 +69,10 @@ def _generate_id_ranges(tasklist):
 def insert_second_to_last(cmd, insert_str, sep=' '):
     cmd = cmd.split(sep)
     return sep.join(cmd[:-1]) + sep + insert_str + sep + cmd[-1]
+
+def split_tasklist_into_subjob_groups(tasklist, tasks_per_node):
+    jobids = expand_ids(tasklist)
+    list_of_tasklist_strings = [
+        condense_ids(jobids[i:i+tasks_per_node]) for i in range(0, len(jobids), tasks_per_node)
+    ]
+    return list_of_tasklist_strings

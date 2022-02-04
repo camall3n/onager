@@ -2,13 +2,15 @@ from datetime import timedelta
 import os
 
 from ._backend import Backend
-
+from ..subjobsfilemanager import SubjobsFileManager
+from ..utils import compute_subjobs_filename, split_tasklist_into_subjob_groups
 
 class SlurmBackend(Backend):
     def __init__(self):
         super().__init__()
         self.name = 'slurm'
         self.task_id_var = r'$SLURM_ARRAY_TASK_ID'
+        self.job_id_var = r'$SLURM_JOB_ID'
 
     def get_cancel_cmds(self, cancellations):
         cmds = []
@@ -60,10 +62,22 @@ class SlurmBackend(Backend):
         # jobid with subprocess.check_output()
         base_cmd += '--parsable '
 
-        base_cmd += "--array={}".format(args.tasklist)
-        if args.maxtasks > 0:
+        if args.tasks_per_node == 1:
+            base_cmd += "--array={}".format(args.tasklist)
+            wrapper_filename = 'wrapper.sh'
+        elif args.tasks_per_node > 1:
+            list_of_tasklist_strings = split_tasklist_into_subjob_groups(args.tasklist, args.tasks_per_node)
+            subjobs_filename = compute_subjobs_filename(args.jobfile)
+            sfm = SubjobsFileManager(subjobs_filename)
+            subjob_groupids = sfm.add_subjobs(list_of_tasklist_strings)
+            tasklist = ','.join([str(id) for id in subjob_groupids])
+            base_cmd += "--array={}".format(tasklist)
+            wrapper_filename = 'multiwrapper.sh'
+        else:
+            raise RuntimeError('task_per_node must be >= 1')
+        if args.max_tasks > 0:
             # set maximum number of running tasks
-            base_cmd += '%{} '.format(args.maxtasks)
+            base_cmd += '%{} '.format(args.max_tasks)
         else:
             base_cmd += ' '
 
@@ -72,6 +86,6 @@ class SlurmBackend(Backend):
             base_cmd += "--depend=afterany:{} ".format(args.hold_jid)
 
         wrapper_script = self.wrap_tasks(args.jobfile, args)
-        wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname)
+        wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname, filename=wrapper_filename)
         base_cmd += "{}".format(wrapper_file)
         return [base_cmd]
