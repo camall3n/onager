@@ -10,7 +10,7 @@ class SlurmBackend(Backend):
         super().__init__()
         self.name = 'slurm'
         self.task_id_var = r'$SLURM_ARRAY_TASK_ID'
-        self.job_id_var = r'$SLURM_JOB_ID'
+        self.job_id_var = r'$SLURM_ARRAY_JOB_ID'
 
     def get_cancel_cmds(self, cancellations):
         cmds = []
