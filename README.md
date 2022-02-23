@@ -3,7 +3,9 @@ Lightweight python library for launching experiments and tuning hyperparameters,
 
 By Cameron Allen & Neev Parikh
 
-# Installation
+-----
+
+## Installation
 
 Currently requires Python 3.7+
 
@@ -11,9 +13,18 @@ Currently requires Python 3.7+
 pip install onager
 ```
 
-# Usage
+-----
 
-## Prelaunch
+## Developer Documentation
+
+- [System Overview](docs/system-overview.md)
+  - [Multiworker design doc](docs/multiworker.md)
+
+-----
+
+## Usage
+
+### Prelaunch
 Prelaunch generates commands and adds them to a jobfile. The default behavior also prints the list of generated commands.
 
 ```
@@ -33,7 +44,7 @@ myscript --learningrate 0.01 --batchsize 128 --mytag experiment1_8__learningrate
 myscript --learningrate 0.001 --batchsize 128 --mytag experiment1_9__learningrate_0.001__batchsize_128
 ```
 
-## Launch
+### Launch
 Launch reads a jobfile (or accepts a single user-specified command), and launches the associated job(s) on the specified backend. Currently onager supports 'slurm' and 'gridengine' as cluster backends, and 'local' for running on a single host.
 
 ```
@@ -45,7 +56,7 @@ Output:
 sbatch -J experiment1 -t 0-01:00:00 -n 1 -p batch --mem=2G -o .onager/logs/slurm/%x_%A_%a.o -e .onager/logs/slurm/%x_%A_%a.e --parsable --array=1,2,3,4,5,6,7,8,9 .onager/scripts/experiment1/wrapper.sh
 ```
 
-## Config
+### Config
 By default, onager will simply launch commands for you. If you need to do additional initialization or cleanup, you can configure it using the `config` subcommand and writing to the `header` or `footer` fields of the appropriate backend.
 
 ```
@@ -55,7 +66,7 @@ module load cudnn/7.6.5
 source ./venv/bin/activate"
 ```
 
-## List
+### List
 List is useful for displaying information about launched jobs and tasks, since the backend will typically assign the same jobname to all subtasks.
 
 ```
@@ -77,7 +88,7 @@ Output:
 13438569          9  experiment1  'myscript --learningrate 0.001 --batchsize 128 --mytag experiment1_9__learningrate_0.001__batchsize_128'  experiment1_9__learningrate_0.001__batchsize_128
 ```
 
-## Cancel
+### Cancel
 Quickly cancel the specified jobs (and subtasks) on the backend
 
 ```
@@ -89,7 +100,7 @@ Output:
 scancel 13438569_1 13438569_2 13438569_3 13438569_5 13438569_8 13438569_9
 ```
 
-## Re-launch
+### Re-launch
 Launch also supports re-running selected subtasks from a previously launched job
 
 ```
@@ -101,7 +112,7 @@ Output:
 sbatch -J experiment1 -t 0-01:00:00 -n 1 -p batch --mem=2G -o .onager/logs/slurm/%x_%A_%a.o -e .onager/logs/slurm/%x_%A_%a.e --parsable --array=1-3:1,5,8-9 .onager/scripts/experiment1/wrapper.sh
 ```
 
-## Help
+### Help
 For a list of the available subcommands and their respective arguments, use the `help` subcommand:
 
 ```
@@ -109,10 +120,12 @@ onager help
 onager help launch
 ```
 
-# Example: MNIST
+-----
+
+## Example: MNIST
 Let's consider a toy MNIST example to concretely see how this would be used in a more realistic setting.
 
-## Setup
+### Setup
 If you have the repository cloned, install the `examples/mnist/requirements.txt` in some virtualenv.
 You now have a pretty standard setup for an existing project. To use onager, all you have to do is
 `pip install onager`.
@@ -123,7 +136,7 @@ source venv/bin/activate
 pip install onager
 ```
 
-## Prelaunch
+### Prelaunch
 Say we need to tune the hyperparameters on our very important MNIST example. We say we want to tune
 the learning rate between these values `0.3, 1.0, 3.0` and the batch-size between `32, 64`. We need
 to run this for at least 3 seeds each, giving us a total of 18 runs in this experiment. We can use
@@ -162,7 +175,7 @@ Now this command will generate a `jobs.json` in the default location for the *jo
 located here: `.onager/scripts/mnist_lr_bs/jobs.json`. You can customize this by specifying a custom
 `+jobfile` argument. See `onager help prelaunch` for more details.
 
-## Launch
+### Launch
 
 Say we want to run this on a Slurm backend somewhere. We need to run prelaunch as described above
 and then you simply specify what kind of hardware you need. More details can be found via
@@ -179,8 +192,9 @@ And that's it! We now can check `.onager/logs/slurm/` for our logs. To keep trac
 scheduled, we can use `onager list`. Say you want to cancel some jobs; an easy way to cancel is via
 `onager cancel`
 
+-----
 
-# Example: Managing GridEngine 'Eqw' errors
+## Example: Managing GridEngine 'Eqw' errors
 Sometimes GridEngine inexplicably fails to launch certain jobs, causing them to permanently remain in 'Eqw' state. The only known fix for this is to re-run the jobs, but that requires manually parsing the `qstat` output and resubmitting only the affected jobs.
 
 We can use onager to automatically handle this problem for us.
@@ -211,7 +225,9 @@ onager launch --backend gridengine --duration 00:02:00 --jobname test-eqw --venv
 
 If there are multiple ranges (as in this example), onager will automatically handle splitting those ranges up into separate `qdel` and `qsub` commands.
 
-# Example: Launching Jobs Locally
+-----
+
+## Example: Launching Jobs Locally
 Sometimes a cluster is overkill, and you just want to launch jobs locally. Onager supports this as well.
 
 ```
