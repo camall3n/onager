@@ -6,19 +6,26 @@ The core workflow is as follows:
 
 1. Main executable - `bin/onager`
 
+   - Parses arguments with `onager.frontend` and determines which subcommand to execute
+   - Forwards the parsed arguments to the appropriate subcommand (usually `prelaunch` or `launch`)
+
 1. Prelaunch - `onager.meta_launcher.meta_launch()`
 
-    - Inputs:
-        - jobname
-        - command
-        - argument lists
-        - etc.
+   - Generates a list of jobs to run by considering all combinations of the declared arguments
 
-    - Outputs:
-        - jobfile - `jobs.json`
-            - contains a JSON dictionary mapping from jobids to 2-item lists, each containing a command and a (possibly empty) tag identifier.
+   - Inputs:
+      - jobname
+      - command
+      - argument lists
+      - etc.
+
+   - Outputs:
+      - jobfile - `jobs.json`
+         - contains a JSON dictionary mapping from jobids to 2-item lists, each containing a command and a (possibly empty) tag identifier.
 
 1. Launch - `onager.launcher.launch()`
+
+   - Sends a list of jobs (or a single job) to the designated backend (which will schedule and run them automatically)
 
    - Inputs:
       - jobname
@@ -33,7 +40,7 @@ The core workflow is as follows:
       - "Single" mode:
          - Shell script - `wrapper.sh`
             - Wraps `onager.worker` executable with the appropriate environment setup/teardown steps (`--venv`, `onager config`, etc.)
-      - "Multi" mode:
+      - "Multi" mode (see [design doc](multiworker.md)):
          - Shell script - `multiwrapper.sh`
             - Wraps `onager.multiworker` executable with the appropriate environment setup/teardown steps (`--venv`, `onager config`, etc.)
          - Subjobs file - `subjobs.csv`
