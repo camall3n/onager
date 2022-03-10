@@ -2,13 +2,13 @@
 import os
 
 from onager import frontend
-from onager import meta_launcher, launcher, constants, cancel, config
+from onager import meta_launcher, launcher, cancel, config, utils
 from onager import list as list_
 
 if __name__ == '__main__':
     args, other_args = frontend.parse_args()
-    os.makedirs(constants.default_logs_folder, exist_ok=True)
-    os.makedirs(constants.default_scripts_folder, exist_ok=True)
+
+    utils.ensure_onager_folders_exist()
 
     if args.subcommand == 'prelaunch':
         meta_launcher.meta_launch(args)

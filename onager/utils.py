@@ -2,8 +2,25 @@ import csv
 from itertools import count, groupby
 import json
 import os
+import sys
 
-from .constants import default_index
+from . import constants
+
+def ensure_onager_folders_exist():
+    if not os.path.isdir(constants.onager_folder):
+        print("This appears to be your first time running onager in this folder.")
+        print()
+        print("Allow onager to store files in the directory './.onager/'?")
+        response = input("[y/n] > ")
+        if response not in ['y', 'Y', 'yes', 'Yes']:
+            print('Setup canceled.')
+            sys.exit()
+        else:
+            print("Created folder: './.onager/'")
+            print()
+    os.makedirs(constants.default_logs_folder, exist_ok=True)
+    os.makedirs(constants.default_scripts_folder, exist_ok=True)
+
 
 def cpu_count():
     # os.cpu_count()
@@ -35,7 +52,7 @@ def compute_subjobs_filename(jobfile_path):
     return os.path.join(jobdir, 'subjobs.csv')
 
 def load_jobindex():
-    with open(default_index, 'r', newline='') as job_index:
+    with open(constants.default_index, 'r', newline='') as job_index:
         csv_reader = csv.reader(job_index, delimiter=',', quotechar='|')
         index = {job_entry[0]: job_entry[1:] for job_entry in csv_reader}
     return index
@@ -53,7 +70,7 @@ def get_next_index_jobid():
 
 def update_jobindex(job_entries, append=True):
     mode = 'w+' if not append else 'a+'
-    with open(default_index, mode, newline='') as job_index:
+    with open(constants.default_index, mode, newline='') as job_index:
         csv_writer = csv.writer(job_index, delimiter=',', quotechar='|')
         csv_writer.writerows(job_entries)
 
