@@ -27,10 +27,10 @@ def parse_args(args=None):
     prelaunch_parser.add_argument('+flag', type=str, action='append', metavar=('--flag'),
         help='Add a boolean argument that will be toggled in the resulting commands')
     prelaunch_parser.add_argument('+tag', type=str, nargs='?', const='--tag',
-        help='Passes unique str for each run to this arg in command, i.e. +tag <run-tag> <str>')
+        help='Passes a unique tag string for each run to the specified arg in the command, i.e. --tag <tag-contents>')
     prelaunch_parser.add_argument('+tag-args', type=str, nargs='+',
         metavar=('--argname'),
-        help='Specifies which args go into the unique <str>. Default is all provided +arg')
+        help='Specifies which args go into the unique <tag-contents>. Default is all provided args')
     prelaunch_parser.add_argument('+no-tag-number', action='store_true', dest='no_tag_number',
         help='Disable auto-numbering when generating tags')
     prelaunch_parser.add_argument('+a', '+append', action='store_true', dest='append',
