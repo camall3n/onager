@@ -2,19 +2,21 @@ from datetime import timedelta
 import os
 
 from ._backend import Backend
-from ..utils import condense_ids
+from ..subjobsfilemanager import SubjobsFileManager
+from ..utils import compute_subjobs_filename, split_tasklist_into_subjob_groups, condense_ids
 
 class GridEngineBackend(Backend):
     def __init__(self):
         super().__init__()
         self.name = 'gridengine'
         self.task_id_var = r'$SGE_TASK_ID'
+        self.job_id_var = r'$JOB_ID'
 
     def generate_tasklist(self, commands):
         ids = sorted(commands.keys())
         tasklist = condense_ids(ids)
         return tasklist
-    
+
     def get_cancel_cmds(self, cancellations):
         cmds = []
         for cancellation in cancellations:
@@ -87,15 +89,26 @@ class GridEngineBackend(Backend):
         if args.hold_jid is not None:
             base_cmd += "-hold_jid {} ".format(args.hold_jid)
 
-        if args.maxtasks > 0:
+        if args.max_tasks > 0:
             # set maximum number of running tasks per block
-            base_cmd += "-tc {} ".format(args.maxtasks)
+            base_cmd += "-tc {} ".format(args.max_tasks)
+
+        if args.tasks_per_node == 1:
+            tasklist = args.tasklist
+            wrapper_filename = 'wrapper.sh'
+        elif args.tasks_per_node > 1:
+            list_of_tasklist_strings = split_tasklist_into_subjob_groups(args.tasklist, args.tasks_per_node)
+            subjobs_filename = compute_subjobs_filename(args.jobfile)
+            sfm = SubjobsFileManager(subjobs_filename)
+            subjob_groupids = sfm.add_subjobs(list_of_tasklist_strings)
+            tasklist = condense_ids(subjob_groupids)
+            wrapper_filename = 'multiwrapper.sh'
 
         wrapper_script = self.wrap_tasks(args.jobfile, args)
-        wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname)
+        wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname, filename=wrapper_filename)
 
         # Split tasklist into blocks that GridEngine can understand
-        task_blocks = args.tasklist.split(',')
+        task_blocks = tasklist.split(',')
         return [
             base_cmd + "-t {} {}".format(task_block, wrapper_file) for task_block in task_blocks
         ]

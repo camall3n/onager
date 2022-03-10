@@ -12,9 +12,25 @@ class Backend:
         self.name = 'generic_backend'
         self.header = '#!/bin/bash'
         self.body = '\npython -m onager.worker {} {} \n'
+        self.multiworker_body = '\npython -m onager.multiworker {} \n'
         self.footer = ''
 
         self.task_id_var = r'$TASK_ID'
+        self.job_id_var = r'$JOB_ID'
+
+    def get_body(self, tasks_file, args):
+        if args.tasks_per_node == 1:
+            return self.body.format(tasks_file, self.task_id_var)
+        else:
+            body = self.multiworker_body
+            args_str_list = []
+            args_str_list.append('--jobfile {}'.format(args.jobfile))
+            args_str_list.append('--logging-jobname {}'.format(args.jobname))
+            args_str_list.append('--logging-multijobid {}'.format(self.job_id_var))
+            args_str_list.append('--logging-backend {}'.format(args.backend))
+            args_str_list.append('--subjob-group-id {}'.format(self.task_id_var))
+            args_str_list.append('--max-subjobs {}'.format(args.max_tasks_per_node))
+            return body.format(' '.join(args_str_list))
 
     def wrap_tasks(self, tasks_file, args):
         config = get_active_config()
@@ -22,15 +38,15 @@ class Backend:
         if args.venv is not None:
             venv_activate_path = os.path.join(os.path.normpath(args.venv), 'bin', 'activate')
             header = '\n'.join((header, 'source {}'.format(venv_activate_path)))
-        body = self.body.format(tasks_file, self.task_id_var)
+        body = self.get_body(tasks_file, args)
         footer = '\n'.join((config[self.name]['footer'], self.footer))
         wrapper_script = header + body + footer
         return wrapper_script
 
-    def save_wrapper_script(self, wrapper_script, jobname):
+    def save_wrapper_script(self, wrapper_script, jobname, filename='wrapper.sh'):
         scripts_dir = os.path.join('.onager', 'scripts', jobname)
         os.makedirs(scripts_dir, exist_ok=True)
-        jobfile = os.path.join(scripts_dir, 'wrapper.sh')
+        jobfile = os.path.join(scripts_dir, filename)
         with open(jobfile, 'w') as file:
             file.write(wrapper_script)
         return jobfile

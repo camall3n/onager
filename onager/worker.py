@@ -8,7 +8,7 @@ from .utils import load_jobfile
 def run_command_by_id(commands, task_id, stdout=None, stderr=None, quiet=False):
     cmd = commands[task_id]
     if not quiet:
-        print('Launching worker:', cmd)
+        print('Launching worker: {}'.format(cmd), flush=True)
         start_time = datetime.now()
     with ExitStack() as stack:
         stdout = stack.enter_context(open(stdout, 'wb')) if stdout is not None else None
@@ -20,8 +20,7 @@ def run_command_by_id(commands, task_id, stdout=None, stderr=None, quiet=False):
         else:
             if not quiet:
                 elapsed = datetime.now() - start_time
-                print('Worker finished:', cmd)
-                print('Elapsed time:  {}'.format(elapsed))
+                print('Worker finished: {}\nElapsed time:  {}'.format(cmd, elapsed), flush=True)
 
 if __name__ == '__main__':
     assert len(sys.argv) == 3, 'Usage: python -m worker path/to/commands.json task_id'

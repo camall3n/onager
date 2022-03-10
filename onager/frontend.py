@@ -60,8 +60,12 @@ def parse_args(args=None):
         help='Duration of job (d-hh:mm:ss)')
     launch_parser.add_argument('--tasklist', type=str, default=None,
         help='Comma separated list of task ID ranges to submit (e.g. "18-22:1,26,29,34-49:3,51")')
-    launch_parser.add_argument('-max','--maxtasks', type=int, default=-1,
-        help='Maximum number of simultaneous tasks')
+    launch_parser.add_argument('--max-tasks', type=int, default=-1,
+        help='Maximum number of simultaneous tasks on backend')
+    launch_parser.add_argument('--tasks-per-node', type=int, default=1,
+        help='How many total tasks to process with each node')
+    launch_parser.add_argument('--max-tasks-per-node', type=int, default=-1,
+        help='Maximum number of simultaneous tasks to process with each node')
     launch_parser.add_argument('--debug', '--test', action='store_true', dest='debug',
         help="Submit a short-duration, high-priority job to the backend")
     launch_parser.set_defaults(debug=False)
