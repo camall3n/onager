@@ -56,6 +56,25 @@ Output:
 sbatch -J experiment1 -t 0-01:00:00 -n 1 -p batch --mem=2G -o .onager/logs/slurm/%x_%A_%a.o -e .onager/logs/slurm/%x_%A_%a.e --parsable --array=1,2,3,4,5,6,7,8,9 .onager/scripts/experiment1/wrapper.sh
 ```
 
+Options:
+```
+--max-tasks MAX_TASKS
+```
+
+- Maximum number of simultaneous tasks on backend. This argument can be used to limit the number of jobs to avoid flooding the cluster or to override the default parallelism of the local backend. When `--tasks-per-node` is greater than 1, `--max-tasks` governs the number of nodes, and `--max-tasks-per-node` governs the number of tasks per node.
+
+```
+--tasks-per-node TASKS_PER_NODE
+```
+
+- Enables running multiple tasks in parallel on the backend by spawning another "local" backend on each node.
+
+```
+--max-tasks-per-node MAX_TASKS_PER_NODE
+```
+
+- Maximum number of simultaneous tasks to process with each node.
+
 ### Config
 By default, onager will simply launch commands for you. If you need to do additional initialization or cleanup, you can configure it using the `config` subcommand and writing to the `header` or `footer` fields of the appropriate backend.
 
