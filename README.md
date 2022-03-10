@@ -44,6 +44,45 @@ myscript --learningrate 0.01 --batchsize 128 --mytag experiment1_8__learningrate
 myscript --learningrate 0.001 --batchsize 128 --mytag experiment1_9__learningrate_0.001__batchsize_128
 ```
 
+Argument types:
+```
++arg --argname [value ...]
+```
+- Add an argument with zero or more mutually exclusive values
+
+```
++pos-arg value [value ...]
+```
+
+- Add a positional argument with one or more mutually exclusive values
+
+```
++flag --flagname
+```
+
+- Add a boolean argument that will be toggled in the resulting commands
+
+
+Options:
+```
++tag [TAG]
+```
+
+- Passes a unique tag string for each run to the specified arg in the command, i.e. `--tag <tag-contents>`.
+
+```
++tag-args --argname [--argname ...]
+```
+
+- Specifies which args go into the unique `<tag-contents>`. Default is all provided args.
+
+```
++no-tag-number
+```
+
+- Disable auto-numbering when generating tags
+
+
 ### Launch
 Launch reads a jobfile (or accepts a single user-specified command), and launches the associated job(s) on the specified backend. Currently onager supports 'slurm' and 'gridengine' as cluster backends, and 'local' for running on a single host.
 
