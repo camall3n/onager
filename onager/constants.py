@@ -10,7 +10,7 @@ globalconfigfile = os.path.join(os.path.expanduser('~'), '.onagerconfig')
 localconfigfile = os.path.join(onager_folder, 'config')
 
 # Separators
-sep = '_'
-wsep = '__'
-flag_on = '+'
-flag_off = '-'
+SEP = '_'
+WSEP = '__'
+FLAG_ON = '+'
+FLAG_OFF = '-'

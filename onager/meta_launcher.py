@@ -3,10 +3,17 @@ import os
 from warnings import warn
 
 from .utils import load_jobfile, save_jobfile
-from .constants import sep, wsep, flag_on, flag_off
+from .constants import SEP, WSEP, FLAG_ON, FLAG_OFF
 
 def meta_launch(args):
     base_cmd = args.command
+
+    if args.arg_mode == 'argparse':
+        VAR_SEP = ' '
+    elif args.arg_mode == 'hydra':
+        VAR_SEP = '='
+    else:
+        raise NotImplementedError(f'Unknown arg mode: {args.arg_mode}')
 
     if args.arg is not None:
         variables = OrderedDict({arglist[0]: arglist[1:] for arglist in args.arg})
@@ -46,7 +53,7 @@ def meta_launch(args):
         cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list]
         cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
         if args.tag is not None:
-            value_slot = wsep + '{}'
+            value_slot = WSEP + '{}'
             cmd_suffix_list = [
                 suffix + value_slot for suffix in cmd_suffix_list
             ]
@@ -58,14 +65,14 @@ def meta_launch(args):
     for key, value_list in variables.items():
         cmd_prefix_list = [prefix + ' ' + key for prefix in cmd_prefix_list]
         if len(value_list) > 0:
-            cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list]
+            cmd_prefix_list = [prefix + VAR_SEP + '{}' for prefix in cmd_prefix_list]
             cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
         if args.tag is not None:
             if key in args.tag_args:
-                value_slot = sep + '{}' if len(value_list) > 0 else ''
-                keyname = key.replace('_', '').replace('-', '')
+                value_slot = SEP + '{}' if len(value_list) > 0 else ''
+                keyname = key.replace('_', '').replace('-', '').replace('=','_').replace('/','.')
                 cmd_suffix_list = [
-                    suffix + wsep + keyname + value_slot for suffix in cmd_suffix_list
+                    suffix + WSEP + keyname + value_slot for suffix in cmd_suffix_list
                 ]
                 if len(value_list) > 0:
                     cmd_suffix_list = [
@@ -86,8 +93,8 @@ def meta_launch(args):
                 suffix + '{}' for suffix in cmd_suffix_list
             ]
             cmd_suffix_list = [
-                suffix.format(wsep + s + flag.replace(flag_off, '').replace(flag_on, ''))
-                for s in [flag_on, flag_off]
+                suffix.format(WSEP + s + flag.replace(FLAG_OFF, '').replace(FLAG_ON, ''))
+                for s in [FLAG_ON, FLAG_OFF]
                 for suffix in cmd_suffix_list
             ]
 
@@ -109,12 +116,12 @@ def meta_launch(args):
             n_digits = len(str(start_jobid + len(cmd_suffix_list) - 1))
             tag_number_format = '{{:0{0}d}}'.format(n_digits)
             tag_list = [
-                args.jobname + sep + tag_number_format.format(i) + suffix
+                args.jobname + SEP + tag_number_format.format(i) + suffix
                 for (i, suffix) in enumerate(cmd_suffix_list, start_jobid)
             ]
 
         cmd_prefix_list = [
-            ' '.join([prefix, args.tag, suffix])
+            (prefix + ' ' + args.tag + VAR_SEP + suffix)
             for (prefix, suffix) in zip(cmd_prefix_list, tag_list)
         ]
     else:

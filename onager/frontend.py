@@ -18,6 +18,8 @@ def parse_args(args=None):
         help='Name to label this run with, to be used with onager launch when submitting jobs')
     prelaunch_parser.add_argument('+jobfile', type=str, default=constants.defaultjobfile,
         help='json file to write jobs to. Use when running launch')
+    prelaunch_parser.add_argument('+arg-mode', type=str, default='argparse',
+        choices=['argparse', 'hydra'], help='Method for joining args with values')
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
         metavar=('--argname', 'value'),
         help='Add an argument with zero or more mutually exclusive values')
