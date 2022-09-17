@@ -9,8 +9,14 @@ By Cameron Allen & Neev Parikh
 
 Currently requires Python 3.7+
 
+Stable version:
 ```
 pip install onager
+```
+
+Development version:
+```
+pip install git+https://github.com/camall3n/onager.git
 ```
 
 -----
