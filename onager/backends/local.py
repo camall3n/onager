@@ -4,8 +4,10 @@ import os
 import socket
 
 from ._backend import Backend
+from ..constants import job_index
+from ..history import add_new_history_entry
 from ..worker import run_command_by_id
-from ..utils import expand_ids, load_jobfile, update_jobindex, get_next_index_jobid, cpu_count
+from ..utils import expand_ids, load_jobfile, update_index, get_next_index_id, cpu_count
 
 class LocalBackend(Backend):
     def __init__(self, logging_name=None):
@@ -51,8 +53,9 @@ class LocalBackend(Backend):
         os.makedirs(os.path.dirname(self.log_path), exist_ok=True)
         task_ids = expand_ids(args.tasklist)
 
-        job_entries = [(get_next_index_jobid(), args.jobname, args.jobfile)]
-        update_jobindex(job_entries, append=True)
+        job_entries = [(get_next_index_id(), args.jobname, args.jobfile)]
+        update_index(job_entries, index_name=job_index, append=True)
+        add_new_history_entry(args.dry_run)
 
         n_workers = self.get_n_workers(task_ids, args.max_tasks, args.cpus)
         if not args.dry_run:

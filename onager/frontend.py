@@ -79,6 +79,13 @@ def parse_args(args=None):
     launch_parser.add_argument('-q', '--quiet', action='store_true', help='Quiet output')
 
 
+    history_parser = subparsers.add_parser('history',
+        help='Display command history')
+    history_parser.add_argument('--prelaunch', action='store_true', help='Show prelaunch commands')
+    history_parser.add_argument('--launch', action='store_true', help='Show launch commands')
+    history_parser.add_argument('--no-dry-run', action='store_true', help='Hide dry-run commands')
+
+
     list_parser = subparsers.add_parser('list',
         help='List previously launched commands by job_id and task_id')
     list_parser.add_argument('-j','--jobid', type=str,

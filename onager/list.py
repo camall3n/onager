@@ -1,10 +1,8 @@
 from collections import namedtuple
-import subprocess
-import sys
 
 from tabulate import tabulate
 
-from .utils import load_jobindex, expand_ids, load_jobfile
+from .utils import load_index, expand_ids, load_jobfile
 
 JobListing = namedtuple('JobListing', ['job_id', 'task_id', 'jobname', 'command', 'tag'])
 
@@ -26,7 +24,7 @@ def get_job_listings(args):
 
     job_list = []
     try:
-        index = load_jobindex()
+        index = load_index()
     except (IOError):
         return job_list
     for jobid in index.keys():
@@ -53,4 +51,3 @@ def list_commands(args, quiet=False):
     job_list = get_job_listings(args)
     if not quiet:
         print(tabulate(job_list, headers=JobListing._fields))
-    
