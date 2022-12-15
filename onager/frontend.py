@@ -87,6 +87,11 @@ def parse_args(args=None):
         help='Limit output to the most recent N entries')
     history_parser.add_argument('--since', type=str, nargs='+', metavar=('DATE', 'TIME'),
         default=None, help='Show commands since DATE (YYYY.mm.dd) [and TIME (HH:MM:SS)]')
+    history_parser.add_argument('--full', action='store_true', help='Show full commands in table')
+    history_parser.add_argument('--details', metavar='ID_or_JOBNAME', default=None,
+        help='Show history details for a specific command ID or JOBNAME (or -1 for previous command)')
+    history_parser.add_argument('--width', type=int, default=None,
+        help='Maximum character width when printing table')
 
 
     list_parser = subparsers.add_parser('list',

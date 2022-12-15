@@ -96,4 +96,4 @@ class Backend:
                     sys.exit()
         job_entries = [(jobid, args.jobname, args.jobfile) for jobid in jobids]
         update_jobindex(job_entries, append=True)
-        add_new_history_entry(args.dry_run)
+        add_new_history_entry(args.jobname, args.dry_run)

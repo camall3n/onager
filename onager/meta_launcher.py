@@ -134,4 +134,4 @@ def meta_launch(args):
         jobs[i] = (cmd,tag)
 
     save_jobfile(jobs, jobfile_path, args.tag)
-    add_new_history_entry(dry_run=False)
+    add_new_history_entry(jobname=args.jobname, dry_run=False)

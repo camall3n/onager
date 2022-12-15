@@ -53,7 +53,7 @@ class LocalBackend(Backend):
 
         job_entries = [(get_next_index_id(), args.jobname, args.jobfile)]
         update_jobindex(job_entries, append=True)
-        add_new_history_entry(args.dry_run)
+        add_new_history_entry(args.jobname, args.dry_run)
 
         n_workers = self.get_n_workers(task_ids, args.max_tasks, args.cpus)
         if not args.dry_run:
