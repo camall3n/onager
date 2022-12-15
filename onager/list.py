@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from tabulate import tabulate
 
-from .utils import load_index, expand_ids, load_jobfile
+from .utils import load_jobindex, expand_ids, load_jobfile
 
 JobListing = namedtuple('JobListing', ['job_id', 'task_id', 'jobname', 'command', 'tag'])
 
@@ -24,7 +24,7 @@ def get_job_listings(args):
 
     job_list = []
     try:
-        index = load_index()
+        index = load_jobindex()
     except (IOError):
         return job_list
     for jobid in index.keys():
