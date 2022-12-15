@@ -51,7 +51,7 @@ def get_history(args):
         history_list.append(entry)
     return history_list
 
-def print_history(args, quiet=False):
+def print_history(args):
     """Prints onager command history"""
     history_entries = get_history(args)
     def make_printable(entry):
@@ -82,5 +82,4 @@ def print_history(args, quiet=False):
     ]
 
     fields = [field for field in HistoryEntry._fields if field not in ['mode', 'dry_run']]
-    if not quiet:
-        print(tabulate(printable_history, headers=fields))
+    print(tabulate(printable_history, headers=fields))

@@ -25,7 +25,7 @@ def launch(args, other_args):
 
     jobs = backend.get_job_list(args)
 
-    if len(other_args) != 0 and not args.quiet:
+    if len(other_args) != 0:
         print("Passing these args to backend: {}".format(' '.join(other_args)))
 
     backend.launch(jobs, args, other_args)

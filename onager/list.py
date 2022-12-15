@@ -46,8 +46,7 @@ def get_job_listings(args):
             job_list.append(listing)
     return job_list
 
-def list_commands(args, quiet=False):
+def list_commands(args):
     """Parse the jobs/tasks to cancel and send the appropriate commands to the cluster"""
     job_list = get_job_listings(args)
-    if not quiet:
-        print(tabulate(job_list, headers=JobListing._fields))
+    print(tabulate(job_list, headers=JobListing._fields))
