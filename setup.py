@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='onager',
-    version='0.1.3',
+    version='0.1.4-dev',
     description='Lightweight python library for launching experiments and tuning hyperparameters, either locally or on a cluster',
     long_description=long_description,
     long_description_content_type='text/markdown',
