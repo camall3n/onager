@@ -1,4 +1,5 @@
 # onager
+
 Lightweight python library for launching experiments and tuning hyperparameters, either locally or on a cluster.
 
 By Cameron Allen & Neev Parikh
@@ -131,7 +132,7 @@ source ./venv/bin/activate"
 ```
 
 ### History
-History is useful for displaying information about previously executed onager commands. It allows for filtering by launch/prelaunch/dry-run, as well as restricting the output to the most recent N entries or entries since a particular date (and optional time).
+History is useful for displaying information about previously executed onager commands. It allows for filtering with `--launch`, `--prelaunch`, and `--no-dry-run`, as well as restricting the output to the most recent N entries (`-n N`) or entries `--since` a particular date (and optional time).
 
 ```
 onager history
@@ -139,13 +140,28 @@ onager history
 
 Output:
 ```
-  id  date        time             command
-----  ----------  ---------------  -----------------------------------------------------------------------------------------
-   0  2022.12.15  00:33:47.449593  prelaunch +jobname exp_01 +command myscript --name foo +arg --seed 1 2 3 --lr 0.003 0.001
-   1  2022.12.15  00:33:54.051139  launch --jobname exp_01 --backend local --duration 00:03:00 --cpus 2 --mem 10
-   2  2022.12.15  00:34:18.636573  launch --jobname exp_01 --backend local --duration 00:30:00 --cpus 4 --mem 8 --dry-run
-   3  2022.12.15  00:34:43.077715  prelaunch +jobname exp_02 +command myscript --name foo +arg --seed 4 5 6 --lr 0.003 0.001
-   4  2022.12.15  00:34:56.033614  launch --jobname exp_02 --backend local --duration 00:30:00 --cpus 4 --mem 8
+  id  date        time          jobname    mode       args
+----  ----------  ------------  ---------  ---------  -------------------------------------------------------------------------------
+   0  2022.12.15  11:52:06.184  exp_01     prelaunch  +jobname exp_01 +command myscript --name foo +arg --seed 1 2 3 --lr 0.003 0.001
+   1  2022.12.15  12:05:29.798  exp_01     launch     --jobname exp_01 --backend local --duration 00:03:00 --cpus 2 --mem 10
+   2  2022.12.15  12:05:40.920  exp_01     launch     --jobname exp_01 --backend local --duration 00:30:00 --cpus 4 --mem 8 --dry-run
+   3  2022.12.15  12:05:50.410  exp_02     prelaunch  +jobname exp_02 +command myscript --name foo +arg --seed 4 5 6 --lr 0.003 0.001
+   4  2022.12.15  14:43:55.837  exp_02     launch     --jobname exp_02 --backend local --duration 00:30:00 --cpus 4 --mem 8
+```
+
+To see the details and full command for a specific command ID or jobname, use `--details ID` or `--details JOBNAME`. The ID `-1` gives details for the most recent command.
+
+```
+onager history --details -1
+```
+
+Output:
+```
+  id  date        time          jobname    mode
+----  ----------  ------------  ---------  ---------
+   4  2022.12.15  14:43:55.837  exp_02     launch
+
+onager launch --jobname exp_02 --backend local --duration 00:30:00 --cpus 4 --mem 8
 ```
 
 ### List
