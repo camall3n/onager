@@ -23,8 +23,18 @@ def make_history_entry(cmd_id, date, time, jobname, mode, dry_run, cmd_args, arg
         entry = HistoryEntry(**entry)
     return entry
 
+def quoted(string):
+    if ' ' in string:
+        if '"' not in string:
+            return '"' + string + '"'
+        if "'" not in string:
+            return "'" + string + "'"
+        return '"' + string.replace('"', '\\\"') + '"'
+    return string
+
 def add_new_history_entry(jobname, dry_run):
     now = datetime.now()
+    cmd_args = [quoted(arg) for arg in sys.argv[2:]]
     history_entry = HistoryEntry(
         id=get_next_index_id(history_index),
         date=now.strftime('%Y.%m.%d'),
@@ -32,7 +42,7 @@ def add_new_history_entry(jobname, dry_run):
         jobname=jobname,
         mode=sys.argv[1],
         dry_run=dry_run,
-        args=' '.join(sys.argv[2:]),
+        args=' '.join(cmd_args),
     )
     update_index([get_history_tuple(history_entry)], history_index, append=True)
 
