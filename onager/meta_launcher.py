@@ -4,6 +4,7 @@ from warnings import warn
 
 from .utils import load_jobfile, save_jobfile
 from .constants import SEP, WSEP, FLAG_ON, FLAG_OFF
+from .history import add_new_history_entry
 
 def meta_launch(args):
     base_cmd = args.command
@@ -133,3 +134,4 @@ def meta_launch(args):
         jobs[i] = (cmd,tag)
 
     save_jobfile(jobs, jobfile_path, args.tag)
+    add_new_history_entry(dry_run=False)

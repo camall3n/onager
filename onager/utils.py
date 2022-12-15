@@ -51,28 +51,34 @@ def compute_subjobs_filename(jobfile_path):
     jobdir = os.path.dirname(jobfile_path)
     return os.path.join(jobdir, 'subjobs.csv')
 
-def load_jobindex():
-    with open(constants.default_index, 'r', newline='') as job_index:
-        csv_reader = csv.reader(job_index, delimiter=',', quotechar='|')
-        index = {job_entry[0]: job_entry[1:] for job_entry in csv_reader}
+def load_index(index_name:str = constants.job_index):
+    with open(index_name, 'r', newline='') as index_file:
+        csv_reader = csv.reader(index_file, delimiter=',', quotechar='|')
+        index = {entry[0]: entry[1:] for entry in csv_reader}
     return index
 
-def get_next_index_jobid():
+def get_next_index_id(index_name:str = constants.job_index):
     try:
-        ids = load_jobindex().keys()
+        ids = load_index(index_name).keys()
     except IOError:
         ids = []
     try:
-        next_jobid = max(map(int,ids)) + 1
+        next_id = max(map(int,ids)) + 1
     except ValueError:
-        next_jobid = 0
-    return next_jobid
+        next_id = 0
+    return next_id
 
-def update_jobindex(job_entries, append=True):
+def update_index(entries, index_name:str, append=True):
     mode = 'w+' if not append else 'a+'
-    with open(constants.default_index, mode, newline='') as job_index:
-        csv_writer = csv.writer(job_index, delimiter=',', quotechar='|')
-        csv_writer.writerows(job_entries)
+    with open(index_name, mode, newline='') as index_file:
+        csv_writer = csv.writer(index_file, delimiter=',', quotechar='|')
+        csv_writer.writerows(entries)
+
+def update_jobindex(entries, append=True):
+    update_index(entries, index_name=constants.job_index, append=append)
+
+def load_jobindex():
+    load_index(index_name=constants.job_index)
 
 def condense_ids(id_list):
     G = (list(x) for _, x in groupby(id_list, lambda x, c=count(): next(c) - x))

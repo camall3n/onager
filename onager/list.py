@@ -1,6 +1,4 @@
 from collections import namedtuple
-import subprocess
-import sys
 
 from tabulate import tabulate
 
@@ -53,4 +51,3 @@ def list_commands(args, quiet=False):
     job_list = get_job_listings(args)
     if not quiet:
         print(tabulate(job_list, headers=JobListing._fields))
-    

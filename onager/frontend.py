@@ -79,6 +79,17 @@ def parse_args(args=None):
     launch_parser.add_argument('-q', '--quiet', action='store_true', help='Quiet output')
 
 
+    history_parser = subparsers.add_parser('history',
+        help='Display command history')
+    history_parser.add_argument('--prelaunch', action='store_true', help='Show prelaunch commands')
+    history_parser.add_argument('--launch', action='store_true', help='Show launch commands')
+    history_parser.add_argument('--no-dry-run', action='store_true', help='Hide dry-run commands')
+    history_parser.add_argument('-n', metavar='N', type=int, default=None,
+        help='Limit output to the most recent N entries')
+    history_parser.add_argument('--since', type=str, nargs='+', metavar=('DATE', 'TIME'),
+        default=None, help='Show commands since DATE (YYYY.mm.dd) [and TIME (HH:MM:SS)]')
+
+
     list_parser = subparsers.add_parser('list',
         help='List previously launched commands by job_id and task_id')
     list_parser.add_argument('-j','--jobid', type=str,
@@ -122,7 +133,7 @@ def parse_args(args=None):
     help_parser = subparsers.add_parser('help',
         help='Show usage information for a subcommand')
     help_parser.add_argument('help_command', type=str, nargs='?',
-        choices=['prelaunch', 'launch', 'list', 'cancel', 'config', 'help'],
+        choices=['prelaunch', 'launch', 'history', 'list', 'cancel', 'config', 'help'],
         help='Get help about a subcommand')
     # yapf: enable
 

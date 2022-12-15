@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-import os
 
 from onager import frontend
-from onager import meta_launcher, launcher, cancel, config, utils
+from onager import meta_launcher, launcher, history, cancel, config, utils
 from onager import list as list_
 
 if __name__ == '__main__':
@@ -14,6 +13,8 @@ if __name__ == '__main__':
         meta_launcher.meta_launch(args)
     elif args.subcommand == 'launch':
         launcher.launch(args, other_args)
+    elif args.subcommand == 'history':
+        history.print_history(args)
     elif args.subcommand == 'list':
         list_.list_commands(args)
     elif args.subcommand == 'cancel':

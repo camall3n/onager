@@ -6,6 +6,7 @@ import sys
 from ..config import get_active_config
 from ..constants import default_logs_folder
 from ..utils import update_jobindex, insert_second_to_last
+from ..history import add_new_history_entry
 
 class Backend:
     def __init__(self):
@@ -96,3 +97,4 @@ class Backend:
                     sys.exit()
         job_entries = [(jobid, args.jobname, args.jobfile) for jobid in jobids]
         update_jobindex(job_entries, append=True)
+        add_new_history_entry(args.dry_run)
