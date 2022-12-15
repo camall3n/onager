@@ -128,7 +128,7 @@ def print_history(args):
     filtered_history = [entry for entry in history_entries[-N:] if should_print(entry, args)]
 
     show_details = (args.details is not None)
-    if show_details and (len(filtered_history) == 1):
+    if show_details and (len(filtered_history) > 1):
         print('Cannot show details for multiple entries:')
         print()
         show_details = False
