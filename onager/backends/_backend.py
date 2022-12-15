@@ -4,8 +4,8 @@ import subprocess
 import sys
 
 from ..config import get_active_config
-from ..constants import default_logs_folder, job_index
-from ..utils import update_index, insert_second_to_last
+from ..constants import default_logs_folder
+from ..utils import update_jobindex, insert_second_to_last
 from ..history import add_new_history_entry
 
 class Backend:
@@ -96,5 +96,5 @@ class Backend:
                     print(err)
                     sys.exit()
         job_entries = [(jobid, args.jobname, args.jobfile) for jobid in jobids]
-        update_index(job_entries, index_name=job_index, append=True)
+        update_jobindex(job_entries, append=True)
         add_new_history_entry(args.dry_run)

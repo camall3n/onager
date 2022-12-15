@@ -68,11 +68,14 @@ def get_next_index_id(index_name:str = constants.job_index):
         next_id = 0
     return next_id
 
-def update_index(entries, index_name:str = constants.job_index, append=True):
+def update_index(entries, index_name:str, append=True):
     mode = 'w+' if not append else 'a+'
     with open(index_name, mode, newline='') as index_file:
         csv_writer = csv.writer(index_file, delimiter=',', quotechar='|')
         csv_writer.writerows(entries)
+
+def update_jobindex(entries, append=True):
+    update_index(entries, index_name=constants.job_index, append=append)
 
 def condense_ids(id_list):
     G = (list(x) for _, x in groupby(id_list, lambda x, c=count(): next(c) - x))

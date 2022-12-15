@@ -4,10 +4,9 @@ import os
 import socket
 
 from ._backend import Backend
-from ..constants import job_index
 from ..history import add_new_history_entry
 from ..worker import run_command_by_id
-from ..utils import expand_ids, load_jobfile, update_index, get_next_index_id, cpu_count
+from ..utils import expand_ids, load_jobfile, update_jobindex, get_next_index_id, cpu_count
 
 class LocalBackend(Backend):
     def __init__(self, logging_name=None):
@@ -54,7 +53,7 @@ class LocalBackend(Backend):
         task_ids = expand_ids(args.tasklist)
 
         job_entries = [(get_next_index_id(), args.jobname, args.jobfile)]
-        update_index(job_entries, index_name=job_index, append=True)
+        update_jobindex(job_entries, append=True)
         add_new_history_entry(args.dry_run)
 
         n_workers = self.get_n_workers(task_ids, args.max_tasks, args.cpus)
