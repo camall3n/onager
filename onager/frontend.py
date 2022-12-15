@@ -87,7 +87,7 @@ def parse_args(args=None):
     history_parser.add_argument('-n', metavar='N', type=int, default=None,
         help='Limit output to the most recent N entries')
     history_parser.add_argument('--since', type=str, nargs='+', metavar=('DATE', 'TIME'),
-        default=None, help='Show commands since DATE (YYYY.mm.dd) [and TIME (hh:mm:ss)]')
+        default=None, help='Show commands since DATE (YYYY.mm.dd) [and TIME (HH:MM:SS)]')
 
 
     list_parser = subparsers.add_parser('list',
