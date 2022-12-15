@@ -63,6 +63,7 @@ def print_history(args, quiet=False):
         matches_prelaunch = (entry.mode == 'prelaunch') and args.prelaunch
 
         if args.since is not None:
+            assert len(args.since) <= 2
             date_str, time_str, *_ = args.since + ['00:00:00'] # use midnight if no time specified
             format_str = '%Y.%m.%d %H:%M:%S'
             since_datetime = datetime.strptime(date_str+' '+time_str, format_str)
