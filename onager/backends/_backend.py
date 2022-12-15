@@ -85,8 +85,7 @@ class Backend:
             jobs = [insert_second_to_last(job, additional_args) for job in jobs]
 
         for job in jobs:
-            if not args.quiet:
-                print(job)
+            print(job)
             if not args.dry_run:
                 try:
                     byte_str = subprocess.check_output(job, shell=True)

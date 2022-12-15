@@ -76,7 +76,6 @@ def parse_args(args=None):
     launch_parser.set_defaults(dry_run=False)
     launch_parser.add_argument('--hold_jid', type=str, default=None,
         help='Hold job until the specified jobid or jobid_taskid has finished')
-    launch_parser.add_argument('-q', '--quiet', action='store_true', help='Quiet output')
 
 
     history_parser = subparsers.add_parser('history',

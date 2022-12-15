@@ -46,7 +46,6 @@ class LocalBackend(Backend):
         if len(other_args) != 0:
             raise RuntimeError("{}: Cannot pass in additional args {}".format(
                 self.name, ' '.join(other_args)))
-        self.quiet = args.quiet
         log_name = '{}_{}'.format(args.jobname, self.get_next_jobid())
         self.log_path = os.path.join(self.get_log_dir(), log_name)
         os.makedirs(os.path.dirname(self.log_path), exist_ok=True)
@@ -58,11 +57,10 @@ class LocalBackend(Backend):
 
         n_workers = self.get_n_workers(task_ids, args.max_tasks, args.cpus)
         if not args.dry_run:
-            self.send_jobs_to_pool(n_workers, task_ids, args.quiet)
+            self.send_jobs_to_pool(n_workers, task_ids)
 
     def multilaunch(self, jobs, args):
         self.commands = jobs
-        self.quiet = False
         subjob_log_dirname = '{}_{}_subjobs'.format(args.logging_jobname, args.logging_multijobid)
         subjob_log_dir = os.path.join(self.get_log_dir(), subjob_log_dirname)
         log_name = '{}'.format(args.subjob_group_id)
@@ -71,7 +69,7 @@ class LocalBackend(Backend):
         task_ids = expand_ids(args.tasklist)
 
         n_workers = self.get_n_workers(task_ids, args.max_subjobs, cpus=1)
-        self.send_jobs_to_pool(n_workers, task_ids, quiet=self.quiet)
+        self.send_jobs_to_pool(n_workers, task_ids)
 
 
     def process_one_job(self, task_id):
@@ -80,5 +78,4 @@ class LocalBackend(Backend):
             task_id,
             stdout=self.log_path + '_{}.o'.format(task_id),
             stderr=self.log_path + '_{}.e'.format(task_id),
-            quiet=self.quiet,
         )
