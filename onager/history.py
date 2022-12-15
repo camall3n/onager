@@ -62,11 +62,23 @@ def print_history(args, quiet=False):
         matches_launch = (entry.mode == 'launch') and args.launch
         matches_prelaunch = (entry.mode == 'prelaunch') and args.prelaunch
 
+        if args.since is not None:
+            date_str, time_str, *_ = args.since + ['00:00:00'] # use midnight if no time specified
+            format_str = '%Y.%m.%d %H:%M:%S'
+            since_datetime = datetime.strptime(date_str+' '+time_str, format_str)
+            entry_datetime = datetime.strptime(entry.date+' '+entry.time, format_str+'.%f')
+            matches_datetime = entry_datetime > since_datetime
+        else:
+            matches_datetime = True
+
         valid_mode = no_mode_specified or matches_launch or matches_prelaunch
         filtered = (entry.dry_run and args.no_dry_run)
-        return valid_mode and not filtered
+        return valid_mode and matches_datetime and not filtered
 
     printable_history = [make_printable(entry) for entry in history_entries if should_print(entry)]
+    if args.n is not None:
+        assert args.n > 0
+        printable_history = printable_history[-args.n:]
 
     fields = [field for field in HistoryEntry._fields if field not in ['mode', 'dry_run']]
     if not quiet:
