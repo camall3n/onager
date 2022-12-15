@@ -9,11 +9,12 @@ from tabulate import tabulate
 from .constants import history_index
 from .utils import load_index, update_index, get_next_index_id
 
-HistoryEntry = namedtuple('HistoryEntry', ['id', 'date', 'time', 'jobname', 'mode', 'dry_run', 'command'])
+HistoryEntry = namedtuple('HistoryEntry',
+                          ['id', 'date', 'time', 'jobname', 'mode', 'dry_run', 'args'])
 
-def make_history_entry(cmd_id, date, time, jobname, mode, dry_run, command, args):
+def make_history_entry(cmd_id, date, time, jobname, mode, dry_run, cmd_args, args):
     assert dry_run in ['y', 'n']
-    entry = HistoryEntry(cmd_id, date, time, jobname, mode, (dry_run == 'y'), command)
+    entry = HistoryEntry(cmd_id, date, time, jobname, mode, (dry_run == 'y'), cmd_args)
     if 'hide' in args and args.hide is not None:
         entry = entry._asdict()
         for field in HistoryEntry._fields:
@@ -31,13 +32,21 @@ def add_new_history_entry(jobname, dry_run):
         jobname=jobname,
         mode=sys.argv[1],
         dry_run=dry_run,
-        command=' '.join(sys.argv[1:]),
+        args=' '.join(sys.argv[2:]),
     )
     update_index([get_history_tuple(history_entry)], history_index, append=True)
 
 
 def get_history_tuple(entry: HistoryEntry) -> str:
-    return str(entry.id), entry.date, entry.time, entry.jobname, entry.mode, ('y' if entry.dry_run else 'n'), entry.command
+    return (
+        str(entry.id),
+        entry.date,
+        entry.time,
+        entry.jobname,
+        entry.mode,
+        ('y' if entry.dry_run else 'n'),
+        entry.args,
+    )
 
 def get_history(args):
     history_list = []
@@ -91,12 +100,12 @@ def make_printable(entry, skip_cmd=False, wrap_cmd=False, cmd_width=None):
         pass # don't print the command
     else:
         if wrap_cmd:
-            cmd_str = '\n'.join(TextWrapper(cmd_width).wrap(entry.command))
+            cmd_str = '\n'.join(TextWrapper(cmd_width).wrap(entry.args))
         else:
-            cmd_str = entry.command
+            cmd_str = entry.args
             if cmd_width is not None:
                 cmd_str = cmd_str[:cmd_width]
-                if len(entry.command) > cmd_width:
+                if len(entry.args) > cmd_width:
                     cmd_str = cmd_str[:-5] + '[...]'
         result.append(cmd_str)
     return tuple(result)
@@ -105,12 +114,12 @@ def compute_command_width(filtered_history, fields, args):
 
     full_table_str = tabulate([make_printable(entry) for entry in filtered_history], headers=fields)
     full_width = len(full_table_str.split('\n')[1])
-    full_command_width = max([0]+[len(entry.command) for entry in filtered_history])
+    full_command_width = max([0]+[len(entry.args) for entry in filtered_history])
     base_width = full_width - full_command_width
-    min_width = base_width + len('command__')
+    min_width = base_width + len('args__')
     terminal_width = args.width or get_terminal_size()[0]
     if len(filtered_history) == 0 or min_width > terminal_width:
-        cmd_width = len('command__')
+        cmd_width = len('args__')
     elif full_width > terminal_width:
         excess_width = full_width - terminal_width
         cmd_width = full_command_width - excess_width
@@ -135,7 +144,7 @@ def print_history(args):
 
     ignored_fields = ['dry_run']
     if show_details:
-        ignored_fields.append('command')
+        ignored_fields.append('args')
     fields = [f for f in HistoryEntry._fields if f not in ignored_fields]
     cmd_width = compute_command_width(filtered_history, fields, args)
 
@@ -148,5 +157,6 @@ def print_history(args):
     print(tabulate([format_entry(entry) for entry in filtered_history], headers=fields))
 
     if show_details and len(filtered_history) > 0:
+        entry = filtered_history[0]
         print()
-        print('onager '+ filtered_history[0].command)
+        print('onager ' + entry.mode + ' ' + entry.args)
