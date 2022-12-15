@@ -130,6 +130,24 @@ module load cudnn/7.6.5
 source ./venv/bin/activate"
 ```
 
+### History
+History is useful for displaying information about previously executed onager commands. It allows for filtering by launch/prelaunch/dry-run, as well as restricting the output to the most recent N entries or entries since a particular date (and optional time).
+
+```
+onager history
+```
+
+Output:
+```
+  id  date        time             command
+----  ----------  ---------------  -----------------------------------------------------------------------------------------
+   0  2022.12.15  00:33:47.449593  prelaunch +jobname exp_01 +command myscript --name foo +arg --seed 1 2 3 --lr 0.003 0.001
+   1  2022.12.15  00:33:54.051139  launch --jobname exp_01 --backend local --duration 00:03:00 --cpus 2 --mem 10
+   2  2022.12.15  00:34:18.636573  launch --jobname exp_01 --backend local --duration 00:30:00 --cpus 4 --mem 8 --dry-run
+   3  2022.12.15  00:34:43.077715  prelaunch +jobname exp_02 +command myscript --name foo +arg --seed 4 5 6 --lr 0.003 0.001
+   4  2022.12.15  00:34:56.033614  launch --jobname exp_02 --backend local --duration 00:30:00 --cpus 4 --mem 8
+```
+
 ### List
 List is useful for displaying information about launched jobs and tasks, since the backend will typically assign the same jobname to all subtasks.
 
