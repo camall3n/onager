@@ -76,10 +76,10 @@ def print_history(args, quiet=False):
         filtered = (entry.dry_run and args.no_dry_run)
         return valid_mode and matches_datetime and not filtered
 
-    printable_history = [make_printable(entry) for entry in history_entries if should_print(entry)]
-    if args.n is not None:
-        assert args.n > 0
-        printable_history = printable_history[-args.n:]
+    N = args.n or len(history_entries)
+    printable_history = [
+        make_printable(entry) for entry in history_entries[-N:] if should_print(entry)
+    ]
 
     fields = [field for field in HistoryEntry._fields if field not in ['mode', 'dry_run']]
     if not quiet:
