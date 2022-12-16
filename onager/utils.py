@@ -78,7 +78,7 @@ def update_jobindex(entries, append=True):
     update_index(entries, index_name=constants.job_index, append=append)
 
 def load_jobindex():
-    load_index(index_name=constants.job_index)
+    return load_index(index_name=constants.job_index)
 
 def condense_ids(id_list):
     G = (list(x) for _, x in groupby(id_list, lambda x, c=count(): next(c) - x))
