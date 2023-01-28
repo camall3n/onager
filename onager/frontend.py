@@ -14,6 +14,10 @@ def parse_args(args=None):
         help='Generate commands based on lists of arguments')
     prelaunch_parser.add_argument('+command', type=str, required=True,
         help='Base command to add args to')
+    prelaunch_parser.add_argument('+prefix', type=str,
+        help='Prefix to add in front of command')
+    prelaunch_parser.add_argument('+suffix', type=str,
+        help='Suffix to add after end of command')
     prelaunch_parser.add_argument('+jobname', type=str, required=True,
         help='Name to label this run with, to be used with onager launch when submitting jobs')
     prelaunch_parser.add_argument('+jobfile', type=str, default=constants.defaultjobfile,
