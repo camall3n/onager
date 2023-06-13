@@ -28,6 +28,7 @@ def filter_cmd_prefix(exclude_variables, cmd_prefix_list, VAR_SEP=' '):
             filtered_prefix_list.append(cmd_prefix)
 
     return filtered_prefix_list
+
 def meta_launch(args):
     base_cmd = args.command
 
@@ -159,6 +160,8 @@ def meta_launch(args):
         if not args.quiet:
             print(cmd)
         jobs[i] = (cmd,tag)
+
+    print(f"Prelaunched {len(jobs)} jobs for")
 
     save_jobfile(jobs, jobfile_path, args.tag)
     add_new_history_entry(jobname=args.jobname, dry_run=False)
