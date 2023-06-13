@@ -161,7 +161,7 @@ def meta_launch(args):
             print(cmd)
         jobs[i] = (cmd,tag)
 
-    print(f"Prelaunched {len(jobs)} jobs for")
+    print(f"Prelaunched {len(jobs)} jobs for {args.jobname}.")
 
     save_jobfile(jobs, jobfile_path, args.tag)
     add_new_history_entry(jobname=args.jobname, dry_run=False)
