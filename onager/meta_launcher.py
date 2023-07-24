@@ -17,7 +17,7 @@ def filter_cmd_prefix(exclude_variables, cmd_prefix_list, VAR_SEP=' '):
 
     filtered_prefix_list = []
     for cmd_prefix in cmd_prefix_list:
-        all_keys_match = True
+        all_keys_match = True if exclude_arg_keys else False
         for curr_key_strs in exclude_arg_keys:
             all_keys_match &= any(key_str in cmd_prefix for key_str in curr_key_strs)
 
