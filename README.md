@@ -69,6 +69,11 @@ Argument types:
 
 - Add a boolean argument that will be toggled in the resulting commands
 
+```
++exclude --argname [value ...]
+```
+- Exclude certain argument values. If multiple `+exclude` arguments given, 
+will exclude the _product_ of all `+exclude` arguments. 
 
 Options:
 ```
