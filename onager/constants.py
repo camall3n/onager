@@ -1,7 +1,7 @@
 import os
 
 # Basic constants
-onager_folder = '.onager'
+onager_folder = os.path.dirname(os.environ['VIRTUAL_ENV']) + '/.onager'
 default_scripts_folder = os.path.join(onager_folder, 'scripts')
 default_logs_folder = os.path.join(onager_folder, 'logs')
 job_index = os.path.join(onager_folder, 'job_index.csv') # id,jobname,jobfile_path
