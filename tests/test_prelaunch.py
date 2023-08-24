@@ -160,6 +160,15 @@ class TestPrelaunchOptionalArgs(unittest.TestCase):
         jobs = run_meta_launcher(cmd)
         self.assertEqual("echo --value 1 --tag testecho_01__value_1", jobs[0][1])
 
+class TestPrelaunchExclude(unittest.TestCase):
+    def test_cross_product(self):
+        cmd = "prelaunch +command test +jobname test " \
+              "+arg --test1 1 2 3 +arg --test2 4 5 6 +exclude --test1 1 2 +exclude --test2 5"
+        jobs = run_meta_launcher(cmd)
+        self.assertEqual(len(jobs[0]), 7)
+        for job in jobs[0]:
+            self.assertNotIn('--test2 5' and '--test1 1', job)
+            self.assertNotIn('--test2 5' and '--test1 2', job)
 
 if __name__ == '__main__':
     unittest.main()

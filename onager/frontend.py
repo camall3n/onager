@@ -23,6 +23,9 @@ def parse_args(args=None):
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
         metavar=('--argname', 'value'),
         help='Add an argument with zero or more mutually exclusive values')
+    prelaunch_parser.add_argument('+exclude', type=str,  action='append', nargs='+',
+        help='Exclude arguments. Specify arg and Onager will exclude'
+             'a cross-product of all +exclude args.')
     prelaunch_parser.add_argument('+pos-arg', type=str, action='append', nargs='+',
         metavar=('value', 'value'),
         help='Add a positional argument with one or more mutually exclusive values')

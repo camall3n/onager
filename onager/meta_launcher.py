@@ -6,6 +6,29 @@ from .utils import load_jobfile, save_jobfile
 from .constants import SEP, WSEP, FLAG_ON, FLAG_OFF
 from .history import add_new_history_entry
 
+def filter_cmd_prefix(exclude_variables, cmd_prefix_list, VAR_SEP=' '):
+    exclude_arg_keys = []
+    for key, variable in exclude_variables.items():
+        curr_key_strs = []
+        for v in variable:
+            curr_key_strs.append(key + VAR_SEP + v)
+
+        exclude_arg_keys.append(curr_key_strs)
+
+    filtered_prefix_list = []
+    for cmd_prefix in cmd_prefix_list:
+        all_keys_match = True if exclude_arg_keys else False
+        for curr_key_strs in exclude_arg_keys:
+            all_keys_match &= any(key_str in cmd_prefix for key_str in curr_key_strs)
+
+            if not all_keys_match:
+                break
+
+        if not all_keys_match:
+            filtered_prefix_list.append(cmd_prefix)
+
+    return filtered_prefix_list
+
 def meta_launch(args):
     base_cmd = args.command
 
@@ -16,10 +39,13 @@ def meta_launch(args):
     else:
         raise NotImplementedError(f'Unknown arg mode: {args.arg_mode}')
 
+    variables = OrderedDict()
+    exclude_variables = OrderedDict()
     if args.arg is not None:
         variables = OrderedDict({arglist[0]: arglist[1:] for arglist in args.arg})
-    else:
-        variables = OrderedDict()
+        if args.exclude is not None:
+            exclude_variables = OrderedDict({arglist[0]: arglist[1:] for arglist in args.exclude})
+
 
     if args.pos_arg is not None:
         pos_variables = args.pos_arg
@@ -82,6 +108,8 @@ def meta_launch(args):
             else:
                 cmd_suffix_list = [suffix for v in value_list for suffix in cmd_suffix_list]
 
+    cmd_prefix_list = filter_cmd_prefix(exclude_variables, cmd_prefix_list, VAR_SEP=VAR_SEP)
+
     # Flag/Boolean arguments
     for flag in flag_variables:
         cmd_prefix_list = [prefix + ' {}' for prefix in cmd_prefix_list] + cmd_prefix_list
@@ -132,6 +160,8 @@ def meta_launch(args):
         if not args.quiet:
             print(cmd)
         jobs[i] = (cmd,tag)
+
+    print(f"Prelaunched {len(jobs)} jobs for {args.jobname}.")
 
     save_jobfile(jobs, jobfile_path, args.tag)
     add_new_history_entry(jobname=args.jobname, dry_run=False)
