@@ -127,7 +127,7 @@ onager launch --backend slurm --jobname experiment1
 Output:
 ```
 sbatch -J experiment1 -t 0-01:00:00 -n 1 -p batch --mem=2G -o .onager/logs/slurm/%x_%A_%a.o -e .onager/logs/slurm/%x_%A_%a.e --parsable --array=1,2,3,4,5,6,7,8,9 .onager/scripts/experiment1/wrapper.sh
-```  
+```
 
 Options:
 ```
