@@ -78,7 +78,7 @@ Argument types:
 ```
 +exclude --argname [value ...]
 ```
-- Exclude certain argument values. If multiple `+exclude` arguments given, 
+- Exclude certain named argument values. If multiple `+exclude` arguments given, 
 will exclude the _product_ of all `+exclude` arguments. So for example:
 
 ```
