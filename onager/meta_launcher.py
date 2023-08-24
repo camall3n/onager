@@ -92,7 +92,7 @@ def meta_launch(args):
     for key, value_list in variables.items():
         cmd_prefix_list = [prefix + ' ' + key for prefix in cmd_prefix_list]
         if len(value_list) > 0:
-            cmd_prefix_list = [prefix + VAR_SEP +'{}' for prefix in cmd_prefix_list]
+            cmd_prefix_list = [prefix + VAR_SEP + '{}' for prefix in cmd_prefix_list]
             cmd_prefix_list = [prefix.format(v) for v in value_list for prefix in cmd_prefix_list]
         if args.tag is not None:
             if key in args.tag_args:
