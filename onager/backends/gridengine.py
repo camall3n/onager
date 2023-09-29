@@ -3,7 +3,7 @@ import os
 
 from ._backend import Backend
 from ..subjobsfilemanager import SubjobsFileManager
-from ..utils import compute_subjobs_filename, split_tasklist_into_subjob_groups, condense_ids
+from ..utils import compute_subjobs_filename, split_tasklist_into_subjob_groups, condense_ids, get_jobfile_path
 
 class GridEngineBackend(Backend):
     def __init__(self):
@@ -99,13 +99,13 @@ class GridEngineBackend(Backend):
             wrapper_filename = 'wrapper.sh'
         elif args.tasks_per_node > 1:
             list_of_tasklist_strings = split_tasklist_into_subjob_groups(args.tasklist, args.tasks_per_node)
-            subjobs_filename = compute_subjobs_filename(args.jobfile)
+            subjobs_filename = compute_subjobs_filename(get_jobfile_path(args.jobname))
             sfm = SubjobsFileManager(subjobs_filename)
             subjob_groupids = sfm.add_subjobs(list_of_tasklist_strings)
             tasklist = condense_ids(subjob_groupids)
             wrapper_filename = 'multiwrapper.sh'
 
-        wrapper_script = self.wrap_tasks(args.jobfile, args)
+        wrapper_script = self.wrap_tasks(get_jobfile_path(args.jobname), args)
         wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname, filename=wrapper_filename)
 
         # Split tasklist into blocks that GridEngine can understand

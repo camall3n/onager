@@ -3,7 +3,7 @@ import os
 
 from ._backend import Backend
 from ..subjobsfilemanager import SubjobsFileManager
-from ..utils import compute_subjobs_filename, split_tasklist_into_subjob_groups
+from ..utils import compute_subjobs_filename, split_tasklist_into_subjob_groups, get_jobfile_path
 from ..overrides import get_partition_name
 
 class SlurmBackend(Backend):
@@ -68,7 +68,7 @@ class SlurmBackend(Backend):
             wrapper_filename = 'wrapper.sh'
         elif args.tasks_per_node > 1:
             list_of_tasklist_strings = split_tasklist_into_subjob_groups(args.tasklist, args.tasks_per_node)
-            subjobs_filename = compute_subjobs_filename(args.jobfile)
+            subjobs_filename = compute_subjobs_filename(get_jobfile_path(args.jobname))
             sfm = SubjobsFileManager(subjobs_filename)
             subjob_groupids = sfm.add_subjobs(list_of_tasklist_strings)
             tasklist = ','.join([str(id) for id in subjob_groupids])
@@ -86,7 +86,7 @@ class SlurmBackend(Backend):
         if args.hold_jid is not None:
             base_cmd += "--depend=afterany:{} ".format(args.hold_jid)
 
-        wrapper_script = self.wrap_tasks(args.jobfile, args)
+        wrapper_script = self.wrap_tasks(get_jobfile_path(get_jobfile_path(args.jobname)), args)
         wrapper_file = self.save_wrapper_script(wrapper_script, args.jobname, filename=wrapper_filename)
         base_cmd += "{}".format(wrapper_file)
         return [base_cmd]

@@ -58,3 +58,5 @@ def update_config(settings, global_=False):
     else:
         with open(localconfigfile, 'w') as config_file:
             settings.write(config_file)
+
+def get_config_or_arg():

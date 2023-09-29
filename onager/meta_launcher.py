@@ -3,7 +3,7 @@ import os
 from warnings import warn
 
 from .utils import load_jobfile, save_jobfile
-from .constants import SEP, WSEP, FLAG_ON, FLAG_OFF
+from .constants import SEP, WSEP, FLAG_ON, FLAG_OFF, defaultjobfile
 from .history import add_new_history_entry
 
 def meta_launch(args):
@@ -99,7 +99,7 @@ def meta_launch(args):
                 for suffix in cmd_suffix_list
             ]
 
-    jobfile_path = args.jobfile.format(jobname=args.jobname)
+    jobfile_path = defaultjobfile.format(jobname=args.jobname)
     os.makedirs(os.path.dirname(jobfile_path), exist_ok=True)
 
     if args.append:

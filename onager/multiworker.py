@@ -7,13 +7,13 @@ import os
 import subprocess
 import sys
 
-from .utils import load_jobfile, compute_subjobs_filename
+from .utils import load_jobfile, compute_subjobs_filename, get_jobfile_path
 from .backends.local import LocalBackend
 from .backends import __all__ as backend_names
 from .subjobsfilemanager import SubjobsFileManager
 
 def run_subjobs_with_local_backend(args):
-    subjobsfile = compute_subjobs_filename(args.jobfile)
+    subjobsfile = compute_subjobs_filename(get_jobfile_path(args.jobname))
     sfm = SubjobsFileManager(subjobsfile)
     subjobs = sfm.get_subjobs_dict()
     args.tasklist = subjobs[args.subjob_group_id]

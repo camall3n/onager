@@ -122,3 +122,6 @@ def split_tasklist_into_subjob_groups(tasklist, tasks_per_node):
         condense_ids(jobids[i:i+tasks_per_node]) for i in range(0, len(jobids), tasks_per_node)
     ]
     return list_of_tasklist_strings
+
+def get_jobfile_path(jobname):
+    return constants.defaultjobfile.format(jobname=jobname)

@@ -16,8 +16,6 @@ def parse_args(args=None):
         help='Base command to add args to')
     prelaunch_parser.add_argument('+jobname', type=str, required=True,
         help='Name to label this run with, to be used with onager launch when submitting jobs')
-    prelaunch_parser.add_argument('+jobfile', type=str, default=constants.defaultjobfile,
-        help='json file to write jobs to. Use when running launch')
     prelaunch_parser.add_argument('+arg-mode', type=str, default='argparse',
         choices=['argparse', 'hydra'], help='Method for joining args with values')
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
@@ -48,27 +46,25 @@ def parse_args(args=None):
         help='The partition or queue to use for launching jobs')
     launch_parser.add_argument('--jobname', type=str, required=True,
         help='A name for the job')
-    launch_parser.add_argument('--command', type=str, default=None,
+    launch_parser.add_argument('--command', type=str,
         help='Launch a single command instead of using a jobfile')
-    launch_parser.add_argument('--jobfile', type=str, default=constants.defaultjobfile,
-        help='Path to json file containing dictionary mapping run_ids to commands')
-    launch_parser.add_argument('--cpus', type=int, default=1,
+    launch_parser.add_argument('--cpus', type=int,
         help='Number of CPUs to request')
-    launch_parser.add_argument('--gpus', type=int, default=0,
+    launch_parser.add_argument('--gpus', type=int,
         help='Number of GPUs to request')
-    launch_parser.add_argument('--mem', type=int, default=2,
+    launch_parser.add_argument('--mem', type=int,
         help='Amount of RAM (in GB) to request per node')
-    launch_parser.add_argument('--venv', type=str, default=None,
+    launch_parser.add_argument('--venv', type=str,
         help='Path to python virtualenv')
-    launch_parser.add_argument('--duration', type=str, default='0-01:00:00',
+    launch_parser.add_argument('--duration', type=str,
         help='Duration of job (d-hh:mm:ss)')
-    launch_parser.add_argument('--tasklist', type=str, default=None,
+    launch_parser.add_argument('--tasklist', type=str,
         help='Comma separated list of task ID ranges to submit (e.g. "18-22:1,26,29,34-49:3,51")')
-    launch_parser.add_argument('--max-tasks', type=int, default=-1,
+    launch_parser.add_argument('--max-tasks', type=int,
         help='Maximum number of simultaneous tasks on backend')
-    launch_parser.add_argument('--tasks-per-node', type=int, default=1,
+    launch_parser.add_argument('--tasks-per-node', type=int,
         help='How many total tasks to process with each node')
-    launch_parser.add_argument('--max-tasks-per-node', type=int, default=-1,
+    launch_parser.add_argument('--max-tasks-per-node', type=int,
         help='Maximum number of simultaneous tasks to process with each node')
     launch_parser.add_argument('--debug', '--test', action='store_true', dest='debug',
         help="Submit a short-duration, high-priority job to the backend")
@@ -76,7 +72,7 @@ def parse_args(args=None):
     launch_parser.add_argument('-d','--dry-run', action='store_true',
         help="Don't actually submit jobs to backend")
     launch_parser.set_defaults(dry_run=False)
-    launch_parser.add_argument('--hold_jid', type=str, default=None,
+    launch_parser.add_argument('--hold_jid', type=str,
         help='Hold job until the specified jobid or jobid_taskid has finished')
 
 
@@ -85,14 +81,14 @@ def parse_args(args=None):
     history_parser.add_argument('--prelaunch', action='store_true', help='Show prelaunch commands')
     history_parser.add_argument('--launch', action='store_true', help='Show launch commands')
     history_parser.add_argument('--no-dry-run', action='store_true', help='Hide dry-run commands')
-    history_parser.add_argument('-n', metavar='N', type=int, default=None,
+    history_parser.add_argument('-n', metavar='N', type=int,
         help='Limit output to the most recent N entries')
     history_parser.add_argument('--since', type=str, nargs='+', metavar=('DATE', 'TIME'),
-        default=None, help='Show commands since DATE (YYYY.mm.dd) [and TIME (HH:MM:SS)]')
+     help='Show commands since DATE (YYYY.mm.dd) [and TIME (HH:MM:SS)]')
     history_parser.add_argument('--full', action='store_true', help='Show full commands in table')
-    history_parser.add_argument('--details', metavar='ID_or_JOBNAME', default=None,
+    history_parser.add_argument('--details', metavar='ID_or_JOBNAME',
         help='Show history details for a specific command ID or JOBNAME (or -1 for previous command)')
-    history_parser.add_argument('--width', type=int, default=None,
+    history_parser.add_argument('--width', type=int,
         help='Maximum character width when printing table')
 
 
@@ -100,9 +96,9 @@ def parse_args(args=None):
         help='List previously launched commands by job_id and task_id')
     list_parser.add_argument('-j','--jobid', type=str,
         help='The job ID to list commands for')
-    list_parser.add_argument('-t','--tasklist', type=str, default=None,
+    list_parser.add_argument('-t','--tasklist', type=str,
         help='Comma separated list of task IDs (e.g. "18-22:1,26,29,34-49:1")')
-    list_parser.add_argument('--hide', type=str, nargs='+', default=None,
+    list_parser.add_argument('--hide', type=str, nargs='+',
         help='Hide the specified columns')
 
 
@@ -112,7 +108,7 @@ def parse_args(args=None):
         help='The backend to use for canceling jobs/tasks')
     cancel_parser.add_argument('-j','--jobid', type=str, required=True,
         help='The job ID to delete tasks from')
-    cancel_parser.add_argument('-t','--tasklist', type=str, default=None,
+    cancel_parser.add_argument('-t','--tasklist', type=str,
         help='Comma separated list of task IDs (e.g. "18-22:1,26,29,34-49:1")')
     cancel_parser.add_argument('-d','--dry-run', action='store_true',
         help="Don't actually cancel jobs on backend")

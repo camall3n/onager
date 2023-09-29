@@ -5,7 +5,7 @@ import sys
 
 from ..config import get_active_config
 from ..constants import default_logs_folder
-from ..utils import update_jobindex, insert_second_to_last
+from ..utils import update_jobindex, insert_second_to_last, get_jobfile_path
 from ..history import add_new_history_entry
 
 class Backend:
@@ -25,7 +25,7 @@ class Backend:
         else:
             body = self.multiworker_body
             args_str_list = []
-            args_str_list.append('--jobfile {}'.format(args.jobfile))
+            args_str_list.append('--jobfile {}'.format(get_jobfile_path(args.jobname)))
             args_str_list.append('--logging-jobname {}'.format(args.jobname))
             args_str_list.append('--logging-multijobid {}'.format(self.job_id_var))
             args_str_list.append('--logging-backend {}'.format(args.backend))
@@ -94,7 +94,7 @@ class Backend:
                 except (subprocess.CalledProcessError, ValueError) as err:
                     print(err)
                     sys.exit()
-        job_entries = [(jobid, args.jobname, args.jobfile) for jobid in jobids]
+        job_entries = [(jobid, args.jobname, get_jobfile_name(args.jobname)) for jobid in jobids]
         update_jobindex(job_entries, append=True)
         add_new_history_entry(args.jobname, args.dry_run)
 
