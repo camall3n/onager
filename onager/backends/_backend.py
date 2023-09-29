@@ -92,7 +92,7 @@ class Backend:
                 except (subprocess.CalledProcessError, ValueError) as err:
                     print(err)
                     sys.exit()
-        job_entries = [(jobid, args.jobname, get_jobfile_name(args.jobname)) for jobid in jobids]
+        job_entries = [(jobid, args.jobname, get_jobfile_path(args.jobname)) for jobid in jobids]
         update_jobindex(job_entries, append=True)
         add_new_history_entry(args.jobname, args.dry_run)
 
