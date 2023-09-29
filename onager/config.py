@@ -1,3 +1,4 @@
+from argparse import Namespace
 import configparser
 import os
 from warnings import warn
@@ -59,4 +60,10 @@ def update_config(settings, global_=False):
         with open(localconfigfile, 'w') as config_file:
             settings.write(config_file)
 
-def get_config_or_arg():
+def maybe_merge_config_into_args(config, args):
+    args_dict = vars(args)
+    config_dict = dict(config['all'])
+    for key, val in args_dict.items():
+        if val is None and key in config_dict:
+            args_dict[key] = config_dict[key]
+    return Namespace(**args_dict)

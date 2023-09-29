@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
+from onager import config
 from onager import frontend
 from onager import meta_launcher, launcher, history, cancel, config, utils
 from onager import list as list_
 
 if __name__ == '__main__':
     args, other_args = frontend.parse_args()
+    settings = config.get_active_config()
+    args = config.maybe_merge_config_into_args(settings, args)
 
     utils.ensure_onager_folders_exist()
 
