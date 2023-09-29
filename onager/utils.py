@@ -22,6 +22,16 @@ def ensure_onager_folders_exist():
     os.makedirs(constants.default_scripts_folder, exist_ok=True)
 
 
+def ask_user_yes_or_no(question:str = 'Are you sure?'):
+    yes_or_no = input(f'{question} (y/[n])\n> ')
+    if yes_or_no in ['y','yes','Y',"YES"]:
+        return True
+    else:
+        if yes_or_no not in ['n','no','N',"NO",'']:
+            print('Unable to process response "{}". Assuming [n].'.format(yes_or_no))
+    return False
+
+
 def cpu_count():
     # os.cpu_count()
     #     returns number of cores on machine
