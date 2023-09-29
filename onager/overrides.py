@@ -3,10 +3,8 @@ from argparse import Namespace
 from .config import get_active_config, update_config
 from .utils import ask_user_yes_or_no
 
-command_to_get_slurm_partition_names = 'sinfo -o %R | tail -n +2'
-command_to_get_gridengine_partition_names = "qstat -g c | awk 'NR>2 {print $1}' | sed 's/\.q//'"
 
-def get_partition_name(args: Namespace):
+def get_partition_name(args: Namespace, backend):
     if args.partition is not None:
         return args.partition
 
@@ -15,7 +13,8 @@ def get_partition_name(args: Namespace):
         # TODO: check if it's a valid partition?
         return config['all']['partition']
 
-    partitions = ['super_secret_partition1', 'foo']# TODO: get_partition_names()
+    partitions = backend.get_partition_names()
+    print(partitions)
     if len(partitions) == 1:
         return partitions[0]
 
@@ -29,4 +28,4 @@ def get_partition_name(args: Namespace):
             config['all']['partition'] = partition
             update_config(config)
 
-    return ''
+    return partition

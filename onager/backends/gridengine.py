@@ -11,6 +11,7 @@ class GridEngineBackend(Backend):
         self.name = 'gridengine'
         self.task_id_var = r'$SGE_TASK_ID'
         self.job_id_var = r'$JOB_ID'
+        self.command_to_get_partition_names = "qstat -g c | awk 'NR>2 {print $1}' | sed 's/\.q//'"
 
     def generate_tasklist(self, commands):
         ids = sorted(commands.keys())

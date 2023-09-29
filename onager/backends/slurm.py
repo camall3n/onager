@@ -12,6 +12,7 @@ class SlurmBackend(Backend):
         self.name = 'slurm'
         self.task_id_var = r'$SLURM_ARRAY_TASK_ID'
         self.job_id_var = r'$SLURM_ARRAY_JOB_ID'
+        self.command_to_get_partition_names = 'set -o pipefail; sinfo -o %R | tail -n +2'
 
     def get_cancel_cmds(self, cancellations):
         cmds = []
@@ -46,7 +47,7 @@ class SlurmBackend(Backend):
         if args.gpus > 0:
             base_cmd += '--gres=gpu:{} '.format(args.gpus)
 
-        partition = get_partition_name(args)
+        partition = get_partition_name(args, backend=self)
         base_cmd += '-p {} '.format(partition)
 
         # Memory requirements

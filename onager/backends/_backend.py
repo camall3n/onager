@@ -97,3 +97,14 @@ class Backend:
         job_entries = [(jobid, args.jobname, args.jobfile) for jobid in jobids]
         update_jobindex(job_entries, append=True)
         add_new_history_entry(args.jobname, args.dry_run)
+
+    def get_partition_names(self):
+        try:
+            byte_str = subprocess.check_output(self.command_to_get_partition_names, shell=True)
+            partitions = byte_str.decode('utf-8').strip().split('\n')
+        except (subprocess.CalledProcessError) as err:
+            print(err)
+            print('Warning: failed to check partition names.')
+            partitions = []
+
+        return partitions
