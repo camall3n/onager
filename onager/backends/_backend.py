@@ -3,7 +3,6 @@ import os
 import subprocess
 import sys
 
-from ..config import get_active_config
 from ..constants import default_logs_folder
 from ..utils import update_jobindex, insert_second_to_last, get_jobfile_path
 from ..history import add_new_history_entry
@@ -34,13 +33,12 @@ class Backend:
             return body.format(' '.join(args_str_list))
 
     def wrap_tasks(self, tasks_file, args):
-        config = get_active_config()
-        header = '\n'.join((self.header, config[self.name]['header']))
+        header = '\n'.join((self.header, args.header))
         if args.venv is not None:
             venv_activate_path = os.path.join(os.path.normpath(args.venv), 'bin', 'activate')
             header = '\n'.join((header, 'source {}'.format(venv_activate_path)))
         body = self.get_body(tasks_file, args)
-        footer = '\n'.join((config[self.name]['footer'], self.footer))
+        footer = '\n'.join((args.footer, self.footer))
         wrapper_script = header + body + footer
         return wrapper_script
 

@@ -66,4 +66,7 @@ def maybe_merge_config_into_args(config, args):
     for key, val in args_dict.items():
         if val is None and key in config_dict:
             args_dict[key] = config_dict[key]
+    for key, val in config_dict.items():
+        if key not in args_dict:
+            args_dict[key] = val
     return Namespace(**args_dict)

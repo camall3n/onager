@@ -5,13 +5,9 @@ from .utils import ask_user_yes_or_no
 
 
 def get_partition_name(args: Namespace, backend):
-    if args.partition is not None:
-        return args.partition
-
-    config = get_active_config()
-    if config['all']['partition']:
+    if args.partition:
         # TODO: check if it's a valid partition?
-        return config['all']['partition']
+        return args.partition
 
     partitions = backend.get_partition_names()
     print(partitions)
@@ -25,6 +21,7 @@ def get_partition_name(args: Namespace, backend):
     if partition in partitions:
         should_save = ask_user_yes_or_no('Would you like to update the default partition for this project?')
         if should_save:
+            config = get_active_config()
             config['all']['partition'] = partition
             update_config(config)
 
