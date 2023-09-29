@@ -65,8 +65,15 @@ def maybe_merge_config_into_args(config, args):
     config_dict = dict(config['all'])
     for key, val in args_dict.items():
         if val is None and key in config_dict:
-            args_dict[key] = config_dict[key]
+            args_dict[key] = try_cast_as_int(config_dict[key])
     for key, val in config_dict.items():
         if key not in args_dict:
-            args_dict[key] = val
+            args_dict[key] = try_cast_as_int(val)
     return Namespace(**args_dict)
+
+def try_cast_as_int(val):
+    try:
+        return int(val)
+    except ValueError:
+        pass
+    return val
