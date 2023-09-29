@@ -16,7 +16,7 @@ def parse_args(args=None):
         help='Base command to add args to')
     prelaunch_parser.add_argument('+jobname', type=str, required=True,
         help='Name to label this run with, to be used with onager launch when submitting jobs')
-    prelaunch_parser.add_argument('+arg-mode', type=str, default='argparse',
+    prelaunch_parser.add_argument('+arg-mode', type=str,
         choices=['argparse', 'hydra'], help='Method for joining args with values')
     prelaunch_parser.add_argument('+arg', type=str, action='append', nargs='+',
         metavar=('--argname', 'value'),
@@ -68,10 +68,8 @@ def parse_args(args=None):
         help='Maximum number of simultaneous tasks to process with each node')
     launch_parser.add_argument('--debug', '--test', action='store_true', dest='debug',
         help="Submit a short-duration, high-priority job to the backend")
-    launch_parser.set_defaults(debug=False)
     launch_parser.add_argument('-d','--dry-run', action='store_true',
         help="Don't actually submit jobs to backend")
-    launch_parser.set_defaults(dry_run=False)
     launch_parser.add_argument('--hold_jid', type=str,
         help='Hold job until the specified jobid or jobid_taskid has finished')
 
@@ -112,7 +110,6 @@ def parse_args(args=None):
         help='Comma separated list of task IDs (e.g. "18-22:1,26,29,34-49:1")')
     cancel_parser.add_argument('-d','--dry-run', action='store_true',
         help="Don't actually cancel jobs on backend")
-    cancel_parser.set_defaults(dry_run=False)
     cancel_parser.add_argument('-q', '--quiet', action='store_true', help='Quiet output')
 
 
@@ -120,13 +117,10 @@ def parse_args(args=None):
         help='Configure onager settings')
     config_parser.add_argument('--global', action='store_true', dest='global_',
         help='Write to (or read from *only*) the global config: ~/.onagerconfig')
-    config_parser.set_defaults(global_=False)
     config_parser.add_argument('--local', action='store_true',
         help='Write to (or read from *only*) the local config: .onager/config')
-    config_parser.set_defaults(local=False)
     config_parser.add_argument('--read', action='store_true',
         help='Display all variables in config file, and their values')
-    config_parser.set_defaults(list_=False)
     config_parser.add_argument('--write', type=str, nargs=3, action='append', dest='write',
         metavar=('backend', 'key', 'value'),
         help='Set configuration variables to the specified values')
