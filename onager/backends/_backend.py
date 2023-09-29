@@ -98,7 +98,7 @@ class Backend:
 
     def get_partition_names(self):
         try:
-            byte_str = subprocess.check_output(self.command_to_get_partition_names, shell=True)
+            byte_str = subprocess.check_output(self.command_to_get_partition_names, executable="/bin/bash", shell=True)
             partitions = byte_str.decode('utf-8').strip().split('\n')
         except (subprocess.CalledProcessError) as err:
             print(err)
