@@ -4,6 +4,7 @@ import os
 from ._backend import Backend
 from ..subjobsfilemanager import SubjobsFileManager
 from ..utils import compute_subjobs_filename, split_tasklist_into_subjob_groups
+from ..overrides import get_partition_name
 
 class SlurmBackend(Backend):
     def __init__(self):
@@ -43,11 +44,10 @@ class SlurmBackend(Backend):
         if args.debug and duration > timedelta(hours=2):
             raise RuntimeError('{}: Duration cannot exceed 2 hours while in debug/test mode.'.format(self.name))
         if args.gpus > 0:
-            partition = 'gpu-debug' if args.debug else 'gpu'
-            base_cmd += '-p {} --gres=gpu:{} '.format(partition, args.gpus)
-        else:
-            partition = 'debug' if args.debug else 'batch'
-            base_cmd += '-p {} '.format(partition)
+            base_cmd += '--gres=gpu:{} '.format(args.gpus)
+
+        partition = get_partition_name(args)
+        base_cmd += '-p {} '.format(partition)
 
         # Memory requirements
         base_cmd += '--mem={}G '.format(args.mem)

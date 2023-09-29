@@ -2,24 +2,9 @@ import configparser
 import os
 from warnings import warn
 
-from .constants import globalconfigfile, localconfigfile
+from .constants import defaultconfigfile, globalconfigfile, localconfigfile
 from . import backends
 
-defaults = {
-    'DEFAULT': {
-        'header': '',
-        'footer': '',
-    },
-    'slurm': {},
-    'gridengine': {},
-}
-
-def ensure_initialized():
-    settings = configparser.ConfigParser()
-    settings.read_dict(defaults)
-    if not os.path.exists(localconfigfile):
-        with open(localconfigfile, 'w') as config_file:
-            settings.write(config_file)
 
 def print_config(config):
     for section in config.sections():
@@ -30,8 +15,8 @@ def print_config(config):
         print()
 
 def get_active_config():
-    ensure_initialized()
     settings = configparser.ConfigParser()
+    settings.read(defaultconfigfile)
     settings.read(globalconfigfile)
     settings.read(localconfigfile)
     return settings
@@ -46,13 +31,12 @@ def config(args):
         raise RuntimeError('Cannot write to global and local config files simultaneously.')
 
     settings = configparser.ConfigParser()
-    ensure_initialized()
-    settings.read_dict(defaults)
+    settings.read(defaultconfigfile)
     if args.global_ or not args.local:
         settings.read(globalconfigfile)
     if args.local or not args.global_:
         settings.read(localconfigfile)
-    
+
     if args.read:
         print_config(settings)
     elif args.write:
@@ -64,10 +48,13 @@ def config(args):
             #     warn('Unable to set {}.{}={} (invalid key: {}).'.format(backend, key, value, key))
             #     continue
             settings[backend][key] = value
-        
-        if args.global_:
-            with open(globalconfigfile, 'w') as config_file:
-                settings.write(config_file)
-        else:
-            with open(localconfigfile, 'w') as config_file:
-                settings.write(config_file)
+
+        update_config(settings, global_=args.global_)
+
+def update_config(settings, global_=False):
+    if global_:
+        with open(globalconfigfile, 'w') as config_file:
+            settings.write(config_file)
+    else:
+        with open(localconfigfile, 'w') as config_file:
+            settings.write(config_file)

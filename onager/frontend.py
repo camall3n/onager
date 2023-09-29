@@ -42,8 +42,10 @@ def parse_args(args=None):
 
 
     launch_parser = subparsers.add_parser('launch', help='Launch jobs using the specified backend')
-    launch_parser.add_argument('--backend', choices=backends.__all__, required=True,
+    launch_parser.add_argument('--backend', choices=backends.__all__, required=False,
         help='The backend to use for launching jobs')
+    launch_parser.add_argument('--partition', type=str, required=False,
+        help='The partition or queue to use for launching jobs')
     launch_parser.add_argument('--jobname', type=str, required=True,
         help='A name for the job')
     launch_parser.add_argument('--command', type=str, default=None,
